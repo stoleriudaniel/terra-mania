@@ -7,12 +7,20 @@ import image
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 
+def drawCountry(country, rgb):
+    file = open(f"countries\\{country}\\pixels.txt", "r")
+    pixels = file.readlines()
+    for pixel in pixels:
+        p = pixel.split()
+        x = int(p[0])
+        y = int(p[1])
+        window.set_at((x, y), rgb)
 
-def drawPortion(window, xPos, yPos):
+
+def findMoreCountryPixels(file, window, xPos, yPos):
     yellow = (238, 224, 29)
     red = (237, 28, 36)
     white = (255, 255, 255)
-    uncoloredPixels = ()
 
     rightPos = xPos
     if rightPos < 0 or rightPos > SCREEN_WIDTH:
@@ -29,6 +37,7 @@ def drawPortion(window, xPos, yPos):
         colorRightUp = (c[0], c[1], c[2])
         while colorRightUp != red:
             window.set_at((rightPos, up), yellow)
+            file.write(f"{rightPos} {up}\n")
             up = up + 1
             if up > SCREEN_HEIGHT:
                 break
@@ -39,6 +48,7 @@ def drawPortion(window, xPos, yPos):
         colorRightDown = (c[0], c[1], c[2])
         while colorRightDown != red:
             window.set_at((rightPos, down), yellow)
+            file.write(f"{rightPos} {down}\n")
             down = down - 1
             if down < 0:
                 break
@@ -61,6 +71,7 @@ def drawPortion(window, xPos, yPos):
         colorLeftUp = (c[0], c[1], c[2])
         while colorLeftUp != red:
             window.set_at((leftPos, up), yellow)
+            file.write(f"{leftPos} {up}\n")
             up = up + 1
             if up > SCREEN_HEIGHT:
                 break
@@ -71,6 +82,7 @@ def drawPortion(window, xPos, yPos):
         colorLeftDown = (c[0], c[1], c[2])
         while colorLeftDown != red:
             window.set_at((leftPos, down), yellow)
+            file.write(f"{leftPos} {down}\n")
             down = down - 1
             if down < 0:
                 break
@@ -222,13 +234,59 @@ def getUncoloredPixelsNeighboursFromSameCountry(window, xPos, yPos):
         colorLeftYPos = (c[0], c[1], c[2])
     return uncoloredPixels
 
+
+def writeCountryPixelsInFile(countryName, mousex, mousey):
+    file = open(f"countries\\{countryName}\\pixels.txt", "w")
+
+    findMoreCountryPixels(file, window, mousex, mousey)
+
+    total = getUncoloredPixelsNeighboursFromSameCountry(window, mousex, mousey)
+
+    while total != ():
+        totalList = list(total)
+        length = len(totalList)
+        xPixel = totalList[length//2][0]
+        yPixel = totalList[length//2][1]
+        findMoreCountryPixels(file, window, xPixel, yPixel)
+        news = getUncoloredPixelsNeighboursFromSameCountry(window, xPixel, yPixel)
+        for xPixel, yPixel in totalList:
+            c = window.get_at((xPixel, yPixel))
+            color = (c[0], c[1], c[2])
+            if color == yellow:
+                totalList.remove((xPixel, yPixel))
+        totalNews = list(news)
+        totalList += totalNews
+        total = tuple(totalList)
+
+    file.close()
+
+def initColors():
+    fileInitPixel = open("countries\\init\\initPixel.txt", "r")
+    initPixelLines = fileInitPixel.readlines()
+    for initPixelLine in initPixelLines:
+        resultInitPixel = initPixelLine.split()
+        initPixelCountry = resultInitPixel[0]
+        x = int(resultInitPixel[1])
+        y = int(resultInitPixel[2])
+        fileInitRGB = open("countries\\init\\initRGB.txt", "r")
+        initRGBLines = fileInitRGB.readlines()
+        for initRGBLine in initRGBLines:
+            resultInitRGB = initRGBLine.split()
+            initRGBCountry = resultInitRGB[0]
+            r = int(resultInitRGB[1])
+            g = int(resultInitRGB[2])
+            b = int(resultInitRGB[3])
+            if initPixelCountry == initRGBCountry:
+                drawCountry(initRGBCountry, (r, g, b))
+
+
 if __name__ == '__main__':
 
     pygame.init()
     window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-    bg_img = pygame.image.load('test2.png')
-    bg_img = pygame.transform.scale(bg_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    bg_img = pygame.image.load('Europe_map.png')
+    bg_img = pygame.transform.scale(bg_img, (897, 720))
     window.blit(bg_img, (0, 0))
     runing = True
     yellow = (238, 224, 29)
@@ -240,24 +298,6 @@ if __name__ == '__main__':
         for event in ev:
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
-                drawPortion(window, pos[0], pos[1])
 
-                total = getUncoloredPixelsNeighboursFromSameCountry(window, pos[0], pos[1])
-
-                while total != ():
-                    totalList = list(total)
-                    length = len(totalList)
-                    xPixel = totalList[length//2][0]
-                    yPixel = totalList[length//2][1]
-                    drawPortion(window, xPixel, yPixel)
-                    news = getUncoloredPixelsNeighboursFromSameCountry(window, xPixel, yPixel)
-                    for xPixel, yPixel in totalList:
-                        c = window.get_at((xPixel, yPixel))
-                        color = (c[0], c[1], c[2])
-                        if color == yellow:
-                            totalList.remove((xPixel, yPixel))
-                    totalNews = list(news)
-                    totalList += totalNews
-                    total = tuple(totalList)
         pygame.display.update()
     pygame.quit()
