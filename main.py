@@ -12,6 +12,7 @@ from fontTools.ttLib import TTFont
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 
+coloredCountries = []
 
 def initTreePixels():
     directories = [x[0] for x in os.walk('countries')]
@@ -85,10 +86,10 @@ def writeCountryPixelsInFile(countryName, mousex, mousey):
 
 def drawCountry(mouseX, mouseY, initRgb, newRgb):
     c = window.get_at((mouseX, mouseY))
-    print((c[0], c[1], c[2]) != initRgb, c)
+    # print((c[0], c[1], c[2]) != initRgb, c)
     if (c[0], c[1], c[2]) != initRgb:
         return
-    country = "Italy"
+    country = ""
     treeFilename = mouseX // 100 * 100
     treeFile = open(f"tree\\pixels\\{treeFilename}.txt", "r")
     rows = treeFile.readlines()
@@ -98,17 +99,28 @@ def drawCountry(mouseX, mouseY, initRgb, newRgb):
         yCord = result[1]
         if int(xCord) == mouseX and int(yCord) == mouseY:
             country = result[2]
+            break
     print(country)
+    if country == "":
+        return
+    drawCountryByCountryParam(country, newRgb)
+    coloredCountries.append(country)
+    print("ok")
+
+
+def undrawCountries(newRGB):
+    for country in coloredCountries:
+        drawCountryByCountryParam(country, newRGB)
+        coloredCountries.remove(country)
+
+def drawCountryByCountryParam(country, newRGB):
     countryPixelsFile = open(f"countries\\{country}\\pixels.txt", "r")
     countryPixels = countryPixelsFile.readlines()
     for pixel in countryPixels:
         p = pixel.split()
         x = int(p[0])
         y = int(p[1])
-        window.set_at((x, y), newRgb)
-        print(pixel)
-    print("ok")
-
+        window.set_at((x, y), newRGB)
 
 def initColors():
     fileInitPixel = open("countries\\init\\initPixel.txt", "r")
@@ -159,13 +171,15 @@ if __name__ == '__main__':
     while runing:
         ev = pygame.event.get()
         for event in ev:
-            if event.type == pygame.MOUSEMOTION:
+            if event.type == pygame.MOUSEMOTION: # MOUSEBUTTONUP MOUSEMOTION
                 pos = pygame.mouse.get_pos()
                 print([pos[0], pos[1]])
-                # window.blit(text, (1020, 500))
+                if len(coloredCountries)>0:
+                    undrawCountries(blue1)
                 # writeCountryPixelsInFile("Test", pos[0], pos[1])
                 drawCountry(pos[0], pos[1], blue1, yellow)
                 # initTreePixels()
+                # drawCountryByCountryParam("Macedonia", yellow)
 
         pygame.display.update()
     pygame.quit()
