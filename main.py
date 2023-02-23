@@ -20,7 +20,7 @@ incorrectCountries = []
 currentFlag = ""
 currentCountry = ""
 
-CONTINENT = "North-America"
+CONTINENT = "Europe"
 
 
 def initTreePixels():
@@ -429,6 +429,9 @@ def playGameEurope():
                 displayFlag()
                 drawCorrectCountry(pos[0], pos[1], yellow, green)
                 print(hoverColoredCountries)
+
+                # initTreePixels()
+                # writeCountryPixelsInFile("Test", pos[0], pos[1])
         pygame.display.update()
     pygame.quit()
 
@@ -507,18 +510,18 @@ def playGameNorthAmerica():
         for event in ev:
             if event.type == pygame.MOUSEMOTION: # MOUSEBUTTONUP MOUSEMOTION
                 pos = pygame.mouse.get_pos()
-                # undrawCountries(blue1)
-                # drawCountry(pos[0], pos[1], blue1, yellow)
+                undrawCountries(blue1)
+                drawCountry(pos[0], pos[1], blue1, yellow)
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 print("click:", [pos[0], pos[1]])
-                # changeFlagIfArrowClicked(pos[0], pos[1])
-                # displayFlag()
-                # drawCorrectCountry(pos[0], pos[1], yellow, green)
-                # print(hoverColoredCountries)
+                changeFlagIfArrowClicked(pos[0], pos[1])
+                displayFlag()
+                drawCorrectCountry(pos[0], pos[1], yellow, green)
+                print(hoverColoredCountries)
 
                 # initTreePixels()
-                writeCountryPixelsInFile("Test", pos[0], pos[1])
+                # writeCountryPixelsInFile("Test", pos[0], pos[1])
         pygame.display.update()
     pygame.quit()
 
@@ -529,7 +532,7 @@ def playGameAsia():
     green = (23, 165, 23)
     blue1 = (0, 51, 153)
     window.fill((255, 255, 255))
-    bg_img = pygame.image.load('asia112.png')
+    bg_img = pygame.image.load('asia1.png')
     # bg_img = pygame.image.load('south_america.png')
     bg_img = pygame.transform.scale(bg_img, (897, 680))
     window.blit(bg_img, (20, 20), )
@@ -552,18 +555,110 @@ def playGameAsia():
         for event in ev:
             if event.type == pygame.MOUSEMOTION: # MOUSEBUTTONUP MOUSEMOTION
                 pos = pygame.mouse.get_pos()
-                # undrawCountries(blue1)
-                # drawCountry(pos[0], pos[1], blue1, yellow)
+                undrawCountries(blue1)
+                drawCountry(pos[0], pos[1], blue1, yellow)
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 print("click:", [pos[0], pos[1]])
-                # changeFlagIfArrowClicked(pos[0], pos[1])
-                # displayFlag()
-                # drawCorrectCountry(pos[0], pos[1], yellow, green)
+                changeFlagIfArrowClicked(pos[0], pos[1])
+                displayFlag()
+                drawCorrectCountry(pos[0], pos[1], yellow, green)
                 # print(hoverColoredCountries)
 
                 # initTreePixels()
-                writeCountryPixelsInFile("Test", pos[0], pos[1])
+                # writeCountryPixelsInFile("Test", pos[0], pos[1])
+        pygame.display.update()
+    pygame.quit()
+
+
+def playGameAfrica():
+    # hand = HandTrackingModule.HandDetector()
+    # hand.show()
+    yellow = (238, 224, 29)
+    green = (23, 165, 23)
+    blue1 = (0, 51, 153)
+    window.fill((255, 255, 255))
+    bg_img = pygame.image.load('africa111.png')
+    # bg_img = pygame.image.load('south_america.png')
+    bg_img = pygame.transform.scale(bg_img, (897, 680))
+    window.blit(bg_img, (20, 20), )
+
+    globals()['currentFlag'] = "Angola_flag.png"
+    displayFlag()
+
+    arrow_right = pygame.image.load("arrow_right.png")
+    arrow_right = pygame.transform.scale(arrow_right, (80, 65))
+    window.blit(arrow_right, (1170, 215))
+
+    arrow_left = pygame.image.load("arrow_left.png")
+    arrow_left = pygame.transform.scale(arrow_left, (80, 65))
+    window.blit(arrow_left, (920, 215))
+
+    arrowColor = (34, 177, 76)
+    runing = True
+    while runing:
+        ev = pygame.event.get()
+        for event in ev:
+            if event.type == pygame.MOUSEMOTION: # MOUSEBUTTONUP MOUSEMOTION
+                pos = pygame.mouse.get_pos()
+                undrawCountries(blue1)
+                drawCountry(pos[0], pos[1], blue1, yellow)
+            if event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                print("click:", [pos[0], pos[1]])
+                changeFlagIfArrowClicked(pos[0], pos[1])
+                displayFlag()
+                drawCorrectCountry(pos[0], pos[1], yellow, green)
+                # print(hoverColoredCountries)
+
+                # initTreePixels()
+                # writeCountryPixelsInFile("Test", pos[0], pos[1])`
+        pygame.display.update()
+    pygame.quit()
+
+
+def playGameOceania():
+    # hand = HandTrackingModule.HandDetector()
+    # hand.show()
+    yellow = (238, 224, 29)
+    green = (23, 165, 23)
+    blue1 = (0, 51, 153)
+    window.fill((255, 255, 255))
+    bg_img = pygame.image.load('oceania111.png')
+    # bg_img = pygame.image.load('south_america.png')
+    bg_img = pygame.transform.scale(bg_img, (897, 680))
+    window.blit(bg_img, (20, 20), )
+
+    globals()['currentFlag'] = "Australia_flag.png"
+    displayFlag()
+
+    arrow_right = pygame.image.load("arrow_right.png")
+    arrow_right = pygame.transform.scale(arrow_right, (80, 65))
+    window.blit(arrow_right, (1170, 215))
+
+    arrow_left = pygame.image.load("arrow_left.png")
+    arrow_left = pygame.transform.scale(arrow_left, (80, 65))
+    window.blit(arrow_left, (920, 215))
+
+    arrowColor = (34, 177, 76)
+    runing = True
+    while runing:
+        ev = pygame.event.get()
+        for event in ev:
+            if event.type == pygame.MOUSEMOTION: # MOUSEBUTTONUP MOUSEMOTION
+                pos = pygame.mouse.get_pos()
+                undrawCountries(blue1)
+                drawCountry(pos[0], pos[1], blue1, yellow)
+            if event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                print("click:", [pos[0], pos[1]])
+                changeFlagIfArrowClicked(pos[0], pos[1])
+                displayFlag()
+                drawCorrectCountry(pos[0], pos[1], yellow, green)
+                # print(hoverColoredCountries)
+
+                # initTreePixels()
+                # writeCountryPixelsInFile("Test", pos[0], pos[1])
         pygame.display.update()
     pygame.quit()
 
@@ -576,8 +671,9 @@ if __name__ == '__main__':
     BG = pygame.image.load("assets/Background.png")
 
     # playGameSouthAmerica()
-    # playGameEurope()
+    playGameEurope()
     # playGameAsia()
-    playGameNorthAmerica()
-
+    # playGameNorthAmerica()
+    # playGameAfrica()
+    # playGameOceania()
     # main_menu()
