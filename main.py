@@ -1,4 +1,5 @@
 import os
+import random
 from pathlib import Path
 from button import Button
 
@@ -13,14 +14,28 @@ from fontTools.ttLib import TTFont
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 
+
+
+gameTypeFlags = "flags"
+gameTypeCapitals = "capitals"
+gameTypeCountries = "countries"
+
+gameType = gameTypeCapitals
+
 hoverColoredCountries = []
+
 correctCountries = []
 correctFlags = []
-incorrectCountries = []
-currentFlag = ""
-currentCountry = ""
+correctCapitals = []
 
-CONTINENT = "Europe"
+correctOptions = []
+
+incorrectCountries = []
+
+currentOption = ""
+currentHoveredCountry = ""
+
+CONTINENT = "South-America"
 
 
 def initTreePixels():
@@ -101,7 +116,7 @@ def drawCountry(mouseX, mouseY, initRgb, newRgb):
     # print((c[0], c[1], c[2]) != initRgb, c)
     if (c[0], c[1], c[2]) != initRgb:
         if (c[0], c[1], c[2]) != red:
-            globals()['currentCountry'] = country
+            globals()['currentHoveredCountry'] = country
         return
     treeFilename = mouseX // 100 * 100
     treeFile = open(f"tree\\countries\\{CONTINENT}\\pixels\\{treeFilename}.txt", "r")
@@ -115,7 +130,7 @@ def drawCountry(mouseX, mouseY, initRgb, newRgb):
             break
     if country == "":
         return
-    globals()['currentCountry'] = country
+    globals()['currentHoveredCountry'] = country
     drawCountryByCountryParam(country, newRgb)
     hoverColoredCountries.append(country)
 
@@ -139,13 +154,13 @@ def drawCorrectCountry(mouseX, mouseY, initRgb, newRgb):
     print(country)
     if country == "":
         return
-    print(f"{country}_flag.png", globals()['currentFlag'])
-    if f"{country}_flag.png" == globals()['currentFlag']:
+    print(f"{country}.png", globals()['currentOption'])
+    if f"{country}.png" == globals()['currentOption']:
         print("country is correct")
         drawCountryByCountryParam(country, newRgb)
         hoverColoredCountries.remove(country)
-        correctFlags.append(f"{country}_flag.png")
-        getNextFlag()
+        correctOptions.append(f"{country}.png")
+        getNextOption()
     else:
         incorrectCountries.append(country)
         red = (255, 0, 0)
@@ -157,13 +172,13 @@ def drawCorrectCountry(mouseX, mouseY, initRgb, newRgb):
 
 def undrawCountries(newRGB):
     for incorrectCountry in incorrectCountries:
-        if incorrectCountry != globals()['currentCountry']:
+        if incorrectCountry != globals()['currentHoveredCountry']:
             hoverColoredCountries.append(incorrectCountry)
             incorrectCountries.remove(incorrectCountry)
     for country in hoverColoredCountries:
         drawCountryByCountryParam(country, newRGB)
         hoverColoredCountries.remove(country)
-    print("curr:", globals()['currentCountry'])
+    print("curr:", globals()['currentHoveredCountry'])
     print("inc:", incorrectCountries)
 
 def drawCountryByCountryParam(country, newRGB):
@@ -194,7 +209,7 @@ def initColors():
             if initPixelCountry == initRGBCountry:
                 drawCountry(initRGBCountry, (r, g, b))
 
-def changeFlagIfArrowClicked(mouseX, mouseY):
+def changeOptionIfArrowClicked(mouseX, mouseY):
     arrowname = ""
     treeFilename = mouseX // 100 * 100
     treeFile = open(f"tree\\others\\pixels\\{treeFilename}.txt", "r")
@@ -210,56 +225,64 @@ def changeFlagIfArrowClicked(mouseX, mouseY):
         return
     # change the flag
     if arrowname == "arrow_right":
-        getNextFlag()
+        getNextOption()
     elif arrowname == "arrow_left":
-        getPreviousFlag()
+        getPreviousOption()
 
-def getNextFlag():
-    flags = []
-    for x in os.walk(f"flags\\{CONTINENT}"):
-        flags = x[2]
-    if len(flags) == 0:
+def getRandomOption():
+    options = []
+    for x in os.walk(f"{gameType}\\{CONTINENT}"):
+        options = x[2]
+    if len(options) == 0:
+        return ""
+    return random.choice(options)
+
+def getNextOption():
+    options = []
+    for x in os.walk(f"{gameType}\\{CONTINENT}"):
+        options = x[2]
+    if len(options) == 0:
         return
-    indexCurrentFlag = 0
-    for correctFlag in correctFlags:
-        if correctFlag in flags:
-            flags.remove(correctFlag)
-    if currentFlag in flags:
-        indexCurrentFlag = flags.index(currentFlag)
+    indexCurrentOption = 0
+    for correctOption in correctOptions:
+        if correctOption in options:
+            options.remove(correctOption)
+    if currentOption in options:
+        indexCurrentOption = options.index(currentOption)
     else:
-        indexCurrentFlag = len(flags) // 2
-    if indexCurrentFlag + 1 >= len(flags):
-        globals()['currentFlag'] = flags[0]
+        indexCurrentOption = len(options) // 2
+    if indexCurrentOption + 1 >= len(options):
+        globals()['currentOption'] = options[0]
     else:
-        globals()['currentFlag'] = flags[indexCurrentFlag + 1]
-    displayFlag()
+        globals()['currentOption'] = options[indexCurrentOption + 1]
+    displayOption()
 
-def getPreviousFlag():
-    flags = []
-    for x in os.walk(f"flags\\{CONTINENT}"):
-        flags = x[2]
-    if len(flags) == 0:
+def getPreviousOption():
+    options = []
+    for x in os.walk(f"{gameType}\\{CONTINENT}"):
+        options = x[2]
+    if len(options) == 0:
         return
-    indexCurrentFlag = 0
-    for correctFlag in correctFlags:
-        if correctFlag in flags:
-            flags.remove(correctFlag)
-    if currentFlag in flags:
-        indexCurrentFlag = flags.index(currentFlag)
+    indexCurrentOption = 0
+    for correctOption in correctOptions:
+        if correctOption in options:
+            options.remove(correctOption)
+    if currentOption in options:
+        indexCurrentOption = options.index(currentOption)
     else:
-        indexCurrentFlag = len(flags) // 2
-    if indexCurrentFlag <= 0:
-        print("hello3: ", flags[len(flags) - 1])
-        globals()['currentFlag'] = flags[len(flags) - 1]
+        indexCurrentOption = len(options) // 2
+    if indexCurrentOption <= 0:
+        print("hello3: ", options[len(options) - 1])
+        globals()['currentOption'] = options[len(options) - 1]
     else:
-        print("hello4", flags[indexCurrentFlag - 1])
-        globals()['currentFlag'] = flags[indexCurrentFlag - 1]
-    displayFlag()
+        print("hello4", options[indexCurrentOption - 1])
+        globals()['currentOption'] = options[indexCurrentOption - 1]
+    displayOption()
 
-def displayFlag():
-    flag = pygame.image.load(f"Flags\\{CONTINENT}\\{currentFlag}")
-    flag = pygame.transform.scale(flag, (130, 100))
-    window.blit(flag, (1020, 200))
+def displayOption():
+    option = pygame.image.load(f"{gameType}\\{CONTINENT}\\{currentOption}")
+    option = pygame.transform.scale(option, (330, 300)) #130, 100 for flags
+    window.blit(option, (920, 200)) #1020, 200 for flags
 
 
 def get_font(size):  # Returns Press-Start-2P in the desired size
@@ -402,8 +425,8 @@ def playGameEurope():
     bg_img = pygame.transform.scale(bg_img, (897, 680))
     window.blit(bg_img, (20, 20), )
 
-    globals()['currentFlag'] = "Germany_flag.png"
-    displayFlag()
+    globals()['currentOption'] = getRandomOption()
+    displayOption()
 
     arrow_right = pygame.image.load("arrow_right.png")
     arrow_right = pygame.transform.scale(arrow_right, (80, 65))
@@ -425,8 +448,8 @@ def playGameEurope():
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 print("click:", [pos[0], pos[1]])
-                changeFlagIfArrowClicked(pos[0], pos[1])
-                displayFlag()
+                changeOptionIfArrowClicked(pos[0], pos[1])
+                displayOption()
                 drawCorrectCountry(pos[0], pos[1], yellow, green)
                 print(hoverColoredCountries)
 
@@ -447,8 +470,8 @@ def playGameSouthAmerica():
     bg_img = pygame.transform.scale(bg_img, (897, 680))
     window.blit(bg_img, (20, 20), )
 
-    globals()['currentFlag'] = "Venezuela_flag.png"
-    displayFlag()
+    globals()['currentOption'] = getRandomOption()
+    displayOption()
 
     arrow_right = pygame.image.load("arrow_right.png")
     arrow_right = pygame.transform.scale(arrow_right, (80, 65))
@@ -470,8 +493,8 @@ def playGameSouthAmerica():
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 print("click:", [pos[0], pos[1]])
-                changeFlagIfArrowClicked(pos[0], pos[1])
-                displayFlag()
+                changeOptionIfArrowClicked(pos[0], pos[1])
+                displayOption()
                 drawCorrectCountry(pos[0], pos[1], yellow, green)
                 print(hoverColoredCountries)
 
@@ -492,8 +515,8 @@ def playGameNorthAmerica():
     bg_img = pygame.transform.scale(bg_img, (897, 680))
     window.blit(bg_img, (20, 20), )
 
-    globals()['currentFlag'] = "Bahamas_flag.png"
-    displayFlag()
+    globals()['currentOption'] = getRandomOption()
+    displayOption()
 
     arrow_right = pygame.image.load("arrow_right.png")
     arrow_right = pygame.transform.scale(arrow_right, (80, 65))
@@ -515,8 +538,8 @@ def playGameNorthAmerica():
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 print("click:", [pos[0], pos[1]])
-                changeFlagIfArrowClicked(pos[0], pos[1])
-                displayFlag()
+                changeOptionIfArrowClicked(pos[0], pos[1])
+                displayOption()
                 drawCorrectCountry(pos[0], pos[1], yellow, green)
                 print(hoverColoredCountries)
 
@@ -537,8 +560,8 @@ def playGameAsia():
     bg_img = pygame.transform.scale(bg_img, (897, 680))
     window.blit(bg_img, (20, 20), )
 
-    globals()['currentFlag'] = "Japan_flag.png"
-    displayFlag()
+    globals()['currentOption'] = getRandomOption()
+    displayOption()
 
     arrow_right = pygame.image.load("arrow_right.png")
     arrow_right = pygame.transform.scale(arrow_right, (80, 65))
@@ -560,8 +583,8 @@ def playGameAsia():
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 print("click:", [pos[0], pos[1]])
-                changeFlagIfArrowClicked(pos[0], pos[1])
-                displayFlag()
+                changeOptionIfArrowClicked(pos[0], pos[1])
+                displayOption()
                 drawCorrectCountry(pos[0], pos[1], yellow, green)
                 # print(hoverColoredCountries)
 
@@ -583,8 +606,8 @@ def playGameAfrica():
     bg_img = pygame.transform.scale(bg_img, (897, 680))
     window.blit(bg_img, (20, 20), )
 
-    globals()['currentFlag'] = "Angola_flag.png"
-    displayFlag()
+    globals()['currentOption'] = getRandomOption()
+    displayOption()
 
     arrow_right = pygame.image.load("arrow_right.png")
     arrow_right = pygame.transform.scale(arrow_right, (80, 65))
@@ -606,8 +629,8 @@ def playGameAfrica():
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 print("click:", [pos[0], pos[1]])
-                changeFlagIfArrowClicked(pos[0], pos[1])
-                displayFlag()
+                changeOptionIfArrowClicked(pos[0], pos[1])
+                displayOption()
                 drawCorrectCountry(pos[0], pos[1], yellow, green)
                 # print(hoverColoredCountries)
 
@@ -629,8 +652,8 @@ def playGameOceania():
     bg_img = pygame.transform.scale(bg_img, (897, 680))
     window.blit(bg_img, (20, 20), )
 
-    globals()['currentFlag'] = "Australia_flag.png"
-    displayFlag()
+    globals()['currentOption'] = getRandomOption()
+    displayOption()
 
     arrow_right = pygame.image.load("arrow_right.png")
     arrow_right = pygame.transform.scale(arrow_right, (80, 65))
@@ -652,8 +675,8 @@ def playGameOceania():
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 print("click:", [pos[0], pos[1]])
-                changeFlagIfArrowClicked(pos[0], pos[1])
-                displayFlag()
+                changeOptionIfArrowClicked(pos[0], pos[1])
+                displayOption()
                 drawCorrectCountry(pos[0], pos[1], yellow, green)
                 # print(hoverColoredCountries)
 
@@ -670,8 +693,8 @@ if __name__ == '__main__':
 
     BG = pygame.image.load("assets/Background.png")
 
-    # playGameSouthAmerica()
-    playGameEurope()
+    playGameSouthAmerica()
+    # playGameEurope()
     # playGameAsia()
     # playGameNorthAmerica()
     # playGameAfrica()
