@@ -14,13 +14,16 @@ from fontTools.ttLib import TTFont
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 
-
+maps = ['Europe_map1.png', 'south_america112.png', 'north-america111.png', 'asia1.png', 'africa111.png', 'oceania111.png']
+continents = ["Europe", "South-America", "North-America", "Asia", "Africa", "Oceania"]
+CONTINENT = continents[3]
+currentMap = maps[3]
 
 gameTypeFlags = "flags"
 gameTypeCapitals = "capitals"
 gameTypeCountries = "countries"
 
-gameType = gameTypeCapitals
+gameType = gameTypeFlags
 
 hoverColoredCountries = []
 
@@ -35,14 +38,11 @@ incorrectCountries = []
 currentOption = ""
 currentHoveredCountry = ""
 
-CONTINENT = "South-America"
-
 
 def initTreePixels():
     print("In initTreePixels")
     directories = [x[0] for x in os.walk(f"countries\\{CONTINENT}")]
     countries = []
-    print(directories)
     for index in range(0, len(directories)):
         country = directories[index].split("\\")
         if len(country) > 2:
@@ -137,7 +137,6 @@ def drawCountry(mouseX, mouseY, initRgb, newRgb):
 
 def drawCorrectCountry(mouseX, mouseY, initRgb, newRgb):
     c = window.get_at((mouseX, mouseY))
-    # print((c[0], c[1], c[2]) != initRgb, c)
     if (c[0], c[1], c[2]) != initRgb:
         return
     country = ""
@@ -151,12 +150,9 @@ def drawCorrectCountry(mouseX, mouseY, initRgb, newRgb):
         if int(xCord) == mouseX and int(yCord) == mouseY:
             country = result[2]
             break
-    print(country)
     if country == "":
         return
-    print(f"{country}.png", globals()['currentOption'])
     if f"{country}.png" == globals()['currentOption']:
-        print("country is correct")
         drawCountryByCountryParam(country, newRgb)
         hoverColoredCountries.remove(country)
         correctOptions.append(f"{country}.png")
@@ -166,8 +162,6 @@ def drawCorrectCountry(mouseX, mouseY, initRgb, newRgb):
         red = (255, 0, 0)
         drawCountryByCountryParam(country, red)
         hoverColoredCountries.remove(country)
-    # hoverColoredCountries.append(country)
-    print("ok")
 
 
 def undrawCountries(newRGB):
@@ -178,8 +172,6 @@ def undrawCountries(newRGB):
     for country in hoverColoredCountries:
         drawCountryByCountryParam(country, newRGB)
         hoverColoredCountries.remove(country)
-    print("curr:", globals()['currentHoveredCountry'])
-    print("inc:", incorrectCountries)
 
 def drawCountryByCountryParam(country, newRGB):
     countryPixelsFile = open(f"countries\\{CONTINENT}\\{country}\\pixels.txt", "r")
@@ -272,17 +264,15 @@ def getPreviousOption():
     else:
         indexCurrentOption = len(options) // 2
     if indexCurrentOption <= 0:
-        print("hello3: ", options[len(options) - 1])
         globals()['currentOption'] = options[len(options) - 1]
     else:
-        print("hello4", options[indexCurrentOption - 1])
         globals()['currentOption'] = options[indexCurrentOption - 1]
     displayOption()
 
 def displayOption():
     option = pygame.image.load(f"{gameType}\\{CONTINENT}\\{currentOption}")
-    option = pygame.transform.scale(option, (330, 300)) #130, 100 for flags
-    window.blit(option, (920, 200)) #1020, 200 for flags
+    option = pygame.transform.scale(option, (130, 100)) #130, 100 for flags
+    window.blit(option, (1020, 200)) #1020, 200 for flags
 
 
 def get_font(size):  # Returns Press-Start-2P in the desired size
@@ -290,7 +280,7 @@ def get_font(size):  # Returns Press-Start-2P in the desired size
 
 
 def play():
-    playGameEurope()
+    playGame()
     # while True:
     #     PLAY_MOUSE_POS = pygame.mouse.get_pos()
     #
@@ -407,21 +397,20 @@ def continentsMenu():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if EUROPE_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    playGameEurope()
+                    playGame()
                 if AFRICA_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    playGameEurope()
+                    playGame()
 
         pygame.display.update()
 
-def playGameEurope():
+def playGame():
     # hand = HandTrackingModule.HandDetector()
     # hand.show()
     yellow = (238, 224, 29)
     green = (23, 165, 23)
     blue1 = (0, 51, 153)
     window.fill((255, 255, 255))
-    bg_img = pygame.image.load('Europe_map1.png')
-    # bg_img = pygame.image.load('south_america.png')
+    bg_img = pygame.image.load(currentMap)
     bg_img = pygame.transform.scale(bg_img, (897, 680))
     window.blit(bg_img, (20, 20), )
 
@@ -447,238 +436,9 @@ def playGameEurope():
                 drawCountry(pos[0], pos[1], blue1, yellow)
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
-                print("click:", [pos[0], pos[1]])
                 changeOptionIfArrowClicked(pos[0], pos[1])
                 displayOption()
                 drawCorrectCountry(pos[0], pos[1], yellow, green)
-                print(hoverColoredCountries)
-
-                # initTreePixels()
-                # writeCountryPixelsInFile("Test", pos[0], pos[1])
-        pygame.display.update()
-    pygame.quit()
-
-def playGameSouthAmerica():
-    # hand = HandTrackingModule.HandDetector()
-    # hand.show()
-    yellow = (238, 224, 29)
-    green = (23, 165, 23)
-    blue1 = (0, 51, 153)
-    window.fill((255, 255, 255))
-    bg_img = pygame.image.load('south_america112.png')
-    # bg_img = pygame.image.load('south_america.png')
-    bg_img = pygame.transform.scale(bg_img, (897, 680))
-    window.blit(bg_img, (20, 20), )
-
-    globals()['currentOption'] = getRandomOption()
-    displayOption()
-
-    arrow_right = pygame.image.load("arrow_right.png")
-    arrow_right = pygame.transform.scale(arrow_right, (80, 65))
-    window.blit(arrow_right, (1170, 215))
-
-    arrow_left = pygame.image.load("arrow_left.png")
-    arrow_left = pygame.transform.scale(arrow_left, (80, 65))
-    window.blit(arrow_left, (920, 215))
-
-    arrowColor = (34, 177, 76)
-    runing = True
-    while runing:
-        ev = pygame.event.get()
-        for event in ev:
-            if event.type == pygame.MOUSEMOTION: # MOUSEBUTTONUP MOUSEMOTION
-                pos = pygame.mouse.get_pos()
-                undrawCountries(blue1)
-                drawCountry(pos[0], pos[1], blue1, yellow)
-            if event.type == pygame.MOUSEBUTTONUP:
-                pos = pygame.mouse.get_pos()
-                print("click:", [pos[0], pos[1]])
-                changeOptionIfArrowClicked(pos[0], pos[1])
-                displayOption()
-                drawCorrectCountry(pos[0], pos[1], yellow, green)
-                print(hoverColoredCountries)
-
-                # initTreePixels()
-                # writeCountryPixelsInFile("Test", pos[0], pos[1])
-        pygame.display.update()
-    pygame.quit()
-
-def playGameNorthAmerica():
-    # hand = HandTrackingModule.HandDetector()
-    # hand.show()
-    yellow = (238, 224, 29)
-    green = (23, 165, 23)
-    blue1 = (0, 51, 153)
-    window.fill((255, 255, 255))
-    bg_img = pygame.image.load('north-america111.png')
-    # bg_img = pygame.image.load('south_america.png')
-    bg_img = pygame.transform.scale(bg_img, (897, 680))
-    window.blit(bg_img, (20, 20), )
-
-    globals()['currentOption'] = getRandomOption()
-    displayOption()
-
-    arrow_right = pygame.image.load("arrow_right.png")
-    arrow_right = pygame.transform.scale(arrow_right, (80, 65))
-    window.blit(arrow_right, (1170, 215))
-
-    arrow_left = pygame.image.load("arrow_left.png")
-    arrow_left = pygame.transform.scale(arrow_left, (80, 65))
-    window.blit(arrow_left, (920, 215))
-
-    arrowColor = (34, 177, 76)
-    runing = True
-    while runing:
-        ev = pygame.event.get()
-        for event in ev:
-            if event.type == pygame.MOUSEMOTION: # MOUSEBUTTONUP MOUSEMOTION
-                pos = pygame.mouse.get_pos()
-                undrawCountries(blue1)
-                drawCountry(pos[0], pos[1], blue1, yellow)
-            if event.type == pygame.MOUSEBUTTONUP:
-                pos = pygame.mouse.get_pos()
-                print("click:", [pos[0], pos[1]])
-                changeOptionIfArrowClicked(pos[0], pos[1])
-                displayOption()
-                drawCorrectCountry(pos[0], pos[1], yellow, green)
-                print(hoverColoredCountries)
-
-                # initTreePixels()
-                # writeCountryPixelsInFile("Test", pos[0], pos[1])
-        pygame.display.update()
-    pygame.quit()
-
-def playGameAsia():
-    # hand = HandTrackingModule.HandDetector()
-    # hand.show()
-    yellow = (238, 224, 29)
-    green = (23, 165, 23)
-    blue1 = (0, 51, 153)
-    window.fill((255, 255, 255))
-    bg_img = pygame.image.load('asia1.png')
-    # bg_img = pygame.image.load('south_america.png')
-    bg_img = pygame.transform.scale(bg_img, (897, 680))
-    window.blit(bg_img, (20, 20), )
-
-    globals()['currentOption'] = getRandomOption()
-    displayOption()
-
-    arrow_right = pygame.image.load("arrow_right.png")
-    arrow_right = pygame.transform.scale(arrow_right, (80, 65))
-    window.blit(arrow_right, (1170, 215))
-
-    arrow_left = pygame.image.load("arrow_left.png")
-    arrow_left = pygame.transform.scale(arrow_left, (80, 65))
-    window.blit(arrow_left, (920, 215))
-
-    arrowColor = (34, 177, 76)
-    runing = True
-    while runing:
-        ev = pygame.event.get()
-        for event in ev:
-            if event.type == pygame.MOUSEMOTION: # MOUSEBUTTONUP MOUSEMOTION
-                pos = pygame.mouse.get_pos()
-                undrawCountries(blue1)
-                drawCountry(pos[0], pos[1], blue1, yellow)
-            if event.type == pygame.MOUSEBUTTONUP:
-                pos = pygame.mouse.get_pos()
-                print("click:", [pos[0], pos[1]])
-                changeOptionIfArrowClicked(pos[0], pos[1])
-                displayOption()
-                drawCorrectCountry(pos[0], pos[1], yellow, green)
-                # print(hoverColoredCountries)
-
-                # initTreePixels()
-                # writeCountryPixelsInFile("Test", pos[0], pos[1])
-        pygame.display.update()
-    pygame.quit()
-
-
-def playGameAfrica():
-    # hand = HandTrackingModule.HandDetector()
-    # hand.show()
-    yellow = (238, 224, 29)
-    green = (23, 165, 23)
-    blue1 = (0, 51, 153)
-    window.fill((255, 255, 255))
-    bg_img = pygame.image.load('africa111.png')
-    # bg_img = pygame.image.load('south_america.png')
-    bg_img = pygame.transform.scale(bg_img, (897, 680))
-    window.blit(bg_img, (20, 20), )
-
-    globals()['currentOption'] = getRandomOption()
-    displayOption()
-
-    arrow_right = pygame.image.load("arrow_right.png")
-    arrow_right = pygame.transform.scale(arrow_right, (80, 65))
-    window.blit(arrow_right, (1170, 215))
-
-    arrow_left = pygame.image.load("arrow_left.png")
-    arrow_left = pygame.transform.scale(arrow_left, (80, 65))
-    window.blit(arrow_left, (920, 215))
-
-    arrowColor = (34, 177, 76)
-    runing = True
-    while runing:
-        ev = pygame.event.get()
-        for event in ev:
-            if event.type == pygame.MOUSEMOTION: # MOUSEBUTTONUP MOUSEMOTION
-                pos = pygame.mouse.get_pos()
-                undrawCountries(blue1)
-                drawCountry(pos[0], pos[1], blue1, yellow)
-            if event.type == pygame.MOUSEBUTTONUP:
-                pos = pygame.mouse.get_pos()
-                print("click:", [pos[0], pos[1]])
-                changeOptionIfArrowClicked(pos[0], pos[1])
-                displayOption()
-                drawCorrectCountry(pos[0], pos[1], yellow, green)
-                # print(hoverColoredCountries)
-
-                # initTreePixels()
-                # writeCountryPixelsInFile("Test", pos[0], pos[1])`
-        pygame.display.update()
-    pygame.quit()
-
-
-def playGameOceania():
-    # hand = HandTrackingModule.HandDetector()
-    # hand.show()
-    yellow = (238, 224, 29)
-    green = (23, 165, 23)
-    blue1 = (0, 51, 153)
-    window.fill((255, 255, 255))
-    bg_img = pygame.image.load('oceania111.png')
-    # bg_img = pygame.image.load('south_america.png')
-    bg_img = pygame.transform.scale(bg_img, (897, 680))
-    window.blit(bg_img, (20, 20), )
-
-    globals()['currentOption'] = getRandomOption()
-    displayOption()
-
-    arrow_right = pygame.image.load("arrow_right.png")
-    arrow_right = pygame.transform.scale(arrow_right, (80, 65))
-    window.blit(arrow_right, (1170, 215))
-
-    arrow_left = pygame.image.load("arrow_left.png")
-    arrow_left = pygame.transform.scale(arrow_left, (80, 65))
-    window.blit(arrow_left, (920, 215))
-
-    arrowColor = (34, 177, 76)
-    runing = True
-    while runing:
-        ev = pygame.event.get()
-        for event in ev:
-            if event.type == pygame.MOUSEMOTION: # MOUSEBUTTONUP MOUSEMOTION
-                pos = pygame.mouse.get_pos()
-                undrawCountries(blue1)
-                drawCountry(pos[0], pos[1], blue1, yellow)
-            if event.type == pygame.MOUSEBUTTONUP:
-                pos = pygame.mouse.get_pos()
-                print("click:", [pos[0], pos[1]])
-                changeOptionIfArrowClicked(pos[0], pos[1])
-                displayOption()
-                drawCorrectCountry(pos[0], pos[1], yellow, green)
-                # print(hoverColoredCountries)
 
                 # initTreePixels()
                 # writeCountryPixelsInFile("Test", pos[0], pos[1])
@@ -693,10 +453,5 @@ if __name__ == '__main__':
 
     BG = pygame.image.load("assets/Background.png")
 
-    playGameSouthAmerica()
-    # playGameEurope()
-    # playGameAsia()
-    # playGameNorthAmerica()
-    # playGameAfrica()
-    # playGameOceania()
+    playGame()
     # main_menu()
