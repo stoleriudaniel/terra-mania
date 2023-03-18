@@ -1,15 +1,11 @@
 import os
 import random
 from pathlib import Path
-from button import Button
 
-import HandTrackingModule
-import HandTrackingModule as HTM
-import numpy as np
-import cv2.data
-import pygame, sys
-import image
-from fontTools.ttLib import TTFont
+import pygame
+import sys
+
+from button import Button
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
@@ -19,11 +15,13 @@ continents = ["Europe", "South-America", "North-America", "Asia", "Africa", "Oce
 CONTINENT = continents[3]
 currentMap = maps[3]
 
+language = "Romanian"
+
 gameTypeFlags = "flags"
 gameTypeCapitals = "capitals"
 gameTypeCountries = "countries"
 
-gameType = gameTypeFlags
+gameType = gameTypeCountries
 
 hoverColoredCountries = []
 
@@ -152,10 +150,10 @@ def drawCorrectCountry(mouseX, mouseY, initRgb, newRgb):
             break
     if country == "":
         return
-    if f"{country}.png" == globals()['currentOption']:
+    if country == globals()['currentOption']:
         drawCountryByCountryParam(country, newRgb)
         hoverColoredCountries.remove(country)
-        correctOptions.append(f"{country}.png")
+        correctOptions.append(country)
         getNextOption()
     else:
         incorrectCountries.append(country)
@@ -223,16 +221,22 @@ def changeOptionIfArrowClicked(mouseX, mouseY):
 
 def getRandomOption():
     options = []
-    for x in os.walk(f"{gameType}\\{CONTINENT}"):
-        options = x[2]
+    for x in os.walk(f"countries\\{CONTINENT}"):
+        dataList = x[0].split("\\")
+        if len(dataList)<3:
+            continue
+        options.append(dataList[2])
     if len(options) == 0:
         return ""
     return random.choice(options)
 
 def getNextOption():
     options = []
-    for x in os.walk(f"{gameType}\\{CONTINENT}"):
-        options = x[2]
+    for x in os.walk(f"countries\\{CONTINENT}"):
+        dataList = x[0].split("\\")
+        if len(dataList) < 3:
+            continue
+        options.append(dataList[2])
     if len(options) == 0:
         return
     indexCurrentOption = 0
@@ -251,8 +255,11 @@ def getNextOption():
 
 def getPreviousOption():
     options = []
-    for x in os.walk(f"{gameType}\\{CONTINENT}"):
-        options = x[2]
+    for x in os.walk(f"countries\\{CONTINENT}"):
+        dataList = x[0].split("\\")
+        if len(dataList) < 3:
+            continue
+        options.append(dataList[2])
     if len(options) == 0:
         return
     indexCurrentOption = 0
@@ -269,10 +276,89 @@ def getPreviousOption():
         globals()['currentOption'] = options[indexCurrentOption - 1]
     displayOption()
 
-def displayOption():
-    option = pygame.image.load(f"{gameType}\\{CONTINENT}\\{currentOption}")
+def drawAnOval(text):
+    # circle
+
+    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
+    RED = (255, 0, 0)
+
+    # draw circle
+    # radius = 100
+    # center = (1100, 500)
+    # pygame.draw.circle(window, RED, center, radius)
+
+    # draw oval
+
+    rect = pygame.Rect(1000, 300, 200, 150)  # left, top, width, height
+    pygame.draw.ellipse(window, BLACK, rect, width=20)
+    pygame.draw.ellipse(window, RED, rect.inflate(-9, -9))
+
+    # add text to oval
+    font = pygame.font.Font(None, 34)
+    words = text.split()
+    lines = []
+    current_line = words[0]
+    for word in words[1:]:
+        if font.size(current_line + " " + word)[0] < rect.width - 20:
+            current_line += " " + word
+        else:
+            lines.append(current_line)
+            current_line = word
+    lines.append(current_line)
+
+    y = rect.top + 70 - (len(lines) * 10)
+    for line in lines:
+        text_surface = font.render(line, True, WHITE)
+        text_rect = text_surface.get_rect(centerx=rect.centerx, y=y)
+        window.blit(text_surface, text_rect)
+        y += font.size(line)[1]
+
+def getCapital():
+    capital = ""
+    capitalFile = open(f"countries\\{CONTINENT}\\{currentOption}\\country.txt", "r")
+    rows = capitalFile.readlines()
+    for row in rows:
+        result = row.split()
+        if len(result) > 2:
+            if result[0] == language:
+                for index in range(2, len(result)):
+                    capital = capital + result[index] + " "
+                break
+    return capital
+
+def getCountry():
+    country = ""
+    countryFile = open(f"countries\\{CONTINENT}\\{currentOption}\\country.txt", "r")
+    rows = countryFile.readlines()
+    for row in rows:
+        result = row.split()
+        if len(result) > 2:
+            if result[0] == language:
+                for index in range(2, len(result)):
+                    country = country + result[index] + " "
+                break
+    return country
+def displayCapital():
+    capital = getCapital()
+    drawAnOval(capital)
+
+def displayCountry():
+    country = getCountry()
+    drawAnOval(country)
+
+def displayFlag():
+    option = pygame.image.load(f"countries\\{CONTINENT}\\{currentOption}\\flag.png")
     option = pygame.transform.scale(option, (130, 100)) #130, 100 for flags
     window.blit(option, (1020, 200)) #1020, 200 for flags
+
+def displayOption():
+    if gameType == gameTypeFlags:
+        displayFlag()
+    if gameType == gameTypeCapitals:
+        displayCapital()
+    if gameType == gameTypeCountries:
+        displayCountry()
 
 
 def get_font(size):  # Returns Press-Start-2P in the desired size
@@ -427,6 +513,7 @@ def playGame():
 
     arrowColor = (34, 177, 76)
     runing = True
+
     while runing:
         ev = pygame.event.get()
         for event in ev:
