@@ -114,7 +114,7 @@ class Game:
         print("Finish")
         file.close()
 
-    def drawCountry(self, mouseX, mouseY, initRgb, newRgb):
+    def drawCountry(self, mouseX, mouseY, initRgb, newRgb, playerIdParam):
         red = (255, 0, 0)
         country = ""
         c = self.window.get_at((mouseX, mouseY))
@@ -122,7 +122,10 @@ class Game:
         if (c[0], c[1], c[2]) != initRgb:
             if (c[0], c[1], c[2]) != red:
                 if self.isMultiplayer:
-                    self.player0.currentHoveredCountry = country
+                    if playerIdParam == self.player0.id:
+                        self.player0.currentHoveredCountry = country
+                    else:
+                        self.player1.currentHoveredCountry = country
                 else:
                     self.currentHoveredCountry = country
             return
@@ -190,8 +193,8 @@ class Game:
                 self.hoverColoredCountries.remove(country)
 
     def undrawCountries(self, newRGB):
-        # print("before - player0:", self.player0.hoverColoredCountries)
-        # print("before - player1:", self.player1.hoverColoredCountries)
+        print("before - player0:", self.player0.hoverColoredCountries)
+        print("before - player1:", self.player1.hoverColoredCountries)
         if self.isMultiplayer:
             for incorrectCountry in self.player0.incorrectCountries:
                 if incorrectCountry != self.player0.currentHoveredCountry:
@@ -208,8 +211,8 @@ class Game:
             for country in self.hoverColoredCountries:
                 self.drawCountryByCountryParam(country, newRGB)
                 self.hoverColoredCountries.remove(country)
-        # print("after - player0:", self.player0.hoverColoredCountries)
-        # print("after - player1:", self.player1.hoverColoredCountries)
+        print("after - player0:", self.player0.hoverColoredCountries)
+        print("after - player1:", self.player1.hoverColoredCountries)
 
     def drawCountryByCountryParam(self, country, newRGB):
         countryPixelsFile = open(f"countries\\{self.CONTINENT}\\{country}\\pixels.txt", "r")
