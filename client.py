@@ -29,7 +29,7 @@ class Client():
         # hand.show()
         self.game.playerId = self.playerId
         self.game.player0.id = self.playerId
-        self.game.player1.id = 1 - self.playerId
+        self.game.player1.id = str(1 - int(self.playerId))
         self.game.player0.currentOption = self.game.getRandomOption()
         self.game.player1.currentOption = self.game.getRandomOption()
         yellow = (238, 224, 29)
