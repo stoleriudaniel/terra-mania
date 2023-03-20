@@ -27,9 +27,12 @@ class Client():
         pygame.display.set_caption("Menu")
         # hand = HandTrackingModule.HandDetector()
         # hand.show()
+        self.game.player0.currentOption = self.game.getRandomOption()
+        self.game.player1.currentOption = self.game.getRandomOption()
         yellow = (238, 224, 29)
         green = (23, 165, 23)
         blue1 = (0, 51, 153)
+        self.game.isMultiplayer = True
         self.game.window.fill((255, 255, 255))
         bg_img = pygame.image.load(self.game.currentMap)
         bg_img = pygame.transform.scale(bg_img, (897, 680))
@@ -66,14 +69,14 @@ class Client():
             self.game.undrawCountries(blue1)
             self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow)
             self.game.drawCountry(self.game.player1.x, self.game.player1.y, blue1, yellow)
-                # if event.type == pygame.MOUSEBUTTONUP:
-                #     pos = pygame.mouse.get_pos()
-                #     self.game.changeOptionIfArrowClicked(pos[0], pos[1])
-                #     self.game.displayOption()
-                #     self.game.drawCorrectCountry(pos[0], pos[1], yellow, green)
+            # if event.type == pygame.MOUSEBUTTONUP:
+            #     pos = pygame.mouse.get_pos()
+            #     self.game.changeOptionIfArrowClicked(pos[0], pos[1])
+            #     self.game.displayOption()
+            #     self.game.drawCorrectCountry(pos[0], pos[1], yellow, green)
 
-                # initTreePixels()
-                # writeCountryPixelsInFile("Test", pos[0], pos[1])
+            # initTreePixels()
+            # writeCountryPixelsInFile("Test", pos[0], pos[1])
 
             data = f"{self.playerId}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.click})"
             self.network.client.send(str.encode(data))
@@ -88,9 +91,9 @@ class Client():
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
 
-            # text1 = font.render(f"Mouse coordinates player1: {self.player0.x}, {self.player0.y}", True, (0, 0, 0))
+            # text1 = font.render(f"{self.game.player0.id}: {self.game.player0.x},{self.game.player0.y}", True, (0, 0, 0))
             # self.game.window.blit(text1, (10, 10))
-            # text2 = font.render(f"Mouse coordinates player2: {self.player1.x}, {self.player1.y}", True, (0, 0, 0))
+            # text2 = font.render(f"{self.game.player1.id}: {self.game.player1.x},{self.game.player1.y}", True, (0, 0, 0))
             # self.game.window.blit(text2, (10, 60))
 
             pygame.display.update()

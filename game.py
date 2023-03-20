@@ -10,8 +10,8 @@ from button import Button
 class Game:
 
     def __init__(self):
-        self.player0 = Player(0, 0)
-        self.player1 = Player(0, 0)
+        self.player0 = Player(0, 0, 0)
+        self.player1 = Player(0, 0, 1)
         self.isMultiplayer = False
         self.SCREEN_WIDTH = 1280
         self.SCREEN_HEIGHT = 720
@@ -134,9 +134,15 @@ class Game:
                 break
         if country == "":
             return
-        self.currentHoveredCountry = country
-        self.drawCountryByCountryParam(country, newRgb)
-        self.hoverColoredCountries.append(country)
+
+        if self.isMultiplayer:
+            self.player0.currentHoveredCountry = country
+            self.drawCountryByCountryParam(country, newRgb)
+            self.hoverColoredCountries.append(country)
+        else:
+            self.currentHoveredCountry = country
+            self.drawCountryByCountryParam(country, newRgb)
+            self.hoverColoredCountries.append(country)
 
     def drawCorrectCountry(self, mouseX, mouseY, initRgb, newRgb):
         c = self.window.get_at((mouseX, mouseY))
@@ -155,16 +161,29 @@ class Game:
                 break
         if country == "":
             return
-        if country == self.currentOption:
-            self.drawCountryByCountryParam(country, newRgb)
-            self.hoverColoredCountries.remove(country)
-            self.correctOptions.append(country)
-            self.getNextOption()
+
+        if self.isMultiplayer:
+            if country == self.player0.currentOption:
+                self.drawCountryByCountryParam(country, newRgb)
+                self.hoverColoredCountries.remove(country)
+                self.correctOptions.append(country)
+                self.getNextOption()
+            else:
+                self.incorrectCountries.append(country)
+                red = (255, 0, 0)
+                self.drawCountryByCountryParam(country, red)
+                self.hoverColoredCountries.remove(country)
         else:
-            self.incorrectCountries.append(country)
-            red = (255, 0, 0)
-            self.drawCountryByCountryParam(country, red)
-            self.hoverColoredCountries.remove(country)
+            if country == self.currentOption:
+                self.drawCountryByCountryParam(country, newRgb)
+                self.hoverColoredCountries.remove(country)
+                self.correctOptions.append(country)
+                self.getNextOption()
+            else:
+                self.incorrectCountries.append(country)
+                red = (255, 0, 0)
+                self.drawCountryByCountryParam(country, red)
+                self.hoverColoredCountries.remove(country)
 
     def undrawCountries(self, newRGB):
         for incorrectCountry in self.incorrectCountries:
@@ -243,19 +262,35 @@ class Game:
             options.append(dataList[2])
         if len(options) == 0:
             return
-        indexCurrentOption = 0
-        for correctOption in self.correctOptions:
-            if correctOption in options:
-                options.remove(correctOption)
-        if self.currentOption in options:
-            indexCurrentOption = options.index(self.currentOption)
+        if self.isMultiplayer:
+            indexCurrentOption = 0
+            for correctOption in self.correctOptions:
+                if correctOption in options:
+                    options.remove(correctOption)
+            if self.currentOption in options:
+                indexCurrentOption = options.index(self.player0.currentOption)
+            else:
+                indexCurrentOption = len(options) // 2
+            if indexCurrentOption + 1 >= len(options):
+                self.currentOption = options[0]
+            else:
+                self.currentOption = options[indexCurrentOption + 1]
+            self.displayOption()
+
         else:
-            indexCurrentOption = len(options) // 2
-        if indexCurrentOption + 1 >= len(options):
-            self.currentOption = options[0]
-        else:
-            self.currentOption = options[indexCurrentOption + 1]
-        self.displayOption()
+            indexCurrentOption = 0
+            for correctOption in self.correctOptions:
+                if correctOption in options:
+                    options.remove(correctOption)
+            if self.currentOption in options:
+                indexCurrentOption = options.index(self.currentOption)
+            else:
+                indexCurrentOption = len(options) // 2
+            if indexCurrentOption + 1 >= len(options):
+                self.currentOption = options[0]
+            else:
+                self.currentOption = options[indexCurrentOption + 1]
+            self.displayOption()
 
     def getPreviousOption(self):
         options = []
@@ -266,19 +301,34 @@ class Game:
             options.append(dataList[2])
         if len(options) == 0:
             return
-        indexCurrentOption = 0
-        for correctOption in self.correctOptions:
-            if correctOption in options:
-                options.remove(correctOption)
-        if self.currentOption in options:
-            indexCurrentOption = options.index(self.currentOption)
+        if self.isMultiplayer:
+            indexCurrentOption = 0
+            for correctOption in self.correctOptions:
+                if correctOption in options:
+                    options.remove(correctOption)
+            if self.currentOption in options:
+                indexCurrentOption = options.index(self.player0.currentOption)
+            else:
+                indexCurrentOption = len(options) // 2
+            if indexCurrentOption <= 0:
+                self.currentOption = options[len(options) - 1]
+            else:
+                self.currentOption = options[indexCurrentOption - 1]
+            self.displayOption()
         else:
-            indexCurrentOption = len(options) // 2
-        if indexCurrentOption <= 0:
-            self.currentOption = options[len(options) - 1]
-        else:
-            self.currentOption = options[indexCurrentOption - 1]
-        self.displayOption()
+            indexCurrentOption = 0
+            for correctOption in self.correctOptions:
+                if correctOption in options:
+                    options.remove(correctOption)
+            if self.currentOption in options:
+                indexCurrentOption = options.index(self.currentOption)
+            else:
+                indexCurrentOption = len(options) // 2
+            if indexCurrentOption <= 0:
+                self.currentOption = options[len(options) - 1]
+            else:
+                self.currentOption = options[indexCurrentOption - 1]
+            self.displayOption()
 
     def drawAnOval(self, text):
         # circle
@@ -320,7 +370,10 @@ class Game:
 
     def getCapital(self):
         capital = ""
-        capitalFile = open(f"countries\\{self.CONTINENT}\\{self.currentOption}\\country.txt", "r")
+        if self.isMultiplayer:
+            capitalFile = open(f"countries\\{self.CONTINENT}\\{self.player0.currentOption}\\country.txt", "r")
+        else:
+            capitalFile = open(f"countries\\{self.CONTINENT}\\{self.currentOption}\\country.txt", "r")
         rows = capitalFile.readlines()
         for row in rows:
             result = row.split()
@@ -333,7 +386,10 @@ class Game:
 
     def getCountry(self):
         country = ""
-        countryFile = open(f"countries\\{self.CONTINENT}\\{self.currentOption}\\country.txt", "r")
+        if self.isMultiplayer:
+            countryFile = open(f"countries\\{self.CONTINENT}\\{self.player0.currentOption}\\country.txt", "r")
+        else:
+            countryFile = open(f"countries\\{self.CONTINENT}\\{self.currentOption}\\country.txt", "r")
         rows = countryFile.readlines()
         for row in rows:
             result = row.split()
@@ -353,7 +409,10 @@ class Game:
         self.drawAnOval(country)
 
     def displayFlag(self):
-        option = pygame.image.load(f"countries\\{self.CONTINENT}\\{self.currentOption}\\flag.png")
+        if self.isMultiplayer:
+            option = pygame.image.load(f"countries\\{self.CONTINENT}\\{self.player0.currentOption}\\flag.png")
+        else:
+            option = pygame.image.load(f"countries\\{self.CONTINENT}\\{self.currentOption}\\flag.png")
         option = pygame.transform.scale(option, (130, 100))  # 130, 100 for flags
         self.window.blit(option, (1020, 200))  # 1020, 200 for flags
 
