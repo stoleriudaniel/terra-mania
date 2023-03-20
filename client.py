@@ -54,7 +54,7 @@ class Client():
         font = pygame.font.SysFont(None, 48)  # choose font and font size
         print("hellooo22")
         while runing:
-            print(f"({self.game.player0.x},{self.game.player0.y}); ({self.game.player1.x},{self.game.player1.y})")
+            # print(f"({self.game.player0.x},{self.game.player0.y}); ({self.game.player1.x},{self.game.player1.y})")
             ev = pygame.event.get()
             for event in ev:
                 if event.type == pygame.MOUSEMOTION:  # MOUSEBUTTONUP MOUSEMOTION

@@ -120,7 +120,10 @@ class Game:
         # print((c[0], c[1], c[2]) != initRgb, c)
         if (c[0], c[1], c[2]) != initRgb:
             if (c[0], c[1], c[2]) != red:
-                self.currentHoveredCountry = country
+                if self.isMultiplayer:
+                    self.player0.currentHoveredCountry = country
+                else:
+                    self.currentHoveredCountry = country
             return
         treeFilename = mouseX // 100 * 100
         treeFile = open(f"tree\\countries\\{self.CONTINENT}\\pixels\\{treeFilename}.txt", "r")
@@ -188,7 +191,7 @@ class Game:
     def undrawCountries(self, newRGB):
         if self.isMultiplayer:
             for incorrectCountry in self.player0.incorrectCountries:
-                if incorrectCountry != self.currentHoveredCountry:
+                if incorrectCountry != self.player0.currentHoveredCountry:
                     self.player0.hoverColoredCountries.append(incorrectCountry)
                     self.player0.incorrectCountries.remove(incorrectCountry)
             for country in self.player0.hoverColoredCountries:
@@ -276,16 +279,15 @@ class Game:
             for correctOption in self.player0.correctOptions:
                 if correctOption in options:
                     options.remove(correctOption)
-            if self.currentOption in options:
+            if self.player0.currentOption in options:
                 indexCurrentOption = options.index(self.player0.currentOption)
             else:
                 indexCurrentOption = len(options) // 2
             if indexCurrentOption + 1 >= len(options):
-                self.currentOption = options[0]
+                self.player0.currentOption = options[0]
             else:
-                self.currentOption = options[indexCurrentOption + 1]
+                self.player0.currentOption = options[indexCurrentOption + 1]
             self.displayOption()
-
         else:
             indexCurrentOption = 0
             for correctOption in self.correctOptions:
@@ -315,14 +317,14 @@ class Game:
             for correctOption in self.player0.correctOptions:
                 if correctOption in options:
                     options.remove(correctOption)
-            if self.currentOption in options:
+            if self.player0.currentOption in options:
                 indexCurrentOption = options.index(self.player0.currentOption)
             else:
                 indexCurrentOption = len(options) // 2
             if indexCurrentOption <= 0:
-                self.currentOption = options[len(options) - 1]
+                self.player0.currentOption = options[len(options) - 1]
             else:
-                self.currentOption = options[indexCurrentOption - 1]
+                self.player0.currentOption = options[indexCurrentOption - 1]
             self.displayOption()
         else:
             indexCurrentOption = 0
