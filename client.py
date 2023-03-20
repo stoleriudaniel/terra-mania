@@ -64,7 +64,7 @@ class Client():
                     self.game.player0.y = pos[1]
 
                     self.game.player1.x = pos[0]
-                    self.game.player1.x = pos[1]
+                    self.game.player1.y = pos[1]
 
             self.game.undrawCountries(blue1)
             self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow)
