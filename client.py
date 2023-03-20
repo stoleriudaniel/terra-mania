@@ -14,13 +14,14 @@ class Client():
 
     def extractData(self, data):
         try:
+            pId = data.split(":")[0]
             coordsData = data.split(":")[1].split(";")[0]
             x = coordsData.split(",")[0].split("(")[1]
             y = coordsData.split(",")[1].split(")")[0]
             click = data.split(":")[1].split(";")[1].split("=")[1].split(")")[0]
-            return int(x), int(y), int(click)
+            return pId, int(x), int(y), int(click)
         except:
-            return 0, 0, 0
+            return "0", 0, 0, 0
 
     def play(self):
         pygame.init()
@@ -28,8 +29,8 @@ class Client():
         # hand = HandTrackingModule.HandDetector()
         # hand.show()
         self.game.playerId = self.playerId
-        self.game.player0.id = self.playerId
-        self.game.player1.id = str(1 - int(self.playerId))
+        # self.game.player0.id = self.playerId
+        # self.game.player1.id = str(1 - int(self.playerId))
         self.game.player0.currentOption = self.game.getRandomOption()
         self.game.player1.currentOption = self.game.getRandomOption()
         yellow = (238, 224, 29)
@@ -86,7 +87,11 @@ class Client():
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
 
-            self.game.player1.x, self.game.player1.y, self.click = self.extractData(reply)
+            pId, xData, yData, clickData = self.extractData(reply)
+            if pId == self.game.player0.id:
+                self.game.player0.x, self.game.player0.y, self.click = xData, yData, clickData
+            else:
+                self.game.player1.x, self.game.player1.y, self.click = xData, yData, clickData
             # Fill the screen with white
             # self.game.window.fill((255, 255, 255))
 

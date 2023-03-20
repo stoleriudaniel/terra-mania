@@ -11,8 +11,8 @@ class Game:
 
     def __init__(self):
         self.playerId = 0
-        self.player0 = Player(0, 0, 0)
-        self.player1 = Player(0, 0, 1)
+        self.player0 = Player(0, 0, "0")
+        self.player1 = Player(0, 0, "1")
         self.isMultiplayer = False
         self.SCREEN_WIDTH = 1280
         self.SCREEN_HEIGHT = 720
