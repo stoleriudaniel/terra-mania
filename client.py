@@ -71,8 +71,8 @@ class Client():
                     self.game.player1.y = pos[1]
 
             self.game.undrawCountries(blue1)
-            self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow)
-            self.game.drawCountry(self.game.player1.x, self.game.player1.y, blue1, yellow)
+            self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow, self.game.player0.id)
+            self.game.drawCountry(self.game.player1.x, self.game.player1.y, blue1, yellow, self.game.player1.id)
             # if event.type == pygame.MOUSEBUTTONUP:
             #     pos = pygame.mouse.get_pos()
             #     self.game.changeOptionIfArrowClicked(pos[0], pos[1])
