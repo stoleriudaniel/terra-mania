@@ -5,6 +5,15 @@ class Player():
         self.y = starty
         self.currentOption = ""
         self.currentHoveredCountry = ""
+        self.hoverColoredCountries = []
+
+        self.correctCountries = []
+        self.correctFlags = []
+        self.correctCapitals = []
+
+        self.correctOptions = []
+
+        self.incorrectCountries = []
 
     def move(self, xCood, yCoord):
         self.x = xCood

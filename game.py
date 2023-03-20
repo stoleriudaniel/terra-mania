@@ -138,7 +138,7 @@ class Game:
         if self.isMultiplayer:
             self.player0.currentHoveredCountry = country
             self.drawCountryByCountryParam(country, newRgb)
-            self.hoverColoredCountries.append(country)
+            self.player0.hoverColoredCountries.append(country)
         else:
             self.currentHoveredCountry = country
             self.drawCountryByCountryParam(country, newRgb)
@@ -165,14 +165,14 @@ class Game:
         if self.isMultiplayer:
             if country == self.player0.currentOption:
                 self.drawCountryByCountryParam(country, newRgb)
-                self.hoverColoredCountries.remove(country)
-                self.correctOptions.append(country)
+                self.player0.hoverColoredCountries.remove(country)
+                self.player0.correctOptions.append(country)
                 self.getNextOption()
             else:
-                self.incorrectCountries.append(country)
+                self.player0.incorrectCountries.append(country)
                 red = (255, 0, 0)
                 self.drawCountryByCountryParam(country, red)
-                self.hoverColoredCountries.remove(country)
+                self.player0.hoverColoredCountries.remove(country)
         else:
             if country == self.currentOption:
                 self.drawCountryByCountryParam(country, newRgb)
@@ -186,13 +186,22 @@ class Game:
                 self.hoverColoredCountries.remove(country)
 
     def undrawCountries(self, newRGB):
-        for incorrectCountry in self.incorrectCountries:
-            if incorrectCountry != self.currentHoveredCountry:
-                self.hoverColoredCountries.append(incorrectCountry)
-                self.incorrectCountries.remove(incorrectCountry)
-        for country in self.hoverColoredCountries:
-            self.drawCountryByCountryParam(country, newRGB)
-            self.hoverColoredCountries.remove(country)
+        if self.isMultiplayer:
+            for incorrectCountry in self.player0.incorrectCountries:
+                if incorrectCountry != self.currentHoveredCountry:
+                    self.player0.hoverColoredCountries.append(incorrectCountry)
+                    self.player0.incorrectCountries.remove(incorrectCountry)
+            for country in self.player0.hoverColoredCountries:
+                self.drawCountryByCountryParam(country, newRGB)
+                self.player0.hoverColoredCountries.remove(country)
+        else:
+            for incorrectCountry in self.incorrectCountries:
+                if incorrectCountry != self.currentHoveredCountry:
+                    self.hoverColoredCountries.append(incorrectCountry)
+                    self.incorrectCountries.remove(incorrectCountry)
+            for country in self.hoverColoredCountries:
+                self.drawCountryByCountryParam(country, newRGB)
+                self.hoverColoredCountries.remove(country)
 
     def drawCountryByCountryParam(self, country, newRGB):
         countryPixelsFile = open(f"countries\\{self.CONTINENT}\\{country}\\pixels.txt", "r")
@@ -264,7 +273,7 @@ class Game:
             return
         if self.isMultiplayer:
             indexCurrentOption = 0
-            for correctOption in self.correctOptions:
+            for correctOption in self.player0.correctOptions:
                 if correctOption in options:
                     options.remove(correctOption)
             if self.currentOption in options:
@@ -303,7 +312,7 @@ class Game:
             return
         if self.isMultiplayer:
             indexCurrentOption = 0
-            for correctOption in self.correctOptions:
+            for correctOption in self.player0.correctOptions:
                 if correctOption in options:
                     options.remove(correctOption)
             if self.currentOption in options:
