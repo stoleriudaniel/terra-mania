@@ -10,6 +10,7 @@ from button import Button
 class Game:
 
     def __init__(self):
+        self.playerId = 0
         self.player0 = Player(0, 0, 0)
         self.player1 = Player(0, 0, 1)
         self.isMultiplayer = False
@@ -189,6 +190,8 @@ class Game:
                 self.hoverColoredCountries.remove(country)
 
     def undrawCountries(self, newRGB):
+        # print("before - player0:", self.player0.hoverColoredCountries)
+        # print("before - player1:", self.player1.hoverColoredCountries)
         if self.isMultiplayer:
             for incorrectCountry in self.player0.incorrectCountries:
                 if incorrectCountry != self.player0.currentHoveredCountry:
@@ -205,6 +208,8 @@ class Game:
             for country in self.hoverColoredCountries:
                 self.drawCountryByCountryParam(country, newRGB)
                 self.hoverColoredCountries.remove(country)
+        # print("after - player0:", self.player0.hoverColoredCountries)
+        # print("after - player1:", self.player1.hoverColoredCountries)
 
     def drawCountryByCountryParam(self, country, newRGB):
         countryPixelsFile = open(f"countries\\{self.CONTINENT}\\{country}\\pixels.txt", "r")

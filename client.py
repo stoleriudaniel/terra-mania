@@ -27,6 +27,9 @@ class Client():
         pygame.display.set_caption("Menu")
         # hand = HandTrackingModule.HandDetector()
         # hand.show()
+        self.game.playerId = self.playerId
+        self.game.player0.id = self.playerId
+        self.game.player1.id = 1 - self.playerId
         self.game.player0.currentOption = self.game.getRandomOption()
         self.game.player1.currentOption = self.game.getRandomOption()
         yellow = (238, 224, 29)
@@ -53,6 +56,7 @@ class Client():
 
         font = pygame.font.SysFont(None, 48)  # choose font and font size
         print("hellooo22")
+        print(self.playerId)
         while runing:
             # print(f"({self.game.player0.x},{self.game.player0.y}); ({self.game.player1.x},{self.game.player1.y})")
             ev = pygame.event.get()
