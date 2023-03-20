@@ -114,7 +114,7 @@ class Game:
         print("Finish")
         file.close()
 
-    def drawCountry(self, mouseX, mouseY, initRgb, newRgb, playerIdParam):
+    def drawCountry(self, mouseX, mouseY, initRgb, newRgb, playerIdParam = "0"):
         red = (255, 0, 0)
         country = ""
         c = self.window.get_at((mouseX, mouseY))
