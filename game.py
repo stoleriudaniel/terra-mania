@@ -210,8 +210,8 @@ class Game:
                 self.hoverColoredCountries.remove(country)
 
     def undrawCountries(self, newRGB):
-        print("id: " +self.player0.id+ " before - player0:", self.player0.hoverColoredCountries)
-        print("before - player1:", self.player1.hoverColoredCountries)
+        # print("id: " +self.player0.id+ " before - player0:", self.player0.hoverColoredCountries)
+        # print("before - player1:", self.player1.hoverColoredCountries)
         if self.isMultiplayer:
             if self.playerId == self.player0.id:
                 for incorrectCountry in self.player0.incorrectCountries:
@@ -237,8 +237,8 @@ class Game:
             for country in self.hoverColoredCountries:
                 self.drawCountryByCountryParam(country, newRGB)
                 self.hoverColoredCountries.remove(country)
-        print("after - player0:", self.player0.hoverColoredCountries)
-        print("after - player1:", self.player1.hoverColoredCountries)
+        # print("after - player0:", self.player0.hoverColoredCountries)
+        # print("after - player1:", self.player1.hoverColoredCountries)
 
     def drawCountryByCountryParam(self, country, newRGB):
         countryPixelsFile = open(f"countries\\{self.CONTINENT}\\{country}\\pixels.txt", "r")

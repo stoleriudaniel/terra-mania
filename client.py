@@ -14,6 +14,7 @@ class Client():
 
     def extractData(self, data):
         try:
+            print(data)
             pId = data.split(":")[0]
             coordsData = data.split(":")[1].split(";")[0]
             x = coordsData.split(",")[0].split("(")[1]
@@ -57,8 +58,9 @@ class Client():
 
         font = pygame.font.SysFont(None, 48)  # choose font and font size
         print("hellooo22")
-        print(self.playerId)
         while runing:
+            print("player0 id:", self.game.player0.id)
+            print("player1 id:", self.game.player1.id)
             # print(f"({self.game.player0.x},{self.game.player0.y}); ({self.game.player1.x},{self.game.player1.y})")
             ev = pygame.event.get()
             for event in ev:
@@ -71,9 +73,9 @@ class Client():
                     self.game.player1.x = pos[0]
                     self.game.player1.y = pos[1]
 
-            self.game.undrawCountries(blue1)
-            self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow, self.game.player0.id)
-            self.game.drawCountry(self.game.player1.x, self.game.player1.y, blue1, yellow, self.game.player1.id)
+                    self.game.undrawCountries(blue1)
+                    self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow, self.game.player0.id)
+                    self.game.drawCountry(self.game.player1.x, self.game.player1.y, blue1, yellow, self.game.player1.id)
             # if event.type == pygame.MOUSEBUTTONUP:
             #     pos = pygame.mouse.get_pos()
             #     self.game.changeOptionIfArrowClicked(pos[0], pos[1])
@@ -83,12 +85,15 @@ class Client():
             # initTreePixels()
             # writeCountryPixelsInFile("Test", pos[0], pos[1])
 
-            data = f"{self.playerId}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.click})"
+            if self.game.player0.id == self.playerId:
+                data = f"{self.playerId}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.click})"
+            else:
+                data = f"{self.playerId}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.click})"
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
 
             pId, xData, yData, clickData = self.extractData(reply)
-            if pId == self.game.player0.id:
+            if self.playerId != self.game.player0.id:
                 self.game.player0.x, self.game.player0.y, self.click = xData, yData, clickData
             else:
                 self.game.player1.x, self.game.player1.y, self.click = xData, yData, clickData
@@ -96,7 +101,10 @@ class Client():
             # self.game.window.fill((255, 255, 255))
 
             # Render the coordinates text
-            data = f"{self.playerId}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.click})"
+            if self.game.player0.id == self.playerId:
+                data = f"{self.playerId}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.click})"
+            else:
+                data = f"{self.playerId}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.click})"
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
 
