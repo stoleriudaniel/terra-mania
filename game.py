@@ -143,7 +143,7 @@ class Game:
             return
 
         if self.isMultiplayer:
-            if self.playerId == self.player0.id:
+            if playerIdParam == self.player0.id:
                 self.player0.currentHoveredCountry = country
                 self.drawCountryByCountryParam(country, newRgb)
                 self.player0.hoverColoredCountries.append(country)
@@ -210,10 +210,9 @@ class Game:
                 self.hoverColoredCountries.remove(country)
 
     def undrawCountries(self, newRGB):
-        # print("id: " +self.player0.id+ " before - player0:", self.player0.hoverColoredCountries)
-        # print("before - player1:", self.player1.hoverColoredCountries)
+        print("before - player0:", self.player0.hoverColoredCountries)
+        print("before - player1:", self.player1.hoverColoredCountries)
         if self.isMultiplayer:
-            if self.playerId == self.player0.id:
                 for incorrectCountry in self.player0.incorrectCountries:
                     if incorrectCountry != self.player0.currentHoveredCountry:
                         self.player0.hoverColoredCountries.append(incorrectCountry)
@@ -221,7 +220,7 @@ class Game:
                 for country in self.player0.hoverColoredCountries:
                     self.drawCountryByCountryParam(country, newRGB)
                     self.player0.hoverColoredCountries.remove(country)
-            else:
+                ## player 1
                 for incorrectCountry in self.player1.incorrectCountries:
                     if incorrectCountry != self.player1.currentHoveredCountry:
                         self.player1.hoverColoredCountries.append(incorrectCountry)
@@ -237,8 +236,8 @@ class Game:
             for country in self.hoverColoredCountries:
                 self.drawCountryByCountryParam(country, newRGB)
                 self.hoverColoredCountries.remove(country)
-        # print("after - player0:", self.player0.hoverColoredCountries)
-        # print("after - player1:", self.player1.hoverColoredCountries)
+        print("after - player0:", self.player0.hoverColoredCountries)
+        print("after - player1:", self.player1.hoverColoredCountries)
 
     def drawCountryByCountryParam(self, country, newRGB):
         countryPixelsFile = open(f"countries\\{self.CONTINENT}\\{country}\\pixels.txt", "r")
