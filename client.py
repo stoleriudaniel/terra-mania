@@ -14,7 +14,7 @@ class Client():
 
     def extractData(self, data):
         try:
-            print(data)
+            # print(data)
             pId = data.split(":")[0]
             coordsData = data.split(":")[1].split(";")[0]
             x = coordsData.split(",")[0].split("(")[1]
@@ -59,23 +59,23 @@ class Client():
         font = pygame.font.SysFont(None, 48)  # choose font and font size
         print("hellooo22")
         while runing:
-            print("player0 id:", self.game.player0.id)
-            print("player1 id:", self.game.player1.id)
+            # print("player0 id:", self.game.player0.id)
+            # print("player1 id:", self.game.player1.id)
             # print(f"({self.game.player0.x},{self.game.player0.y}); ({self.game.player1.x},{self.game.player1.y})")
             ev = pygame.event.get()
             for event in ev:
                 if event.type == pygame.MOUSEMOTION:  # MOUSEBUTTONUP MOUSEMOTION
                     pos = pygame.mouse.get_pos()
+                    if self.playerId == self.game.player0.id:
+                        self.game.player0.x = pos[0]
+                        self.game.player0.y = pos[1]
+                    else:
+                        self.game.player1.x = pos[0]
+                        self.game.player1.y = pos[1]
 
-                    self.game.player0.x = pos[0]
-                    self.game.player0.y = pos[1]
-
-                    self.game.player1.x = pos[0]
-                    self.game.player1.y = pos[1]
-
-                    self.game.undrawCountries(blue1)
-                    self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow, self.game.player0.id)
-                    self.game.drawCountry(self.game.player1.x, self.game.player1.y, blue1, yellow, self.game.player1.id)
+            self.game.undrawCountries(blue1)
+            self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow, self.game.player0.id)
+            self.game.drawCountry(self.game.player1.x, self.game.player1.y, blue1, yellow, self.game.player1.id)
             # if event.type == pygame.MOUSEBUTTONUP:
             #     pos = pygame.mouse.get_pos()
             #     self.game.changeOptionIfArrowClicked(pos[0], pos[1])
