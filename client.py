@@ -88,10 +88,8 @@ class Client():
                 print(f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})")
                 if self.game.player0.click == 1:
                     self.game.drawCorrectCountry(self.game.player0.x, self.game.player0.y, yellow, green, self.game.player0.id)
-                    self.game.player0.click = 0
                 if self.game.player1.click == 1:
                     self.game.drawCorrectCountry(self.game.player1.x, self.game.player1.y, yellow, green, self.game.player1.id)
-                    self.game.player1.click = 1
             self.game.undrawCountries(blue1)
             self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow, self.game.player0.id)
             self.game.drawCountry(self.game.player1.x, self.game.player1.y, blue1, yellow, self.game.player1.id)
@@ -120,6 +118,8 @@ class Client():
             # self.game.window.fill((255, 255, 255))
 
             # Render the coordinates text
+            self.game.player0.click = 0
+            self.game.player1.click = 0
             if self.game.player0.id == self.playerId:
                 data = f"{self.playerId}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})"
             else:
