@@ -321,7 +321,7 @@ class Game:
                     self.player0.currentOption = options[0]
                 else:
                     self.player0.currentOption = options[indexCurrentOption + 1]
-                self.displayOption()
+                self.displayOptionData()
             else:
                 indexCurrentOption = 0
                 for correctOption in self.player1.correctOptions:
@@ -335,7 +335,7 @@ class Game:
                     self.player1.currentOption = options[0]
                 else:
                     self.player1.currentOption = options[indexCurrentOption + 1]
-                self.displayOption()
+                self.displayOptionData()
         else:
             indexCurrentOption = 0
             for correctOption in self.correctOptions:
@@ -349,7 +349,7 @@ class Game:
                 self.currentOption = options[0]
             else:
                 self.currentOption = options[indexCurrentOption + 1]
-            self.displayOption()
+            self.displayOptionData()
 
     def getPreviousOption(self):
         options = []
@@ -374,7 +374,7 @@ class Game:
                     self.player0.currentOption = options[len(options) - 1]
                 else:
                     self.player0.currentOption = options[indexCurrentOption - 1]
-                self.displayOption()
+                self.displayOptionData()
             else:
                 indexCurrentOption = 0
                 for correctOption in self.player1.correctOptions:
@@ -388,7 +388,7 @@ class Game:
                     self.player1.currentOption = options[len(options) - 1]
                 else:
                     self.player1.currentOption = options[indexCurrentOption - 1]
-                self.displayOption()
+                self.displayOptionData()
         else:
             indexCurrentOption = 0
             for correctOption in self.correctOptions:
@@ -402,9 +402,51 @@ class Game:
                 self.currentOption = options[len(options) - 1]
             else:
                 self.currentOption = options[indexCurrentOption - 1]
-            self.displayOption()
+            self.displayOptionData()
 
-    def drawAnOval(self, text):
+    def displayArrows(self, xCoord, yCoord):
+        arrow_right = pygame.image.load("arrow_right.png")
+        arrow_right = pygame.transform.scale(arrow_right, (80, 65))
+        self.window.blit(arrow_right, (xCoord + 1090, yCoord + 255))
+
+        arrow_left = pygame.image.load("arrow_left.png")
+        arrow_left = pygame.transform.scale(arrow_left, (80, 65))
+        self.window.blit(arrow_left, (xCoord + 1020, yCoord + 255))
+
+    def displayTimeLeft(self):
+        RED = (255, 0, 0)
+        font = pygame.font.Font(None, 33)
+        text_surface = font.render("Time Left: 13:09", True, RED)
+        self.window.blit(text_surface, (1015, 115))
+
+    def displayCurrentGameTitle(self):
+        BLACK = (0, 0, 0)
+        font = pygame.font.Font(None, 50)
+        text_surface = font.render("Countries game", True, BLACK)
+        self.window.blit(text_surface, (965, 50))
+
+    def displayOptionData(self):
+        BLACK = (0, 0, 0)
+        font = pygame.font.Font(None, 30)
+        if not self.isMultiplayer:
+            self.displayOption(+10, 170)
+            self.displayArrows(+10, 170)
+            text_surface = font.render("Your score: 2/30", True, BLACK)
+            self.window.blit(text_surface, (1020, 405))
+        else:
+            # player0 data
+            self.displayOption(+10, 70)
+            self.displayArrows(+10, 70)
+            text_surface0 = font.render("Daniel: 2/30", True, BLACK)
+            self.window.blit(text_surface0, (1040, 305))
+
+            # player1 data
+            self.displayOption(+10, 310)
+            self.displayArrows(+10, 310)
+            text_surface1 = font.render("Claudiu: 2/30", True, BLACK)
+            self.window.blit(text_surface1, (1040, 545))
+
+    def drawAnOval(self, text, xCoord, yCoord):
         # circle
 
         BLACK = (0, 0, 0)
@@ -418,7 +460,7 @@ class Game:
 
         # draw oval
 
-        rect = pygame.Rect(1000, 300, 200, 150)  # left, top, width, height
+        rect = pygame.Rect(xCoord + 990, yCoord + 100, 200, 120)  # left, top, width, height
         pygame.draw.ellipse(self.window, BLACK, rect, width=20)
         pygame.draw.ellipse(self.window, RED, rect.inflate(-9, -9))
 
@@ -435,7 +477,7 @@ class Game:
                 current_line = word
         lines.append(current_line)
 
-        y = rect.top + 70 - (len(lines) * 10)
+        y = rect.top + 55 - (len(lines) * 10)
         for line in lines:
             text_surface = font.render(line, True, WHITE)
             text_rect = text_surface.get_rect(centerx=rect.centerx, y=y)
@@ -480,15 +522,15 @@ class Game:
                     break
         return country
 
-    def displayCapital(self):
+    def displayCapital(self, xCoord, yCoord):
         capital = self.getCapital()
-        self.drawAnOval(capital)
+        self.drawAnOval(capital, xCoord, yCoord)
 
-    def displayCountry(self):
+    def displayCountry(self, xCoord, yCoord):
         country = self.getCountry()
-        self.drawAnOval(country)
+        self.drawAnOval(country, xCoord, yCoord)
 
-    def displayFlag(self):
+    def displayFlag(self, xCoord, yCoord):
         if self.isMultiplayer:
             if self.playerId == self.player0.id:
                 option = pygame.image.load(f"countries\\{self.CONTINENT}\\{self.player0.currentOption}\\flag.png")
@@ -497,15 +539,15 @@ class Game:
         else:
             option = pygame.image.load(f"countries\\{self.CONTINENT}\\{self.currentOption}\\flag.png")
         option = pygame.transform.scale(option, (130, 100))  # 130, 100 for flags
-        self.window.blit(option, (1020, 200))  # 1020, 200 for flags
+        self.window.blit(option, (xCoord + 1020, yCoord + 200))  # 1020, 200 for flags
 
-    def displayOption(self):
+    def displayOption(self, xCoord, yCoord):
         if self.gameType == self.gameTypeFlags:
-            self.displayFlag()
+            self.displayFlag(xCoord, yCoord)
         if self.gameType == self.gameTypeCapitals:
-            self.displayCapital()
+            self.displayCapital(xCoord, yCoord)
         if self.gameType == self.gameTypeCountries:
-            self.displayCountry()
+            self.displayCountry(xCoord, yCoord)
 
     def get_font(self, size):  # Returns Press-Start-2P in the desired size
         return pygame.font.Font("assets/font.ttf", size)
@@ -645,15 +687,19 @@ class Game:
         self.window.blit(bg_img, (20, 20), )
 
         self.currentOption = self.getRandomOption()
-        self.displayOption()
+        # self.displayOption()
+        #
+        # arrow_right = pygame.image.load("arrow_right.png")
+        # arrow_right = pygame.transform.scale(arrow_right, (80, 65))
+        # self.window.blit(arrow_right, (1170, 215))
+        #
+        # arrow_left = pygame.image.load("arrow_left.png")
+        # arrow_left = pygame.transform.scale(arrow_left, (80, 65))
+        # self.window.blit(arrow_left, (920, 215))
 
-        arrow_right = pygame.image.load("arrow_right.png")
-        arrow_right = pygame.transform.scale(arrow_right, (80, 65))
-        self.window.blit(arrow_right, (1170, 215))
-
-        arrow_left = pygame.image.load("arrow_left.png")
-        arrow_left = pygame.transform.scale(arrow_left, (80, 65))
-        self.window.blit(arrow_left, (920, 215))
+        self.displayOptionData()
+        self.displayCurrentGameTitle()
+        self.displayTimeLeft()
 
         arrowColor = (34, 177, 76)
         runing = True
@@ -668,7 +714,7 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONUP:
                     pos = pygame.mouse.get_pos()
                     self.changeOptionIfArrowClicked(pos[0], pos[1])
-                    self.displayOption()
+                    self.displayOptionData()
                     self.drawCorrectCountry(pos[0], pos[1], yellow, green)
 
                     # initTreePixels()
