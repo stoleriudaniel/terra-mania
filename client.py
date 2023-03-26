@@ -83,14 +83,15 @@ class Client():
                         self.game.player0.click = 1
                     elif self.playerId == self.game.player1.id:
                         self.game.player1.click = 1
-            if self.test == 0 and (self.game.player0.click == 1 or self.game.player1.click == 1):
+            if self.game.player0.click == 1 or self.game.player1.click == 1:
                 print(f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})")
                 print(f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})")
                 if self.game.player0.click == 1:
                     self.game.drawCorrectCountry(self.game.player0.x, self.game.player0.y, yellow, green, self.game.player0.id)
+                    self.game.player0.click = 0
                 if self.game.player1.click == 1:
                     self.game.drawCorrectCountry(self.game.player1.x, self.game.player1.y, yellow, green, self.game.player1.id)
-                self.test = 1
+                    self.game.player1.click = 1
             self.game.undrawCountries(blue1)
             self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow, self.game.player0.id)
             self.game.drawCountry(self.game.player1.x, self.game.player1.y, blue1, yellow, self.game.player1.id)
