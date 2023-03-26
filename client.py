@@ -44,14 +44,16 @@ class Client():
         self.game.window.blit(bg_img, (20, 20), )
 
         self.game.currentOption = self.game.getRandomOption()
-        self.game.displayOption()
-        arrow_right = pygame.image.load("arrow_right.png")
-        arrow_right = pygame.transform.scale(arrow_right, (80, 65))
-        self.game.window.blit(arrow_right, (1170, 215))
-
-        arrow_left = pygame.image.load("arrow_left.png")
-        arrow_left = pygame.transform.scale(arrow_left, (80, 65))
-        self.game.window.blit(arrow_left, (920, 215))
+        self.game.displayOptionData()
+        self.game.displayCurrentGameTitle()
+        self.game.displayTimeLeft()
+        # arrow_right = pygame.image.load("arrow_right.png")
+        # arrow_right = pygame.transform.scale(arrow_right, (80, 65))
+        # self.game.window.blit(arrow_right, (1170, 215))
+        #
+        # arrow_left = pygame.image.load("arrow_left.png")
+        # arrow_left = pygame.transform.scale(arrow_left, (80, 65))
+        # self.game.window.blit(arrow_left, (920, 215))
 
         arrowColor = (34, 177, 76)
         runing = True
