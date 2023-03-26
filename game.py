@@ -46,6 +46,33 @@ class Game:
         self.currentOption = ""
         self.currentHoveredCountry = ""
 
+    def initTreePixelsArrows(self):
+        print("In initTreePixels")
+        # directories = [x[0] for x in os.walk(f"countries\\{self.CONTINENT}")]
+        directories = [x[0] for x in os.walk(f"arrows")]
+        countries = []
+        print(directories)
+        for index in range(0, len(directories)):
+            country = directories[index].split("\\")
+            if len(country) > 1:
+                # path = Path(f"countries\\{self.CONTINENT}\\{country[2]}\\pixels.txt")
+                path = Path(f"arrows\\{country[1]}\\pixels.txt")
+                if not path.is_file():
+                    continue
+                print("country: ", country[1])
+                # pixelsFile = open(f"countries\\{self.CONTINENT}\\{country[2]}\\pixels.txt", "r")
+                pixelsFile = open(f"arrows\\{country[1]}\\pixels.txt", "r")
+                rows = pixelsFile.readlines()
+                for row in rows:
+                    result = row.split()
+                    xCord = result[0]
+                    yCord = result[1]
+                    filename = int(xCord) // 100 * 100
+                    # file = open(f"tree\\countries\\{self.CONTINENT}\\pixels\\{filename}.txt", "a")
+                    file = open(f"tree\\others\\pixels\\{filename}.txt", "a")
+                    file.write(f"{xCord} {yCord} {country[1]}\n")
+        print("Finish")
+
     def initTreePixels(self):
         print("In initTreePixels")
         directories = [x[0] for x in os.walk(f"countries\\{self.CONTINENT}")]
@@ -69,13 +96,13 @@ class Game:
         print("Finish")
 
     def writeCountryPixelsInFile(self, countryName, mousex, mousey):
-        file = open(f"countries\\{countryName}\\pixels.txt", "w")
+        file = open(f"arrows\\{countryName}\\pixels.txt", "w")
         # file = open(f"arrows\\{countryName}\\pixels.txt", "w")
         margin = (0, 0, 0)  # black
         uncolored = (0, 51, 153)  # blue
         newColor = (238, 224, 29)  # yellow
         arrowColor = (34, 177, 76)
-        # uncolored = arrowColor
+        uncolored = arrowColor
         finished = False
         uncoloredPixelsList = []
         c = self.window.get_at((mousex, mousey))
@@ -282,9 +309,9 @@ class Game:
         if arrowname == "":
             return
         # change the flag
-        if arrowname == "arrow_right":
+        if arrowname in ("arrow_right_single_player", "arrow_right_player0", "arrow_right_player1"):
             self.getNextOption()
-        elif arrowname == "arrow_left":
+        elif arrowname in ("arrow_left_single_player", "arrow_left_player0", "arrow_left_player1"):
             self.getPreviousOption()
 
     def getRandomOption(self):
@@ -717,8 +744,8 @@ class Game:
                     self.displayOptionData()
                     self.drawCorrectCountry(pos[0], pos[1], yellow, green)
 
-                    # initTreePixels()
-                    # writeCountryPixelsInFile("Test", pos[0], pos[1])
+                    # self.initTreePixels()
+                    # self.writeCountryPixelsInFile("arrow_left_player1", pos[0], pos[1])
             pygame.display.update()
         pygame.quit()
 
