@@ -32,8 +32,8 @@ class Client():
         self.game.playerId = self.playerId
         # self.game.player0.id = self.playerId
         # self.game.player1.id = str(1 - int(self.playerId))
-        self.game.player0.currentOption = self.game.getRandomOption()
-        self.game.player1.currentOption = self.game.getRandomOption()
+        self.game.player0.currentOption = "China" # self.game.getRandomOption()
+        self.game.player1.currentOption = "China" # self.game.getRandomOption()
         yellow = (238, 224, 29)
         green = (23, 165, 23)
         blue1 = (0, 51, 153)
@@ -123,9 +123,6 @@ class Client():
                 data = f"{self.playerId}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})"
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
-
-            self.game.player0.click = 0
-            self.game.player1.click = 0
 
             # text1 = font.render(f"{self.game.player0.id}: {self.game.player0.x},{self.game.player0.y}", True, (0, 0, 0))
             # self.game.window.blit(text1, (10, 10))
