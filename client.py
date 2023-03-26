@@ -119,9 +119,9 @@ class Client():
 
             # Render the coordinates text
             if self.game.player0.id == self.playerId:
-                data = f"{self.playerId}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})"
+                data = f"{self.playerId}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click=0)"
             else:
-                data = f"{self.playerId}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})"
+                data = f"{self.playerId}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click=0)"
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
 
