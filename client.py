@@ -101,7 +101,6 @@ class Client():
 
             # initTreePixels()
             # writeCountryPixelsInFile("Test", pos[0], pos[1])
-
             if self.game.player0.id == self.playerId:
                 data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})"
             else:
@@ -117,11 +116,14 @@ class Client():
             # Fill the screen with white
             # self.game.window.fill((255, 255, 255))
 
+            self.game.player0.click = 0
+            self.game.player1.click = 0
+
             # Render the coordinates text
             if self.game.player0.id == self.playerId:
-                data = f"{self.playerId}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click=0)"
+                data = f"{self.playerId}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})"
             else:
-                data = f"{self.playerId}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click=0)"
+                data = f"{self.playerId}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})"
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
 
