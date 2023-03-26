@@ -3,6 +3,7 @@ class Player():
         self.id = playerid
         self.x = startx
         self.y = starty
+        self.click = 0
         self.currentOption = ""
         self.currentHoveredCountry = ""
         self.hoverColoredCountries = []

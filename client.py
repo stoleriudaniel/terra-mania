@@ -10,7 +10,7 @@ class Client():
         self.game = Game()
         self.network = Network()
         self.playerId = self.network.client.recv(2048).decode()
-        self.click = 0
+        self.test = 0
 
     def extractData(self, data):
         try:
@@ -79,7 +79,14 @@ class Client():
                     self.game.changeOptionIfArrowClicked(pos[0], pos[1])
                     self.game.displayOptionData()
                     self.game.drawCorrectCountry(pos[0], pos[1], yellow, green)
-
+                    if self.playerId == self.game.player0.id:
+                        self.game.player0.click = 1
+                    elif self.playerId == self.game.player1.id:
+                        self.game.player1.click = 1
+            if self.test == 0 and (self.game.player0.click == 1 or self.game.player1.click == 1):
+                print(f"{self.playerId}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})")
+                print(f"{self.playerId}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})")
+                self.test = 1
             self.game.undrawCountries(blue1)
             self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow, self.game.player0.id)
             self.game.drawCountry(self.game.player1.x, self.game.player1.y, blue1, yellow, self.game.player1.id)
@@ -93,25 +100,25 @@ class Client():
             # writeCountryPixelsInFile("Test", pos[0], pos[1])
 
             if self.game.player0.id == self.playerId:
-                data = f"{self.playerId}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.click})"
+                data = f"{self.playerId}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})"
             else:
-                data = f"{self.playerId}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.click})"
+                data = f"{self.playerId}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})"
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
 
             pId, xData, yData, clickData = self.extractData(reply)
             if self.playerId != self.game.player0.id:
-                self.game.player0.x, self.game.player0.y, self.click = xData, yData, clickData
+                self.game.player0.x, self.game.player0.y, self.game.player0.click = xData, yData, clickData
             else:
-                self.game.player1.x, self.game.player1.y, self.click = xData, yData, clickData
+                self.game.player1.x, self.game.player1.y, self.game.player1.click = xData, yData, clickData
             # Fill the screen with white
             # self.game.window.fill((255, 255, 255))
 
             # Render the coordinates text
             if self.game.player0.id == self.playerId:
-                data = f"{self.playerId}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.click})"
+                data = f"{self.playerId}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})"
             else:
-                data = f"{self.playerId}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.click})"
+                data = f"{self.playerId}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})"
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
 
