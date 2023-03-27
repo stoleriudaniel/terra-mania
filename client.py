@@ -67,7 +67,7 @@ class Client():
             if self.playerId == self.game.player0.id:
                 self.game.player0.click = 0
             else:
-                self.game.player0.click = 1
+                self.game.player1.click = 0
             ev = pygame.event.get()
             for event in ev:
                 if event.type == pygame.MOUSEMOTION:  # MOUSEBUTTONUP MOUSEMOTION
