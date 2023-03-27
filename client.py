@@ -127,8 +127,8 @@ class Client():
                 print("######### ", f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})")
                 self.test = self.test + 1
             #commented
-            # if self.playerId == self.game.player0.id:
-            #     self.game.player0.click = 0
+            if self.playerId == self.game.player0.id:
+                self.game.player0.click = 0
             # if self.playerId == self.game.player1.id:
             #     self.game.player1.click = 0
 
