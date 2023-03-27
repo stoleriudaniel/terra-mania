@@ -105,6 +105,8 @@ class Client():
 
             # initTreePixels()
             # writeCountryPixelsInFile("Test", pos[0], pos[1])
+            if self.playerId == 0:
+                self.game.player1.click = 0
             if self.game.player0.id == self.playerId:
                 data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})"
             else:
