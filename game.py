@@ -184,7 +184,7 @@ class Game:
             self.hoverColoredCountries.append(country)
 
     def drawCorrectCountry(self, mouseX, mouseY, initRgb, newRgb, playerIdParam = "0"):
-        print("playerIdParam: ", playerIdParam)
+        # print("playerIdParam: ", playerIdParam)
         c = self.window.get_at((mouseX, mouseY))
         if (c[0], c[1], c[2]) != initRgb:
             return
@@ -201,35 +201,32 @@ class Game:
                 break
         if country == "":
             return
-        print("country: ", country)
+        # print("country: ", country)
         if self.isMultiplayer:
             if self.player0.id == playerIdParam:
                 if country == self.player0.currentOption:
-                    print("call drawCountryByCountryParam rgb self.playerId:", self.playerId, " self.player0.id:", self.player0.id, " playerIdParam:", playerIdParam)
+                    # print("call drawCountryByCountryParam rgb self.playerId:", self.playerId, " self.player0.id:", self.player0.id, " playerIdParam:", playerIdParam)
                     self.drawCountryByCountryParam(country, newRgb)
                     self.player0.hoverColoredCountries.remove(country)
                     self.player0.correctOptions.append(country)
                     self.getNextOption()
                 else:
-                    print("call else stmt player0")
-                    print("call drawCountryByCountryParam rgb self.playerId:", self.playerId, " self.player0.id:",
-                          self.player0.id, " playerIdParam:", playerIdParam)
+                    # print("call else stmt player0")
+                    # print("call drawCountryByCountryParam rgb self.playerId:", self.playerId, " self.player0.id:", self.player0.id, " playerIdParam:", playerIdParam)
                     self.player0.incorrectCountries.append(country)
                     red = (255, 0, 0)
                     self.drawCountryByCountryParam(country, red)
                     self.player0.hoverColoredCountries.remove(country)
             elif self.player1.id == playerIdParam:
                 if country == self.player1.currentOption:
-                    print("call drawCountryByCountryParam rgb self.playerId:", self.playerId, " self.player1.id:",
-                          self.player1.id, " playerIdParam:", playerIdParam)
+                    # print("call drawCountryByCountryParam rgb self.playerId:", self.playerId, " self.player1.id:",self.player1.id, " playerIdParam:", playerIdParam)
                     self.drawCountryByCountryParam(country, newRgb)
                     self.player1.hoverColoredCountries.remove(country)
                     self.player1.correctOptions.append(country)
                     self.getNextOption()
                 else:
-                    print("call else stmt player0")
-                    print("call drawCountryByCountryParam rgb self.playerId:", self.playerId, " self.player1.id:",
-                          self.player1.id, " playerIdParam:", playerIdParam)
+                    # print("call else stmt player0")
+                    # print("call drawCountryByCountryParam rgb self.playerId:", self.playerId, " self.player1.id:", self.player1.id, " playerIdParam:", playerIdParam)
                     self.player1.incorrectCountries.append(country)
                     red = (255, 0, 0)
                     self.drawCountryByCountryParam(country, red)
