@@ -61,7 +61,6 @@ class Client():
         font = pygame.font.SysFont(None, 48)  # choose font and font size
         print("hellooo22")
         while runing:
-            self.test = self.test + 1
             # print("player0 id:", self.game.player0.id)
             # print("player1 id:", self.game.player1.id)
             # print(f"({self.game.player0.x},{self.game.player0.y}); ({self.game.player1.x},{self.game.player1.y})")
@@ -110,9 +109,11 @@ class Client():
             reply = self.network.client.recv(2048).decode()
 
             if self.test <= 2 and (self.game.player0.click == 1 or self.game.player1.click == 1):
+                print("test:", self.test)
                 print("######### reply before extract data:")
                 print("######### ", f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})")
                 print("######### ", f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})")
+                self.test = self.test + 1
             pId, xData, yData, clickData = self.extractData(reply)
             if self.playerId != self.game.player0.id:
                 self.game.player0.x, self.game.player0.y, self.game.player0.click = xData, yData, clickData
@@ -120,9 +121,11 @@ class Client():
                 self.game.player1.x, self.game.player1.y, self.game.player1.click = xData, yData, clickData
 
             if self.test <= 2 and (self.game.player0.click == 1 or self.game.player1.click == 1):
+                print("test:", self.test)
                 print("######### after extract data: ", pId, " ", xData, " ", yData, " ",  clickData)
                 print("######### ", f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})")
                 print("######### ", f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})")
+                self.test = self.test + 1
             #commented
             # if self.playerId == self.game.player0.id:
             #     self.game.player0.click = 0
@@ -141,9 +144,11 @@ class Client():
             reply = self.network.client.recv(2048).decode()
 
             if self.test <= 2 and (self.game.player0.click == 1 or self.game.player1.click == 1):
+                print("test:", self.test)
                 print("######### last prints: ", pId, " ", xData, " ", yData, " ",  clickData)
                 print("######### ", f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})")
                 print("######### ", f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})")
+                self.test = self.test + 1
             # text1 = font.render(f"{self.game.player0.id}: {self.game.player0.x},{self.game.player0.y}", True, (0, 0, 0))
             # self.game.window.blit(text1, (10, 10))
             # text2 = font.render(f"{self.game.player1.id}: {self.game.player1.x},{self.game.player1.y}", True, (0, 0, 0))
