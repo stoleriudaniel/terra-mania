@@ -64,6 +64,10 @@ class Client():
             # print("player0 id:", self.game.player0.id)
             # print("player1 id:", self.game.player1.id)
             # print(f"({self.game.player0.x},{self.game.player0.y}); ({self.game.player1.x},{self.game.player1.y})")
+            if self.playerId == self.game.player0.id:
+                self.game.player0.click = 0
+            else:
+                self.game.player0.click = 1
             ev = pygame.event.get()
             for event in ev:
                 if event.type == pygame.MOUSEMOTION:  # MOUSEBUTTONUP MOUSEMOTION
