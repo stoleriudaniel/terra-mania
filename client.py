@@ -22,7 +22,7 @@ class Client():
             click = data.split(":")[1].split(";")[1].split("=")[1].split(")")[0]
             return pId, int(x), int(y), int(click)
         except:
-            return "0", 0, 0, 0
+            return "-1", 0, 0, 0
 
     def play(self):
         pygame.init()
@@ -108,19 +108,19 @@ class Client():
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
 
-            if self.test <= 2 and (self.game.player0.click == 1 or self.game.player1.click == 1):
+            if self.test <= 9 and (self.game.player0.click == 1 or self.game.player1.click == 1):
                 print("test:", self.test)
                 print("######### reply before extract data:")
                 print("######### ", f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})")
                 print("######### ", f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})")
                 self.test = self.test + 1
             pId, xData, yData, clickData = self.extractData(reply)
-            if self.playerId != self.game.player0.id:
+            if pId == self.game.player0.id:
                 self.game.player0.x, self.game.player0.y, self.game.player0.click = xData, yData, clickData
-            else:
+            elif pId == self.game.player1.id:
                 self.game.player1.x, self.game.player1.y, self.game.player1.click = xData, yData, clickData
 
-            if self.test <= 2 and (self.game.player0.click == 1 or self.game.player1.click == 1):
+            if self.test <= 9 and (self.game.player0.click == 1 or self.game.player1.click == 1):
                 print("test:", self.test)
                 print("######### after extract data: ", pId, " ", xData, " ", yData, " ",  clickData)
                 print("######### ", f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})")
@@ -143,7 +143,7 @@ class Client():
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
 
-            if self.test <= 2 and (self.game.player0.click == 1 or self.game.player1.click == 1):
+            if self.test <= 9 and (self.game.player0.click == 1 or self.game.player1.click == 1):
                 print("test:", self.test)
                 print("######### last prints: ", pId, " ", xData, " ", yData, " ",  clickData)
                 print("######### ", f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})")
