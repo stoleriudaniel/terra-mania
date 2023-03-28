@@ -114,6 +114,9 @@ class Client():
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
 
+            if self.playerId == self.game.player1.id:
+                self.game.player1.click = 0
+
             if self.test <= 9 and (self.game.player0.click == 1 or self.game.player1.click == 1):
                 print("test:", self.test)
                 print("######### reply before extract data:", reply)
@@ -121,6 +124,7 @@ class Client():
                 print("######### ", f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})")
                 self.test = self.test + 1
             pId, xData, yData, clickData = self.extractData(reply)
+            print("extract data: pid=",pId," xData=",xData," yData=",yData, " clickData=",clickData)
             if pId == self.game.player0.id:
                 self.game.player0.x, self.game.player0.y, self.game.player0.click = xData, yData, clickData
             elif pId == self.game.player1.id:
