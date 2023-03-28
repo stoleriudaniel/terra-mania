@@ -6,6 +6,7 @@ class Player():
         self.click = 0
         self.currentOption = "no option"
         self.currentHoveredCountry = ""
+        self.lastCorrectOption = "none"
         self.hoverColoredCountries = []
 
         self.correctCountries = []

@@ -206,6 +206,7 @@ class Game:
             if self.player0.id == playerIdParam:
                 if country == self.player0.currentOption:
                     # print("call drawCountryByCountryParam rgb self.playerId:", self.playerId, " self.player0.id:", self.player0.id, " playerIdParam:", playerIdParam)
+                    self.player0.lastCorrectOption = country
                     self.drawCountryByCountryParam(country, newRgb)
                     self.player0.hoverColoredCountries.remove(country)
                     self.player0.correctOptions.append(country)
@@ -220,6 +221,7 @@ class Game:
             elif self.player1.id == playerIdParam:
                 if country == self.player1.currentOption:
                     # print("call drawCountryByCountryParam rgb self.playerId:", self.playerId, " self.player1.id:",self.player1.id, " playerIdParam:", playerIdParam)
+                    self.player1.lastCorrectOption = country
                     self.drawCountryByCountryParam(country, newRgb)
                     self.player1.hoverColoredCountries.remove(country)
                     self.player1.correctOptions.append(country)
