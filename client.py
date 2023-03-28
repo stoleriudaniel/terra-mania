@@ -136,6 +136,8 @@ class Client():
                 print("######### after extract data: ", reply)
                 print("######### ", f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})")
                 print("######### ", f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})")
+                print("extract data: pid=", pId, " xData=", xData, " yData=", yData, " clickData=", clickData)
+                print("reply:", reply)
                 self.test = self.test + 1
             #commented
             # if self.playerId == self.game.player0.id:
@@ -163,6 +165,8 @@ class Client():
                 print("######### ", f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})")
                 print("######### ", f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})")
                 self.test = self.test + 1
+                print("extract data: pid=", pId, " xData=", xData, " yData=", yData, " clickData=", clickData)
+                print("reply:", reply)
             # text1 = font.render(f"{self.game.player0.id}: {self.game.player0.x},{self.game.player0.y}", True, (0, 0, 0))
             # self.game.window.blit(text1, (10, 10))
             # text2 = font.render(f"{self.game.player1.id}: {self.game.player1.x},{self.game.player1.y}", True, (0, 0, 0))
