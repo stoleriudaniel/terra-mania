@@ -114,7 +114,7 @@ class Client():
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
 
-            if self.playerId == self.game.player1.id:
+            if self.playerId == self.game.player0.id:
                 self.game.player1.click = 0
 
             if self.test <= 9 and (self.game.player0.click == 1 or self.game.player1.click == 1):
