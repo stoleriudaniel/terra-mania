@@ -8,7 +8,7 @@ class Server():
         self.port = 5555
         self.maximumPlayers = 2
         self.currentId = "0"
-        self.state = ["0:(0,0);(click=0)", "1:(0,0);(click=0)"]
+        self.state = ["0:(0,0);(click=0);(currentOption=none)", "1:(0,0);(click=0);(currentOption=none)"]
 
     def create(self):
         try:
