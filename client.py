@@ -104,9 +104,13 @@ class Client():
 
             pId, xData, yData, clickData, currentOption = self.extractData(reply)
             if pId == self.game.player0.id:
-                self.game.player0.x, self.game.player0.y, self.game.player0.click, self.game.player0.currentOption = xData, yData, clickData, currentOption
+                self.game.player0.x, self.game.player0.y, self.game.player0.click = xData, yData, clickData
+                if currentOption != "none":
+                    self.game.player0.currentOption = currentOption
             elif pId == self.game.player1.id:
-                self.game.player1.x, self.game.player1.y, self.game.player1.click, self.game.player1.currentOption = xData, yData, clickData, currentOption
+                self.game.player1.x, self.game.player1.y, self.game.player1.click = xData, yData, clickData
+                if currentOption != "none":
+                    self.game.player1.currentOption = currentOption
 
             # Render the coordinates text
             if self.game.player0.id == self.playerId:
