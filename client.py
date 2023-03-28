@@ -34,12 +34,8 @@ class Client():
         self.game.playerId = self.playerId
         # self.game.player0.id = self.playerId
         # self.game.player1.id = str(1 - int(self.playerId))
-        if self.playerId == self.game.player0.id:
-            self.game.player0.currentOption = self.game.getRandomOption()
-            self.game.player1.currentOption = "no option"
-        if self.playerId == self.game.player1.id:
-            self.game.player1.currentOption = self.game.getRandomOption()
-            self.game.player0.currentOption = "no option"
+        self.game.player0.currentOption = self.game.getOptionByIndex(0)
+        self.game.player1.currentOption = self.game.getOptionByIndex(1)
         yellow = (238, 224, 29)
         green = (23, 165, 23)
         blue1 = (0, 51, 153)

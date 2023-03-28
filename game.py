@@ -332,6 +332,17 @@ class Game:
             return ""
         return random.choice(options)
 
+    def getOptionByIndex(self, index):
+        options = []
+        for x in os.walk(f"countries\\{self.CONTINENT}"):
+            dataList = x[0].split("\\")
+            if len(dataList) < 3:
+                continue
+            options.append(dataList[2])
+        if len(options) == 0:
+            return ""
+        return options[index]
+
     def getNextOption(self):
         options = []
         for x in os.walk(f"countries\\{self.CONTINENT}"):
