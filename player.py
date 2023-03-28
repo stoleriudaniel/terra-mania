@@ -4,7 +4,7 @@ class Player():
         self.x = startx
         self.y = starty
         self.click = 0
-        self.currentOption = ""
+        self.currentOption = "no option"
         self.currentHoveredCountry = ""
         self.hoverColoredCountries = []
 

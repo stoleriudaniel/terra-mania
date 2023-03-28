@@ -469,13 +469,13 @@ class Game:
             self.window.blit(text_surface, (1020, 405))
         else:
             # player0 data
-            self.displayOption(+10, 70)
+            self.displayOption(+10, 70, self.player0.currentOption)
             self.displayArrows(+10, 70)
             text_surface0 = font.render("Daniel: 2/30", True, BLACK)
             self.window.blit(text_surface0, (1040, 305))
 
             # player1 data
-            self.displayOption(+10, 310)
+            self.displayOption(+10, 310, self.player1.currentOption)
             self.displayArrows(+10, 310)
             text_surface1 = font.render("Claudiu: 2/30", True, BLACK)
             self.window.blit(text_surface1, (1040, 545))
@@ -518,10 +518,12 @@ class Game:
             self.window.blit(text_surface, text_rect)
             y += font.size(line)[1]
 
-    def getCapital(self):
+    def getCapital(self, option):
         capital = ""
         if self.isMultiplayer:
-            if self.playerId == self.player0.id:
+            if option != "":
+                countryFile = open(f"countries\\{self.CONTINENT}\\{option}\\country.txt", "r")
+            elif self.playerId == self.player0.id:
                 capitalFile = open(f"countries\\{self.CONTINENT}\\{self.player0.currentOption}\\country.txt", "r")
             else:
                 capitalFile = open(f"countries\\{self.CONTINENT}\\{self.player1.currentOption}\\country.txt", "r")
@@ -537,10 +539,12 @@ class Game:
                     break
         return capital
 
-    def getCountry(self):
+    def getCountry(self, option = ""):
         country = ""
         if self.isMultiplayer:
-            if self.playerId == self.player0.id:
+            if option != "":
+                countryFile = open(f"countries\\{self.CONTINENT}\\{option}\\country.txt", "r")
+            elif self.playerId == self.player0.id:
                 countryFile = open(f"countries\\{self.CONTINENT}\\{self.player0.currentOption}\\country.txt", "r")
             else:
                 countryFile = open(f"countries\\{self.CONTINENT}\\{self.player1.currentOption}\\country.txt", "r")
@@ -556,17 +560,19 @@ class Game:
                     break
         return country
 
-    def displayCapital(self, xCoord, yCoord):
-        capital = self.getCapital()
+    def displayCapital(self, xCoord, yCoord, option = ""):
+        capital = self.getCapital(option)
         self.drawAnOval(capital, xCoord, yCoord)
 
-    def displayCountry(self, xCoord, yCoord):
-        country = self.getCountry()
+    def displayCountry(self, xCoord, yCoord, option = ""):
+        country = self.getCountry(option)
         self.drawAnOval(country, xCoord, yCoord)
 
-    def displayFlag(self, xCoord, yCoord):
+    def displayFlag(self, xCoord, yCoord, optionParam = ""):
         if self.isMultiplayer:
-            if self.playerId == self.player0.id:
+            if optionParam != "":
+                option = pygame.image.load(f"countries\\{self.CONTINENT}\\{optionParam}\\flag.png")
+            elif self.playerId == self.player0.id:
                 option = pygame.image.load(f"countries\\{self.CONTINENT}\\{self.player0.currentOption}\\flag.png")
             else:
                 option = pygame.image.load(f"countries\\{self.CONTINENT}\\{self.player1.currentOption}\\flag.png")
@@ -575,13 +581,13 @@ class Game:
         option = pygame.transform.scale(option, (130, 100))  # 130, 100 for flags
         self.window.blit(option, (xCoord + 1020, yCoord + 200))  # 1020, 200 for flags
 
-    def displayOption(self, xCoord, yCoord):
+    def displayOption(self, xCoord, yCoord, option = ""):
         if self.gameType == self.gameTypeFlags:
-            self.displayFlag(xCoord, yCoord)
+            self.displayFlag(xCoord, yCoord, option)
         if self.gameType == self.gameTypeCapitals:
-            self.displayCapital(xCoord, yCoord)
+            self.displayCapital(xCoord, yCoord, option)
         if self.gameType == self.gameTypeCountries:
-            self.displayCountry(xCoord, yCoord)
+            self.displayCountry(xCoord, yCoord, option)
 
     def get_font(self, size):  # Returns Press-Start-2P in the desired size
         return pygame.font.Font("assets/font.ttf", size)
