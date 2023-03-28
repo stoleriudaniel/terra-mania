@@ -42,8 +42,7 @@ class Server():
                     arr = reply.split(":")
                     id = int(arr[0])
                     self.state[id] = reply
-                    if (((self.state[0]).find("click=1") or (self.state[1]).find("click=1")) and self.test <= 9)\
-                            or (self.test >= 1 and self.test <= 9):
+                    if (((self.state[0]).find("click=1") != -1 or (self.state[1]).find("click=1") != -1) and self.test <= 9) or (self.test >= 1 and self.test <= 9):
                         print("test: ", self.test, " reply: ", reply)
                         print("test: ", self.test, " state:", self.state)
                         self.test = self.test + 1
