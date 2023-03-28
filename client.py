@@ -123,9 +123,9 @@ class Client():
                 print("######### ", f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})")
                 print("######### ", f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})")
                 self.test = self.test + 1
+                print("extract data: pid=", pId, " xData=", xData, " yData=", yData, " clickData=", clickData)
+                print("reply:", reply)
             pId, xData, yData, clickData = self.extractData(reply)
-            if self.test <= 9:
-                print("extract data: pid=",pId," xData=",xData," yData=",yData, " clickData=",clickData)
             if pId == self.game.player0.id:
                 self.game.player0.x, self.game.player0.y, self.game.player0.click = xData, yData, clickData
             elif pId == self.game.player1.id:
