@@ -11,6 +11,8 @@ class Client():
         self.network = Network()
         self.playerId = self.network.client.recv(2048).decode()
         self.test = 0
+        self.clickPlayer0 = 0
+        self.clickPlayer1 = 0
 
     def extractData(self, data):
         try:
@@ -61,13 +63,6 @@ class Client():
         font = pygame.font.SysFont(None, 48)  # choose font and font size
         print("hellooo22")
         while runing:
-            # print("player0 id:", self.game.player0.id)
-            # print("player1 id:", self.game.player1.id)
-            # print(f"({self.game.player0.x},{self.game.player0.y}); ({self.game.player1.x},{self.game.player1.y})")
-            # if self.playerId == self.game.player0.id:
-            #     self.game.player0.click = 0
-            if self.playerId == self.game.player1.id:
-                self.game.player1.click = 0
             ev = pygame.event.get()
             for event in ev:
                 if event.type == pygame.MOUSEMOTION:  # MOUSEBUTTONUP MOUSEMOTION
@@ -84,38 +79,27 @@ class Client():
                     self.game.displayOptionData()
                     self.game.drawCorrectCountry(pos[0], pos[1], yellow, green, self.playerId)
                     if self.playerId == self.game.player0.id:
-                        self.game.player0.click = 1
+                        self.game.player0.click = 1 - self.game.player0.click
                     elif self.playerId == self.game.player1.id:
-                        self.game.player1.click = 1
-            if self.game.player0.click == 1 or self.game.player1.click == 1:
-                # print(f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})")
-                # print(f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})")
-                if self.game.player0.click == 1:
-                    self.game.drawCorrectCountry(self.game.player0.x, self.game.player0.y, yellow, green, self.game.player0.id)
-                if self.game.player1.click == 1:
-                    self.game.drawCorrectCountry(self.game.player1.x, self.game.player1.y, yellow, green, self.game.player1.id)
+                        self.game.player1.click = 1 - self.game.player1.click
+            if self.playerId != self.game.player0.id and self.game.player0.click != self.clickPlayer0:
+                self.game.drawCorrectCountry(self.game.player0.x, self.game.player0.y, yellow, green, self.game.player0.id)
+                self.clickPlayer0 = self.game.player0.click
+            elif self.playerId != self.game.player1.id and self.game.player1.click != self.clickPlayer1:
+                self.game.drawCorrectCountry(self.game.player1.x, self.game.player1.y, yellow, green, self.game.player1.id)
+                self.clickPlayer1 = self.game.player1.click
             self.game.undrawCountries(blue1)
             self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow, self.game.player0.id)
             self.game.drawCountry(self.game.player1.x, self.game.player1.y, blue1, yellow, self.game.player1.id)
-            # if event.type == pygame.MOUSEBUTTONUP:
-            #     pos = pygame.mouse.get_pos()
-            #     self.game.changeOptionIfArrowClicked(pos[0], pos[1])
-            #     self.game.displayOption()
-            #     self.game.drawCorrectCountry(pos[0], pos[1], yellow, green)
 
             # initTreePixels()
             # writeCountryPixelsInFile("Test", pos[0], pos[1])
-            if self.playerId == "0":
-                self.game.player1.click = 0
             if self.game.player0.id == self.playerId:
                 data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click})"
             else:
                 data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})"
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
-
-            if self.playerId == self.game.player0.id:
-                self.game.player1.click = 0
 
             if self.test <= 9 and (self.game.player0.click == 1 or self.game.player1.click == 1):
                 print("test:", self.test)
@@ -142,8 +126,6 @@ class Client():
             #commented
             # if self.playerId == self.game.player0.id:
             #     self.game.player0.click = 0
-            if self.playerId == self.game.player1.id:
-                self.game.player1.click = 0
 
             # Fill the screen with white
             # self.game.window.fill((255, 255, 255))
@@ -155,9 +137,6 @@ class Client():
                 data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click})"
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
-
-            if self.playerId == self.game.player1.id:
-                self.game.player1.click = 0
 
             if self.test <= 9 and (self.game.player0.click == 1 or self.game.player1.click == 1):
                 print("test:", self.test)
