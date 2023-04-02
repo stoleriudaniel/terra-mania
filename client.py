@@ -64,6 +64,13 @@ class Client():
         font = pygame.font.SysFont(None, 48)  # choose font and font size
         print("hellooo22")
         while runing:
+            self.game.window.blit(bg_img, (20, 20), )
+
+            self.game.currentOption = self.game.getRandomOption()
+            self.game.displayOptionData()
+            self.game.displayCurrentGameTitle()
+            self.game.displayTimeLeft()
+            
             self.game.displayOptionData()
             ev = pygame.event.get()
             for event in ev:
