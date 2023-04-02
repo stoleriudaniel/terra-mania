@@ -507,9 +507,9 @@ class Game:
             self.drawScoreRect()
 
     def drawScoreRect(self):
-        rect_size = (100, 50)
+        rect_size = (200, 50)
         rect_color = (255, 0, 0)
-        rect_position = (1040, 545)
+        rect_position = (1040, 542)
 
         # Draw the rectangle
         pygame.draw.rect(self.window, rect_color, pygame.Rect(rect_position, rect_size))
