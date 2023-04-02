@@ -485,7 +485,6 @@ class Game:
     def displayOptionData(self):
         BLACK = (0, 0, 0)
         WHITE = (255, 255, 255)
-        self.window.fill(WHITE)
         font = pygame.font.Font(None, 30)
         if not self.isMultiplayer:
             self.displayOption(+10, 170)
@@ -498,11 +497,15 @@ class Game:
             self.displayArrows(+10, 70)
             text_surface0 = font.render(f"Daniel: {len(self.player0.correctOptions)}/30", True, BLACK)
             self.window.blit(text_surface0, (1040, 305))
+            text_surface0 = font.render(f"Daniel: {len(self.player0.correctOptions)}/30", True, WHITE)
+            self.window.blit(text_surface0, (1040, 305))
 
             # player1 data
             self.displayOption(+10, 310, self.player1.currentOption)
             self.displayArrows(+10, 310)
             text_surface1 = font.render(f"Claudiu: {len(self.player1.correctOptions)}/30", True, BLACK)
+            self.window.blit(text_surface1, (1040, 545))
+            text_surface1 = font.render(f"Claudiu: {len(self.player1.correctOptions)}/30", True, WHITE)
             self.window.blit(text_surface1, (1040, 545))
 
     def drawAnOval(self, text, xCoord, yCoord):
