@@ -496,18 +496,23 @@ class Game:
             # player0 data
             self.displayOption(+10, 70, self.player0.currentOption)
             self.displayArrows(+10, 70)
-            text_surface0 = big_font.render(f"Daniel: {len(self.player0.correctOptions)}/30", True, WHITE)
-            self.window.blit(text_surface0, (1040, 305))
             text_surface0 = font.render(f"Daniel: {len(self.player0.correctOptions)}/30", True, BLACK)
             self.window.blit(text_surface0, (1040, 305))
 
             # player1 data
             self.displayOption(+10, 310, self.player1.currentOption)
             self.displayArrows(+10, 310)
-            text_surface1 = big_font.render(f"Claudiu: {len(self.player1.correctOptions)}/30", True, WHITE)
-            self.window.blit(text_surface1, (1040, 545))
             text_surface1 = font.render(f"Claudiu: {len(self.player1.correctOptions)}/30", True, BLACK)
             self.window.blit(text_surface1, (1040, 545))
+            self.drawScoreRect()
+
+    def drawScoreRect(self):
+        rect_size = (100, 50)
+        rect_color = (255, 0, 0)
+        rect_position = (1040, 545)
+
+        # Draw the rectangle
+        pygame.draw.rect(self.window, rect_color, pygame.Rect(rect_position, rect_size))
 
     def drawAnOval(self, text, xCoord, yCoord):
         # circle
