@@ -318,10 +318,20 @@ class Game:
         if arrowname == "":
             return
         # change the flag
-        if arrowname in ("arrow_right_single_player", "arrow_right_player0", "arrow_right_player1"):
-            self.getNextOption()
-        elif arrowname in ("arrow_left_single_player", "arrow_left_player0", "arrow_left_player1"):
-            self.getPreviousOption()
+        if self.isMultiplayer is False:
+            if arrowname == "arrow_right_single_player":
+                self.getNextOption()
+            elif arrowname == "arrow_left_single_player":
+                self.getPreviousOption()
+        else:
+            if self.playerId == "0" and arrowname == "arrow_right_player0":
+                self.getNextOption()
+            if self.playerId == "0" and arrowname == "arrow_left_player0":
+                self.getPreviousOption()
+            if self.playerId == "1" and arrowname == "arrow_right_player1":
+                self.getNextOption()
+            if self.playerId == "1" and arrowname == "arrow_left_player1":
+                self.getPreviousOption()
 
     def getRandomOption(self):
         options = []
