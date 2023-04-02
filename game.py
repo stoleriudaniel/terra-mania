@@ -493,6 +493,7 @@ class Game:
             text_surface = font.render("Your score: 2/30", True, BLACK)
             self.window.blit(text_surface, (1020, 405))
         else:
+            self.drawScoreRect()
             # player0 data
             self.displayOption(+10, 70, self.player0.currentOption)
             self.displayArrows(+10, 70)
@@ -504,15 +505,16 @@ class Game:
             self.displayArrows(+10, 310)
             text_surface1 = font.render(f"Claudiu: {len(self.player1.correctOptions)}/30", True, BLACK)
             self.window.blit(text_surface1, (1040, 545))
-            self.drawScoreRect()
 
     def drawScoreRect(self):
         rect_size = (160, 22)
-        rect_color = (255, 0, 0)
-        rect_position = (1040, 542)
+        rect_color = (255, 255, 255)
+        rect1_position = (1040, 302)
+        rect2_position = (1040, 542)
 
         # Draw the rectangle
-        pygame.draw.rect(self.window, rect_color, pygame.Rect(rect_position, rect_size))
+        pygame.draw.rect(self.window, rect_color, pygame.Rect(rect1_position, rect_size))
+        pygame.draw.rect(self.window, rect_color, pygame.Rect(rect2_position, rect_size))
 
     def drawAnOval(self, text, xCoord, yCoord):
         # circle
