@@ -507,7 +507,7 @@ class Game:
             self.drawScoreRect()
 
     def drawScoreRect(self):
-        rect_size = (150, 26)
+        rect_size = (160, 22)
         rect_color = (255, 0, 0)
         rect_position = (1040, 542)
 
