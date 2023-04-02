@@ -494,13 +494,13 @@ class Game:
             # player0 data
             self.displayOption(+10, 70, self.player0.currentOption)
             self.displayArrows(+10, 70)
-            text_surface0 = font.render("Daniel: 2/30", True, BLACK)
+            text_surface0 = font.render(f"Daniel: {len(self.player0.correctOptions)}/30", True, BLACK)
             self.window.blit(text_surface0, (1040, 305))
 
             # player1 data
             self.displayOption(+10, 310, self.player1.currentOption)
             self.displayArrows(+10, 310)
-            text_surface1 = font.render("Claudiu: 2/30", True, BLACK)
+            text_surface1 = font.render(f"Claudiu: {len(self.player1.correctOptions)}/30", True, BLACK)
             self.window.blit(text_surface1, (1040, 545))
 
     def drawAnOval(self, text, xCoord, yCoord):
