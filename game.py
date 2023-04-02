@@ -233,6 +233,8 @@ class Game:
                     red = (255, 0, 0)
                     self.drawCountryByCountryParam(country, red)
                     self.player1.hoverColoredCountries.remove(country)
+            print("player0 corect options:", self.player0.correctOptions)
+            print("player1 corect options:", self.player1.correctOptions)
         else:
             if country == self.currentOption:
                 self.drawCountryByCountryParam(country, newRgb)
