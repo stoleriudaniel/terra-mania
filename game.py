@@ -1,3 +1,6 @@
+import threading
+
+import HandTrackingModule
 from network import Network
 import os
 import random
@@ -754,8 +757,11 @@ class Game:
             pygame.display.update()
 
     def playGame(self):
-        # hand = HandTrackingModule.HandDetector()
+        hand = HandTrackingModule.HandDetector()
         # hand.show()
+        self.c_thread=threading.Thread(target=hand.show, args=())
+        self.c_thread.start()
+        print("hello, thread")
         yellow = (238, 224, 29)
         green = (23, 165, 23)
         blue1 = (0, 51, 153)

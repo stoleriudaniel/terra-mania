@@ -48,7 +48,7 @@ class HandDetector():
             lmList = self.findPosition(img)
             if len(lmList) != 0:
                 print(lmList[9])
-
+            time.sleep(2)
             cTime = time.time()
             fps = 1 / (cTime - pTime)
             pTime = cTime
