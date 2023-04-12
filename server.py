@@ -4,7 +4,7 @@ from _thread import *
 class Server():
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.serverIp = socket.gethostbyname('192.168.100.18')
+        self.serverIp = socket.gethostbyname('192.168.43.175')
         self.port = 5555
         self.maximumPlayers = 2
         self.currentId = "0"
