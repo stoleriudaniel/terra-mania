@@ -790,8 +790,8 @@ class Game:
         bg_img = pygame.transform.scale(bg_img, (897, 680))
         self.window.blit(bg_img, (20, 20), )
         # mouse
-        cursor_img = pygame.image.load("cursor1.png")
-        cursor_img = pygame.transform.scale(cursor_img, (50, 40))
+        # cursor_img = pygame.image.load("cursor1.png")
+        # cursor_img = pygame.transform.scale(cursor_img, (50, 40))
 
         self.displayOptionData()
         self.displayCurrentGameTitle()
@@ -855,6 +855,7 @@ class Game:
             elif self.cvx > 0 or self.cvy > 0:
                 self.window.blit(cursor_img, (self.cvx, self.cvy), )
             if handTrackingModule.isHandClosed():
+                self.redrawWindow()
                 self.changeOptionIfArrowClicked(self.cvx, self.cvy)
                 self.displayOptionData()
                 self.drawCorrectCountry(self.cvx, self.cvy, yellow, green)
