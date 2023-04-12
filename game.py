@@ -774,7 +774,7 @@ class Game:
         self.frame, self.img = self.cap.read()
 
     def saveState(self):
-        cropped_rect = pygame.Rect(20, 20, 897, 680)
+        cropped_rect = pygame.Rect(20, 20, 897+20, 680+20)
         cropped_surface = self.window.subsurface(cropped_rect)
         realSize = (self.mapRealWidth, self.mapRealHeight)
         cropped_surface = pygame.transform.scale(cropped_surface, realSize)
