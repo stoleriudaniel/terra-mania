@@ -790,6 +790,10 @@ class Game:
         self.displayCurrentGameTitle()
         self.displayTimeLeft()
 
+    def drawMouse(self):
+        cursor_img = pygame.image.load("cursor1.png")
+        cursor_img = pygame.transform.scale(cursor_img, (50, 40))
+
     def playGame(self):
         handTrackingModule = HandTrackingModule.HandDetector()
         # hand.show()
@@ -834,13 +838,15 @@ class Game:
             self.load_camera()
             newScannedHandsImg = handTrackingModule.findHands(self.img)
             handCoords = handTrackingModule.getCoords(newScannedHandsImg)
-            self.redrawWindow()
             if handCoords != None:
-                self.window.blit(cursor_img, (handCoords[0], handCoords[1]), )
                 self.cvx = handCoords[0]
                 self.cvy = handCoords[1]
-            self.undrawCountries(blue1)
-            self.drawCountry(self.cvx, self.cvy, blue1, yellow)
+                self.redrawWindow()
+                self.undrawCountries(blue1)
+                self.drawCountry(self.cvx, self.cvy, blue1, yellow)
+                self.window.blit(cursor_img, (handCoords[0], handCoords[1]), )
+            elif self.cvx > 0 or self.cvy > 0:
+                self.window.blit(cursor_img, (self.cvx, self.cvy), )
             cv2.imshow("Camera", newScannedHandsImg)
             cv2.waitKey(1)
             ev = pygame.event.get()
