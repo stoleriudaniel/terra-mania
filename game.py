@@ -849,25 +849,26 @@ class Game:
             newScannedHandsImg = handTrackingModule.findHands(self.img)
             handCoords = handTrackingModule.getCoords(newScannedHandsImg)
             if handCoords != None:
-                self.cvx = handCoords[0]
+                self.cvx = self.SCREEN_WIDTH - handCoords[0]
                 self.cvy = handCoords[1]
-                self.redrawWindow()
-                self.undrawCountries(blue1)
-                self.drawCountry(self.cvx, self.cvy, blue1, yellow)
                 if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
-                    self.window.blit(cursor_img, (handCoords[0], handCoords[1]), )
+                    self.redrawWindow()
+                    self.undrawCountries(blue1)
+                    self.drawCountry(self.cvx, self.cvy, blue1, yellow)
+                    self.window.blit(cursor_img, (self.cvx, self.cvy), )
             elif self.cvx > 0 or self.cvy > 0:
                 if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
                     self.window.blit(cursor_img, (self.cvx, self.cvy), )
             if handTrackingModule.isHandClosed():
-                self.redrawWindow()
-                self.changeOptionIfArrowClicked(self.cvx, self.cvy)
-                self.displayOptionData()
-                self.drawCorrectCountry(self.cvx, self.cvy, blue1, green)
                 if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
+                    self.redrawWindow()
+                    self.changeOptionIfArrowClicked(self.cvx, self.cvy)
+                    self.displayOptionData()
+                    self.drawCorrectCountry(self.cvx, self.cvy, blue1, green)
                     self.window.blit(cursor_img, (self.cvx, self.cvy), )
                 # self.initTreePixels()
                 # self.writeCountryPixelsInFile("arrow_left_player1", pos[0], pos[1])
+            newScannedHandsImg = cv2.flip(newScannedHandsImg, 1)
             cv2.imshow("Camera", newScannedHandsImg)
             cv2.waitKey(1)
             ev = pygame.event.get()
