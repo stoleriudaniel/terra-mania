@@ -56,4 +56,4 @@ class HandDetector():
         img = self.findHands(img)
         lmList = self.findPosition(img)
         if len(lmList) != 0:
-            return lmList[9][1], lmList[9][2]
+            return lmList[9][1]*2, lmList[9][2]*2
