@@ -254,6 +254,8 @@ class Game:
                 self.hoverColoredCountries.remove(country)
                 self.correctOptions.append(country)
                 self.getNextOption()
+                if self.computerVision:
+                    self.saveState()
             else:
                 self.incorrectCountries.append(country)
                 red = (255, 0, 0)
@@ -776,8 +778,8 @@ class Game:
     def saveState(self):
         cropped_rect = pygame.Rect(20, 20, 897, 680)
         cropped_surface = self.window.subsurface(cropped_rect)
-        realSize = (self.mapRealWidth, self.mapRealHeight)
-        cropped_surface = pygame.transform.scale(cropped_surface, realSize)
+        # realSize = (self.mapRealWidth, self.mapRealHeight)
+        # cropped_surface = pygame.transform.scale(cropped_surface, realSize)
         pygame.image.save(cropped_surface, "state/cropped_image.png")
 
     def redrawWindow(self):
@@ -786,7 +788,7 @@ class Game:
         blue1 = (0, 51, 153)
         self.window.fill((255, 255, 255))
         bg_img = pygame.image.load("state/cropped_image.png")
-        bg_img = pygame.transform.scale(bg_img, (897, 680))
+        # bg_img = pygame.transform.scale(bg_img, (897, 680))
         self.window.blit(bg_img, (20, 20), )
         # mouse
         # cursor_img = pygame.image.load("cursor1.png")
@@ -820,7 +822,7 @@ class Game:
         cursor_img = pygame.image.load("cursor1.png")
         cursor_img = pygame.transform.scale(cursor_img, (50, 40))
 
-        self.currentOption = self.getRandomOption()
+        self.currentOption = "Russia" # self.getRandomOption()
         # self.displayOption()
         #
         # arrow_right = pygame.image.load("arrow_right.png")
@@ -857,8 +859,8 @@ class Game:
                 self.redrawWindow()
                 self.changeOptionIfArrowClicked(self.cvx, self.cvy)
                 self.displayOptionData()
-                self.drawCorrectCountry(self.cvx, self.cvy, yellow, green)
-
+                self.drawCorrectCountry(self.cvx, self.cvy, blue1, green)
+                self.window.blit(cursor_img, (self.cvx, self.cvy), )
                 # self.initTreePixels()
                 # self.writeCountryPixelsInFile("arrow_left_player1", pos[0], pos[1])
             cv2.imshow("Camera", newScannedHandsImg)
