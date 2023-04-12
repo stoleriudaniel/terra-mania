@@ -49,6 +49,14 @@ class Game:
         self.currentOption = ""
         self.currentHoveredCountry = ""
 
+        self.mapRealWidth = 0
+        self.mapRealHeight = 0
+
+        self.computerVision = False
+
+        self.cvx = 0
+        self.cvy = 0
+
     def initTreePixelsArrows(self):
         print("In initTreePixels")
         # directories = [x[0] for x in os.walk(f"countries\\{self.CONTINENT}")]
@@ -759,12 +767,19 @@ class Game:
     def load_camera(self):
         self.frame, self.img = self.cap.read()
 
+    def saveState(self):
+        cropped_rect = pygame.Rect(20, 20, 897, 680)
+        cropped_surface = self.window.subsurface(cropped_rect)
+        realSize = (self.mapRealWidth, self.mapRealHeight)
+        cropped_surface = pygame.transform.scale(cropped_surface, realSize)
+        pygame.image.save(cropped_surface, "state/cropped_image.png")
+
     def redrawWindow(self):
         yellow = (238, 224, 29)
         green = (23, 165, 23)
         blue1 = (0, 51, 153)
         self.window.fill((255, 255, 255))
-        bg_img = pygame.image.load(self.currentMap)
+        bg_img = pygame.image.load("state/cropped_image.png")
         bg_img = pygame.transform.scale(bg_img, (897, 680))
         self.window.blit(bg_img, (20, 20), )
         # mouse
@@ -786,6 +801,8 @@ class Game:
         blue1 = (0, 51, 153)
         self.window.fill((255, 255, 255))
         bg_img = pygame.image.load(self.currentMap)
+        self.mapRealWidth = bg_img.get_width()
+        self.mapRealHeight = bg_img.get_height()
         bg_img = pygame.transform.scale(bg_img, (897, 680))
         self.window.blit(bg_img, (20, 20), )
 
@@ -808,9 +825,11 @@ class Game:
         self.displayCurrentGameTitle()
         self.displayTimeLeft()
 
+        self.computerVision = True
+
         arrowColor = (34, 177, 76)
         runing = True
-
+        self.saveState()
         while runing:
             self.load_camera()
             newScannedHandsImg = handTrackingModule.findHands(self.img)
@@ -818,6 +837,10 @@ class Game:
             self.redrawWindow()
             if handCoords != None:
                 self.window.blit(cursor_img, (handCoords[0], handCoords[1]), )
+                self.cvx = handCoords[0]
+                self.cvy = handCoords[1]
+            self.undrawCountries(blue1)
+            self.drawCountry(self.cvx, self.cvy, blue1, yellow)
             cv2.imshow("Camera", newScannedHandsImg)
             cv2.waitKey(1)
             ev = pygame.event.get()
