@@ -15,6 +15,7 @@ class HandDetector():
         self.hands = self.mpHands.Hands(self.mode, self.maxHands, self.modelComplexity, self.detectionCon,
                                         self.trackCon)
         self.mpDraw = mp.solutions.drawing_utils
+        self.handClosed = False
 
     def findHands(self, img, draw=True):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -37,8 +38,19 @@ class HandDetector():
                 lmList.append([id, cx, cy])
                 if (draw):
                     cv2.circle(img, (cx, cy), 5, (255, 0, 255), cv2.FILLED)
+        if len(lmList) > 0:
+            x, y = lmList[9][1], lmList[9][2]
 
+            x1, y1 = lmList[12][1], lmList[12][2]
+
+            if y1 > y:
+                self.handClosed = True
+            else:
+                self.handClosed = False
         return lmList
+
+    def isHandClosed(self):
+        return self.handClosed
 
     def getCoords(self, img):
         img = self.findHands(img)

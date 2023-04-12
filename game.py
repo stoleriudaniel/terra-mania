@@ -10,6 +10,8 @@ import pygame
 import sys
 from player import Player
 from button import Button
+
+
 class Game:
 
     def __init__(self):
@@ -23,7 +25,7 @@ class Game:
         self.BG = pygame.image.load("assets/Background.png")
         # self.net = Network()
         self.maps = ['Europe_map1.png', 'south_america112.png', 'north-america111.png', 'asia1.png', 'africa111.png',
-                'oceania111.png']
+                     'oceania111.png']
         self.continents = ["Europe", "South-America", "North-America", "Asia", "Africa", "Oceania"]
         self.CONTINENT = self.continents[3]
         self.currentMap = self.maps[3]
@@ -152,7 +154,7 @@ class Game:
         print("Finish")
         file.close()
 
-    def drawCountry(self, mouseX, mouseY, initRgb, newRgb, playerIdParam = "0"):
+    def drawCountry(self, mouseX, mouseY, initRgb, newRgb, playerIdParam="0"):
         red = (255, 0, 0)
         country = ""
         c = self.window.get_at((mouseX, mouseY))
@@ -194,7 +196,7 @@ class Game:
             self.drawCountryByCountryParam(country, newRgb)
             self.hoverColoredCountries.append(country)
 
-    def drawCorrectCountry(self, mouseX, mouseY, initRgb, newRgb, playerIdParam = "0"):
+    def drawCorrectCountry(self, mouseX, mouseY, initRgb, newRgb, playerIdParam="0"):
         # print("playerIdParam: ", playerIdParam)
         c = self.window.get_at((mouseX, mouseY))
         if (c[0], c[1], c[2]) != initRgb:
@@ -262,21 +264,21 @@ class Game:
         # print("before - player0:", self.player0.hoverColoredCountries)
         # print("before - player1:", self.player1.hoverColoredCountries)
         if self.isMultiplayer:
-                for incorrectCountry in self.player0.incorrectCountries:
-                    if incorrectCountry != self.player0.currentHoveredCountry:
-                        self.player0.hoverColoredCountries.append(incorrectCountry)
-                        self.player0.incorrectCountries.remove(incorrectCountry)
-                for country in self.player0.hoverColoredCountries:
-                    self.drawCountryByCountryParam(country, newRGB)
-                    self.player0.hoverColoredCountries.remove(country)
-                ## player 1
-                for incorrectCountry in self.player1.incorrectCountries:
-                    if incorrectCountry != self.player1.currentHoveredCountry:
-                        self.player1.hoverColoredCountries.append(incorrectCountry)
-                        self.player1.incorrectCountries.remove(incorrectCountry)
-                for country in self.player1.hoverColoredCountries:
-                    self.drawCountryByCountryParam(country, newRGB)
-                    self.player1.hoverColoredCountries.remove(country)
+            for incorrectCountry in self.player0.incorrectCountries:
+                if incorrectCountry != self.player0.currentHoveredCountry:
+                    self.player0.hoverColoredCountries.append(incorrectCountry)
+                    self.player0.incorrectCountries.remove(incorrectCountry)
+            for country in self.player0.hoverColoredCountries:
+                self.drawCountryByCountryParam(country, newRGB)
+                self.player0.hoverColoredCountries.remove(country)
+            ## player 1
+            for incorrectCountry in self.player1.incorrectCountries:
+                if incorrectCountry != self.player1.currentHoveredCountry:
+                    self.player1.hoverColoredCountries.append(incorrectCountry)
+                    self.player1.incorrectCountries.remove(incorrectCountry)
+            for country in self.player1.hoverColoredCountries:
+                self.drawCountryByCountryParam(country, newRGB)
+                self.player1.hoverColoredCountries.remove(country)
         else:
             for incorrectCountry in self.incorrectCountries:
                 if incorrectCountry != self.currentHoveredCountry:
@@ -588,7 +590,7 @@ class Game:
                     break
         return capital
 
-    def getCountry(self, option = ""):
+    def getCountry(self, option=""):
         country = ""
         if self.isMultiplayer:
             if option != "":
@@ -609,15 +611,15 @@ class Game:
                     break
         return country
 
-    def displayCapital(self, xCoord, yCoord, option = ""):
+    def displayCapital(self, xCoord, yCoord, option=""):
         capital = self.getCapital(option)
         self.drawAnOval(capital, xCoord, yCoord)
 
-    def displayCountry(self, xCoord, yCoord, option = ""):
+    def displayCountry(self, xCoord, yCoord, option=""):
         country = self.getCountry(option)
         self.drawAnOval(country, xCoord, yCoord)
 
-    def displayFlag(self, xCoord, yCoord, optionParam = ""):
+    def displayFlag(self, xCoord, yCoord, optionParam=""):
         if self.isMultiplayer:
             if optionParam != "":
                 option = pygame.image.load(f"countries\\{self.CONTINENT}\\{optionParam}\\flag.png")
@@ -630,7 +632,7 @@ class Game:
         option = pygame.transform.scale(option, (130, 100))  # 130, 100 for flags
         self.window.blit(option, (xCoord + 1020, yCoord + 200))  # 1020, 200 for flags
 
-    def displayOption(self, xCoord, yCoord, option = ""):
+    def displayOption(self, xCoord, yCoord, option=""):
         if self.gameType == self.gameTypeFlags:
             self.displayFlag(xCoord, yCoord, option)
         if self.gameType == self.gameTypeCapitals:
@@ -704,12 +706,14 @@ class Game:
             MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
 
             PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(640, 250),
-                                 text_input="PLAY", font=self.get_font(75), base_color="#d7fcd4", hovering_color="White")
+                                 text_input="PLAY", font=self.get_font(75), base_color="#d7fcd4",
+                                 hovering_color="White")
             OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400),
                                     text_input="OPTIONS", font=self.get_font(75), base_color="#d7fcd4",
                                     hovering_color="White")
             QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 550),
-                                 text_input="QUIT", font=self.get_font(75), base_color="#d7fcd4", hovering_color="White")
+                                 text_input="QUIT", font=self.get_font(75), base_color="#d7fcd4",
+                                 hovering_color="White")
 
             self.window.blit(MENU_TEXT, MENU_RECT)
 
@@ -742,9 +746,11 @@ class Game:
             MENU_TEXT = self.get_font(100).render("MAIN MENU", True, "#b68f40")
             MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
             EUROPE_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400),
-                                   text_input="EUROPE", font=self.get_font(75), base_color="#d7fcd4", hovering_color="White")
+                                   text_input="EUROPE", font=self.get_font(75), base_color="#d7fcd4",
+                                   hovering_color="White")
             AFRICA_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 550),
-                                   text_input="AFRICA", font=self.get_font(75), base_color="#d7fcd4", hovering_color="White")
+                                   text_input="AFRICA", font=self.get_font(75), base_color="#d7fcd4",
+                                   hovering_color="White")
 
             self.window.blit(MENU_TEXT, MENU_RECT)
 
@@ -847,6 +853,13 @@ class Game:
                 self.window.blit(cursor_img, (handCoords[0], handCoords[1]), )
             elif self.cvx > 0 or self.cvy > 0:
                 self.window.blit(cursor_img, (self.cvx, self.cvy), )
+            if handTrackingModule.isHandClosed():
+                self.changeOptionIfArrowClicked(self.cvx, self.cvy)
+                self.displayOptionData()
+                self.drawCorrectCountry(self.cvx, self.cvy, yellow, green)
+
+                # self.initTreePixels()
+                # self.writeCountryPixelsInFile("arrow_left_player1", pos[0], pos[1])
             cv2.imshow("Camera", newScannedHandsImg)
             cv2.waitKey(1)
             ev = pygame.event.get()
