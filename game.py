@@ -251,7 +251,8 @@ class Game:
         else:
             if country == self.currentOption:
                 self.drawCountryByCountryParam(country, newRgb)
-                self.hoverColoredCountries.remove(country)
+                if country in self.hoverColoredCountries:
+                    self.hoverColoredCountries.remove(country)
                 self.correctOptions.append(country)
                 self.getNextOption()
                 if self.computerVision:
@@ -260,7 +261,8 @@ class Game:
                 self.incorrectCountries.append(country)
                 red = (255, 0, 0)
                 self.drawCountryByCountryParam(country, red)
-                self.hoverColoredCountries.remove(country)
+                if country in self.hoverColoredCountries:
+                    self.hoverColoredCountries.remove(country)
 
     def undrawCountries(self, newRGB):
         # print("before - player0:", self.player0.hoverColoredCountries)
