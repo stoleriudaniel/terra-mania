@@ -2,8 +2,9 @@ import cv2.data
 import mediapipe as mp
 import time
 
+
 class HandDetector():
-    def __init__(self,mode=False,maxHands = 2, modelComplexity = 1, detectionCon=0.5, trackCon = 0.5):
+    def __init__(self, mode=False, maxHands=2, modelComplexity=1, detectionCon=0.5, trackCon=0.5):
         self.mode = mode
         self.maxHands = maxHands
         self.modelComplexity = modelComplexity
@@ -11,7 +12,8 @@ class HandDetector():
         self.trackCon = trackCon
 
         self.mpHands = mp.solutions.hands
-        self.hands = self.mpHands.Hands(self.mode, self.maxHands, self.modelComplexity, self.detectionCon, self.trackCon)
+        self.hands = self.mpHands.Hands(self.mode, self.maxHands, self.modelComplexity, self.detectionCon,
+                                        self.trackCon)
         self.mpDraw = mp.solutions.drawing_utils
 
     def findHands(self, img, draw=True):
@@ -33,28 +35,13 @@ class HandDetector():
                 h, w, c = img.shape
                 cx, cy = int(lm.x * w), int(lm.y * h)
                 lmList.append([id, cx, cy])
-                if(draw):
+                if (draw):
                     cv2.circle(img, (cx, cy), 5, (255, 0, 255), cv2.FILLED)
 
         return lmList
 
-    def show(self):
-        pTime = 0
-        cTime = 0
-        cap = cv2.VideoCapture(0)
-        while True:
-            success, img = cap.read()
-            img = self.findHands(img)
-            lmList = self.findPosition(img)
-            if len(lmList) != 0:
-                print(lmList[9])
-            time.sleep(2)
-            cTime = time.time()
-            fps = 1 / (cTime - pTime)
-            pTime = cTime
-
-            cv2.putText(img, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3,
-                        (255, 0, 255), 3)
-
-            cv2.imshow("Image", img)
-            cv2.waitKey(1)
+    def getCoords(self, img):
+        img = self.findHands(img)
+        lmList = self.findPosition(img)
+        if len(lmList) != 0:
+            return lmList[9][1], lmList[9][2]

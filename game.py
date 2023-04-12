@@ -1,5 +1,5 @@
 import threading
-
+import cv2.data
 import HandTrackingModule
 from network import Network
 import os
@@ -756,12 +756,10 @@ class Game:
 
             pygame.display.update()
 
-    def playGame(self):
-        hand = HandTrackingModule.HandDetector()
-        # hand.show()
-        self.c_thread=threading.Thread(target=hand.show, args=())
-        self.c_thread.start()
-        print("hello, thread")
+    def load_camera(self):
+        self.frame, self.img = self.cap.read()
+
+    def redrawWindow(self):
         yellow = (238, 224, 29)
         green = (23, 165, 23)
         blue1 = (0, 51, 153)
@@ -769,6 +767,31 @@ class Game:
         bg_img = pygame.image.load(self.currentMap)
         bg_img = pygame.transform.scale(bg_img, (897, 680))
         self.window.blit(bg_img, (20, 20), )
+        # mouse
+        cursor_img = pygame.image.load("cursor1.png")
+        cursor_img = pygame.transform.scale(cursor_img, (50, 40))
+
+        self.displayOptionData()
+        self.displayCurrentGameTitle()
+        self.displayTimeLeft()
+
+    def playGame(self):
+        handTrackingModule = HandTrackingModule.HandDetector()
+        # hand.show()
+        # self.c_thread=threading.Thread(target=hand.show, args=())
+        # self.c_thread.start()
+        # print("hello, thread")
+        yellow = (238, 224, 29)
+        green = (23, 165, 23)
+        blue1 = (0, 51, 153)
+        self.window.fill((255, 255, 255))
+        bg_img = pygame.image.load(self.currentMap)
+        bg_img = pygame.transform.scale(bg_img, (897, 680))
+        self.window.blit(bg_img, (20, 20), )
+
+        # mouse
+        cursor_img = pygame.image.load("cursor1.png")
+        cursor_img = pygame.transform.scale(cursor_img, (50, 40))
 
         self.currentOption = self.getRandomOption()
         # self.displayOption()
@@ -789,25 +812,36 @@ class Game:
         runing = True
 
         while runing:
+            self.load_camera()
+            newScannedHandsImg = handTrackingModule.findHands(self.img)
+            handCoords = handTrackingModule.getCoords(newScannedHandsImg)
+            self.redrawWindow()
+            if handCoords != None:
+                self.window.blit(cursor_img, (handCoords[0], handCoords[1]), )
+            cv2.imshow("Camera", newScannedHandsImg)
+            cv2.waitKey(1)
             ev = pygame.event.get()
-            for event in ev:
-                if event.type == pygame.MOUSEMOTION:  # MOUSEBUTTONUP MOUSEMOTION
-                    pos = pygame.mouse.get_pos()
-                    self.undrawCountries(blue1)
-                    self.drawCountry(pos[0], pos[1], blue1, yellow)
-                if event.type == pygame.MOUSEBUTTONUP:
-                    pos = pygame.mouse.get_pos()
-                    self.changeOptionIfArrowClicked(pos[0], pos[1])
-                    self.displayOptionData()
-                    self.drawCorrectCountry(pos[0], pos[1], yellow, green)
-
-                    # self.initTreePixels()
-                    # self.writeCountryPixelsInFile("arrow_left_player1", pos[0], pos[1])
+            # for event in ev:
+            #
+            #     if event.type == pygame.MOUSEMOTION:  # MOUSEBUTTONUP MOUSEMOTION
+            #         pos = pygame.mouse.get_pos()
+            #         self.undrawCountries(blue1)
+            #         self.drawCountry(pos[0], pos[1], blue1, yellow)
+            #     if event.type == pygame.MOUSEBUTTONUP:
+            #         pos = pygame.mouse.get_pos()
+            #         self.changeOptionIfArrowClicked(pos[0], pos[1])
+            #         self.displayOptionData()
+            #         self.drawCorrectCountry(pos[0], pos[1], yellow, green)
+            #
+            #         # self.initTreePixels()
+            #         # self.writeCountryPixelsInFile("arrow_left_player1", pos[0], pos[1])
             pygame.display.update()
         pygame.quit()
 
     def launch(self):
         pygame.init()
         pygame.display.set_caption("Menu")
+        self.cap = cv2.VideoCapture(0)
+        self.frame = self.cap.read()
         self.playGame()
         # main_menu()
