@@ -843,56 +843,58 @@ class Game:
 
         arrowColor = (34, 177, 76)
         runing = True
-        self.saveState()
+        if self.computerVision:
+            self.cap = cv2.VideoCapture(0)
+            self.frame = self.cap.read()
+            self.saveState()
         while runing:
-            self.load_camera()
-            newScannedHandsImg = handTrackingModule.findHands(self.img)
-            handCoords = handTrackingModule.getCoords(newScannedHandsImg)
-            if handCoords != None:
-                self.cvx = self.SCREEN_WIDTH - handCoords[0]
-                self.cvy = handCoords[1]
-                if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
-                    self.redrawWindow()
-                    self.undrawCountries(blue1)
-                    self.drawCountry(self.cvx, self.cvy, blue1, yellow)
-                    self.window.blit(cursor_img, (self.cvx, self.cvy), )
-            elif self.cvx > 0 or self.cvy > 0:
-                if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
-                    self.window.blit(cursor_img, (self.cvx, self.cvy), )
-            if handTrackingModule.isHandClosed():
-                if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
-                    self.redrawWindow()
-                    self.changeOptionIfArrowClicked(self.cvx, self.cvy)
-                    self.displayOptionData()
-                    self.drawCorrectCountry(self.cvx, self.cvy, blue1, green)
-                    self.window.blit(cursor_img, (self.cvx, self.cvy), )
-                # self.initTreePixels()
-                # self.writeCountryPixelsInFile("arrow_left_player1", pos[0], pos[1])
-            newScannedHandsImg = cv2.flip(newScannedHandsImg, 1)
-            cv2.imshow("Camera", newScannedHandsImg)
-            cv2.waitKey(1)
-            ev = pygame.event.get()
-            # for event in ev:
-            #
-            #     if event.type == pygame.MOUSEMOTION:  # MOUSEBUTTONUP MOUSEMOTION
-            #         pos = pygame.mouse.get_pos()
-            #         self.undrawCountries(blue1)
-            #         self.drawCountry(pos[0], pos[1], blue1, yellow)
-            #     if event.type == pygame.MOUSEBUTTONUP:
-            #         pos = pygame.mouse.get_pos()
-            #         self.changeOptionIfArrowClicked(pos[0], pos[1])
-            #         self.displayOptionData()
-            #         self.drawCorrectCountry(pos[0], pos[1], yellow, green)
-            #
-            #         # self.initTreePixels()
-            #         # self.writeCountryPixelsInFile("arrow_left_player1", pos[0], pos[1])
+            if self.computerVision:
+                self.load_camera()
+                newScannedHandsImg = handTrackingModule.findHands(self.img)
+                handCoords = handTrackingModule.getCoords(newScannedHandsImg)
+                if handCoords != None:
+                    self.cvx = self.SCREEN_WIDTH - handCoords[0]
+                    self.cvy = handCoords[1]
+                    if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
+                        self.redrawWindow()
+                        self.undrawCountries(blue1)
+                        self.drawCountry(self.cvx, self.cvy, blue1, yellow)
+                        self.window.blit(cursor_img, (self.cvx, self.cvy), )
+                elif self.cvx > 0 or self.cvy > 0:
+                    if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
+                        self.window.blit(cursor_img, (self.cvx, self.cvy), )
+                if handTrackingModule.isHandClosed():
+                    if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
+                        self.redrawWindow()
+                        self.changeOptionIfArrowClicked(self.cvx, self.cvy)
+                        self.displayOptionData()
+                        self.drawCorrectCountry(self.cvx, self.cvy, blue1, green)
+                        self.window.blit(cursor_img, (self.cvx, self.cvy), )
+                    # self.initTreePixels()
+                    # self.writeCountryPixelsInFile("arrow_left_player1", pos[0], pos[1])
+                newScannedHandsImg = cv2.flip(newScannedHandsImg, 1)
+                cv2.imshow("Camera", newScannedHandsImg)
+                cv2.waitKey(1)
+            else:
+                ev = pygame.event.get()
+                for event in ev:
+                    if event.type == pygame.MOUSEMOTION:  # MOUSEBUTTONUP MOUSEMOTION
+                        pos = pygame.mouse.get_pos()
+                        self.undrawCountries(blue1)
+                        self.drawCountry(pos[0], pos[1], blue1, yellow)
+                    if event.type == pygame.MOUSEBUTTONUP:
+                        pos = pygame.mouse.get_pos()
+                        self.changeOptionIfArrowClicked(pos[0], pos[1])
+                        self.displayOptionData()
+                        self.drawCorrectCountry(pos[0], pos[1], yellow, green)
+
+                        # self.initTreePixels()
+                        # self.writeCountryPixelsInFile("arrow_left_player1", pos[0], pos[1])
             pygame.display.update()
         pygame.quit()
 
     def launch(self):
         pygame.init()
         pygame.display.set_caption("Menu")
-        self.cap = cv2.VideoCapture(0)
-        self.frame = self.cap.read()
         self.playGame()
         # main_menu()
