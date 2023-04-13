@@ -1,6 +1,7 @@
 import threading
 import cv2.data
 import HandTrackingModule
+from InputText import InputText
 from network import Network
 import os
 import random
@@ -10,6 +11,7 @@ import pygame
 import sys
 from player import Player
 from button import Button
+from server import Server
 
 
 class Game:
@@ -822,13 +824,13 @@ class Game:
             MENU_MOUSE_POS = pygame.mouse.get_pos()
 
             SINGLEPLAYER_BUTTON = Button(image=None, pos=(640, 215),
-                                 text_input="Single Player", font=self.get_font(30), base_color="#d7fcd4",
+                                 text_input="Single Player", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
             MULTIPLAYER_BUTTON = Button(image=None, pos=(640, 370),
-                                    text_input="Multiplayer", font=self.get_font(30), base_color="#d7fcd4",
+                                    text_input="Multiplayer", font=self.get_font(25), base_color="#d7fcd4",
                                     hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 528),
-                                 text_input="Back", font=self.get_font(30), base_color="#d7fcd4",
+                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [SINGLEPLAYER_BUTTON, MULTIPLAYER_BUTTON, BACK_BUTTON]:
@@ -842,8 +844,182 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if SINGLEPLAYER_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.flagsCapitalsCountriesMenu()
+                    if MULTIPLAYER_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.multiplayerMenu()
                     if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.originalMainMenu()
+
+            pygame.display.update()
+
+    def multiplayerMenu(self):
+        backgroundImage = pygame.image.load("menu/2.jpg")
+        backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        while True:
+            self.window.blit(backgroundImageScaled, (0, 0))
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+            CREATE_NEW_SERVER_BUTTON = Button(image=None, pos=(640, 210),
+                                 text_input="Create new server", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            CONNECT_TO_SERVER_BUTTON = Button(image=None, pos=(640, 370),
+                                    text_input="Connect to server", font=self.get_font(25), base_color="#d7fcd4",
+                                    hovering_color="Blue")
+            BACK_BUTTON = Button(image=None, pos=(640, 528),
+                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            # self.window.blit(MENU_TEXT, MENU_RECT)
+            for button in [CREATE_NEW_SERVER_BUTTON, CONNECT_TO_SERVER_BUTTON, BACK_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if CREATE_NEW_SERVER_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.flagsCapitalsCountriesServerMenu()
+                    if CONNECT_TO_SERVER_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.connectToServerMenu()
+                    if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.singlePlayerOrMultiplayerMenu()
+
+            pygame.display.update()
+
+    def createNewServerMenu(self, gameTypeParam, indexMapAndContinent):
+        backgroundImage = pygame.image.load("menu/5.jpg")
+        backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        textFieldSelected = False
+        i_text = "Hello"
+        i_text_x = 600
+        i_text_y = 200
+        i_text_width = 320
+        i_text_heigth = 50
+        color = (255, 255, 255)
+        font = pygame.font.Font(None, 40)
+        while True:
+            self.window.blit(backgroundImageScaled, (0, 0))
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+            START_BUTTON = Button(image=None, pos=(620, 355),
+                                 text_input="Start", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            BACK_BUTTON = Button(image=None, pos=(620, 480),
+                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+
+            text_input = InputText(100, 100, 200, 50)
+
+            for button in [START_BUTTON, BACK_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    print(MENU_MOUSE_POS)
+                    if START_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        Server().create()
+                        print("create server")
+                    if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.multiplayerMenu()
+                    if MENU_MOUSE_POS[0] >= i_text_x and MENU_MOUSE_POS[0] <= i_text_x + i_text_width and MENU_MOUSE_POS[1] >= i_text_y and MENU_MOUSE_POS[1] <= i_text_y + i_text_heigth:
+                        textFieldSelected = True
+                    else:
+                        textFieldSelected = False
+                if event.type == pygame.KEYDOWN:
+                    print("key down")
+                    if textFieldSelected is True:
+                        print("Yes, modify")
+                        if event.key == pygame.K_RETURN:
+                            # Clear the input text when the user presses enter
+                            i_text = ''
+                        elif event.key == pygame.K_BACKSPACE:
+                            # Remove the last character when the user presses backspace
+                            i_text = i_text[:-1]
+                        else:
+                            # Add the pressed character to the text
+                            i_text += event.unicode
+
+            insert_address_text_surface = font.render("Server IP Address:", True, color)
+            self.window.blit(insert_address_text_surface, (330 + 5, 205 + 5))
+
+            #update text input
+            text_surface = font.render(i_text, True, color)
+
+            # Draw the text input object on the screen
+            # self.window.fill((20, 20, 0))
+            rect = pygame.Rect(i_text_x, i_text_y, i_text_width, i_text_heigth)
+            pygame.draw.rect(self.window, color, rect, 2)
+            self.window.blit(text_surface, (i_text_x + 15, i_text_y + 12))
+
+            pygame.display.update()
+
+    def connectToServerMenu(self):
+        backgroundImage = pygame.image.load("menu/5.jpg")
+        backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        textFieldSelected = False
+        i_text = "Hello"
+        i_text_x = 600
+        i_text_y = 200
+        i_text_width = 320
+        i_text_heigth = 50
+        color = (255, 255, 255)
+        font = pygame.font.Font(None, 40)
+        while True:
+            self.window.blit(backgroundImageScaled, (0, 0))
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+            CONNECT_BUTTON = Button(image=None, pos=(620, 355),
+                                 text_input="Connect", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            BACK_BUTTON = Button(image=None, pos=(620, 480),
+                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+
+            text_input = InputText(100, 100, 200, 50)
+
+            for button in [CONNECT_BUTTON, BACK_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    print(MENU_MOUSE_POS)
+                    if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.multiplayerMenu()
+                    if MENU_MOUSE_POS[0] >= i_text_x and MENU_MOUSE_POS[0] <= i_text_x + i_text_width and MENU_MOUSE_POS[1] >= i_text_y and MENU_MOUSE_POS[1] <= i_text_y + i_text_heigth:
+                        textFieldSelected = True
+                    else:
+                        textFieldSelected = False
+                if event.type == pygame.KEYDOWN:
+                    print("key down")
+                    if textFieldSelected is True:
+                        print("Yes, modify")
+                        if event.key == pygame.K_RETURN:
+                            # Clear the input text when the user presses enter
+                            i_text = ''
+                        elif event.key == pygame.K_BACKSPACE:
+                            # Remove the last character when the user presses backspace
+                            i_text = i_text[:-1]
+                        else:
+                            # Add the pressed character to the text
+                            i_text += event.unicode
+
+            insert_address_text_surface = font.render("Server IP Address:", True, color)
+            self.window.blit(insert_address_text_surface, (330 + 5, 205 + 5))
+
+            #update text input
+            text_surface = font.render(i_text, True, color)
+
+            # Draw the text input object on the screen
+            # self.window.fill((20, 20, 0))
+            rect = pygame.Rect(i_text_x, i_text_y, i_text_width, i_text_heigth)
+            pygame.draw.rect(self.window, color, rect, 2)
+            self.window.blit(text_surface, (i_text_x + 15, i_text_y + 12))
 
             pygame.display.update()
 
@@ -855,16 +1031,16 @@ class Game:
             MENU_MOUSE_POS = pygame.mouse.get_pos()
 
             FLAGS_BUTTON = Button(image=None, pos=(640, 190),
-                                 text_input="Flags", font=self.get_font(30), base_color="#d7fcd4",
+                                 text_input="Flags", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
             CAPITALS_BUTTON = Button(image=None, pos=(640, 305),
-                                    text_input="Capitals", font=self.get_font(30), base_color="#d7fcd4",
+                                    text_input="Capitals", font=self.get_font(25), base_color="#d7fcd4",
                                     hovering_color="Blue")
             COUNTRIES_BUTTON = Button(image=None, pos=(640, 420),
-                                 text_input="Countries", font=self.get_font(30), base_color="#d7fcd4",
+                                 text_input="Countries", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 535),
-                                 text_input="Back", font=self.get_font(30), base_color="#d7fcd4",
+                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [FLAGS_BUTTON, CAPITALS_BUTTON, COUNTRIES_BUTTON, BACK_BUTTON]:
@@ -882,6 +1058,121 @@ class Game:
                         self.continentsMenu(self.gameTypeCapitals)
                     if COUNTRIES_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.continentsMenu(self.gameTypeCountries)
+                    if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.singlePlayerOrMultiplayerMenu()
+
+            pygame.display.update()
+
+    def flagsCapitalsCountriesServerMenu(self):
+        backgroundImage = pygame.image.load("menu/3.jpg")
+        backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        while True:
+            self.window.blit(backgroundImageScaled, (0, 0))
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+            FLAGS_BUTTON = Button(image=None, pos=(640, 190),
+                                 text_input="Flags", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            CAPITALS_BUTTON = Button(image=None, pos=(640, 305),
+                                    text_input="Capitals", font=self.get_font(25), base_color="#d7fcd4",
+                                    hovering_color="Blue")
+            COUNTRIES_BUTTON = Button(image=None, pos=(640, 420),
+                                 text_input="Countries", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            BACK_BUTTON = Button(image=None, pos=(640, 535),
+                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            # self.window.blit(MENU_TEXT, MENU_RECT)
+            for button in [FLAGS_BUTTON, CAPITALS_BUTTON, COUNTRIES_BUTTON, BACK_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if FLAGS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.continentsServerMenu(self.gameTypeFlags)
+                    if CAPITALS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.continentsServerMenu(self.gameTypeCapitals)
+                    if COUNTRIES_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.continentsServerMenu(self.gameTypeCountries)
+                    if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.singlePlayerOrMultiplayerMenu()
+
+            pygame.display.update()
+
+    def continentsServerMenu(self, gameTypeParam):
+        self.gameType = gameTypeParam
+        backgroundImage = pygame.image.load("menu/4.jpg")
+        backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        while True:
+            self.window.blit(backgroundImageScaled, (0, 0))
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+            NORTH_BUTTON = Button(image=None, pos=(480, 220),
+                                 text_input="North", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            AMERICA_N_BUTTON = Button(image=None, pos=(480, 250),
+                                 text_input="America", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            SOUTH_BUTTON = Button(image=None, pos=(480, 330),
+                                 text_input="South", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            AMERICA_S_BUTTON = Button(image=None, pos=(480, 360),
+                                 text_input="America", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            AFRICA_BUTTON = Button(image=None, pos=(480, 455),
+                                 text_input="Africa", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            EUROPE_BUTTON = Button(image=None, pos=(800, 235),
+                                 text_input="Europe", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            ASIA_BUTTON = Button(image=None, pos=(800, 345),
+                                    text_input="Asia", font=self.get_font(25), base_color="#d7fcd4",
+                                    hovering_color="Blue")
+            OCEANIA_BUTTON = Button(image=None, pos=(800, 455),
+                                 text_input="Oceania", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            BACK_BUTTON = Button(image=None, pos=(640, 560),
+                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            # self.window.blit(MENU_TEXT, MENU_RECT)
+            for button in [AFRICA_BUTTON, ASIA_BUTTON, NORTH_BUTTON, AMERICA_N_BUTTON, SOUTH_BUTTON, AMERICA_S_BUTTON, OCEANIA_BUTTON, EUROPE_BUTTON, BACK_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+
+                    self.maps = ['Europe_map1.png', 'south_america112.png', 'north-america111.png', 'asia1.png',
+                                 'africa111.png',
+                                 'oceania111.png']
+                    self.continents = ["Europe", "South-America", "North-America", "Asia", "Africa", "Oceania"]
+                    self.CONTINENT = self.continents[3]
+                    self.currentMap = self.maps[3]
+
+
+                    if NORTH_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.createNewServerMenu(gameTypeParam, 2)
+                    if AMERICA_N_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.createNewServerMenu(gameTypeParam, 2)
+                    if SOUTH_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.createNewServerMenu(gameTypeParam, 1)
+                    if AMERICA_S_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.createNewServerMenu(gameTypeParam, 1)
+                    if AFRICA_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.createNewServerMenu(gameTypeParam, 4)
+                    if EUROPE_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.createNewServerMenu(gameTypeParam, 0)
+                    if ASIA_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.createNewServerMenu(gameTypeParam, 3)
+                    if OCEANIA_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.createNewServerMenu(gameTypeParam, 5)
                     if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.singlePlayerOrMultiplayerMenu()
 
@@ -981,4 +1272,6 @@ class Game:
         pygame.init()
         pygame.display.set_caption("Menu")
         # self.playGame()
-        self.originalMainMenu()
+        # self.originalMainMenu()
+        # self.multiplayerMenu()
+        self.connectToServerMenu()

@@ -52,5 +52,3 @@ class Server():
 
         print("Connection Closed")
         conn.close()
-
-Server().create()
