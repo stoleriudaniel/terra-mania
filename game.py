@@ -839,10 +839,10 @@ class Game:
         self.displayCurrentGameTitle()
         self.displayTimeLeft()
 
-        self.computerVision = True
-
         arrowColor = (34, 177, 76)
         runing = True
+
+        self.computerVision = True
         if self.computerVision:
             self.cap = cv2.VideoCapture(0)
             self.frame = self.cap.read()
