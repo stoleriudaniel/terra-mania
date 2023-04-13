@@ -1272,6 +1272,6 @@ class Game:
         pygame.init()
         pygame.display.set_caption("Menu")
         # self.playGame()
-        # self.originalMainMenu()
+        self.originalMainMenu()
         # self.multiplayerMenu()
-        self.connectToServerMenu()
+        # self.connectToServerMenu()
