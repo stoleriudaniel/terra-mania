@@ -23,7 +23,6 @@ class Game:
         self.SCREEN_HEIGHT = 720
         self.window = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         self.BG = pygame.image.load("assets/Background.png")
-        # self.net = Network()
         self.maps = ['Europe_map1.png', 'south_america112.png', 'north-america111.png', 'asia1.png', 'africa111.png',
                      'oceania111.png']
         self.continents = ["Europe", "South-America", "North-America", "Asia", "Africa", "Oceania"]
@@ -158,7 +157,6 @@ class Game:
         red = (255, 0, 0)
         country = ""
         c = self.window.get_at((mouseX, mouseY))
-        # print((c[0], c[1], c[2]) != initRgb, c)
         if (c[0], c[1], c[2]) != initRgb:
             if (c[0], c[1], c[2]) != red:
                 if self.isMultiplayer:
@@ -214,34 +212,27 @@ class Game:
                 break
         if country == "":
             return
-        # print("country: ", country)
         if self.isMultiplayer:
             if self.player0.id == playerIdParam:
                 if country == self.player0.currentOption or country == self.player0.lastCorrectOption:
-                    # print("call drawCountryByCountryParam rgb self.playerId:", self.playerId, " self.player0.id:", self.player0.id, " playerIdParam:", playerIdParam)
                     self.player0.lastCorrectOption = country
                     self.drawCountryByCountryParam(country, newRgb)
                     self.player0.hoverColoredCountries.remove(country)
                     self.player0.correctOptions.append(country)
                     self.getNextOption()
                 else:
-                    # print("call else stmt player0")
-                    # print("call drawCountryByCountryParam rgb self.playerId:", self.playerId, " self.player0.id:", self.player0.id, " playerIdParam:", playerIdParam)
                     self.player0.incorrectCountries.append(country)
                     red = (255, 0, 0)
                     self.drawCountryByCountryParam(country, red)
                     self.player0.hoverColoredCountries.remove(country)
             elif self.player1.id == playerIdParam:
                 if country == self.player1.currentOption or country == self.player1.lastCorrectOption:
-                    # print("call drawCountryByCountryParam rgb self.playerId:", self.playerId, " self.player1.id:",self.player1.id, " playerIdParam:", playerIdParam)
                     self.player1.lastCorrectOption = country
                     self.drawCountryByCountryParam(country, newRgb)
                     self.player1.hoverColoredCountries.remove(country)
                     self.player1.correctOptions.append(country)
                     self.getNextOption()
                 else:
-                    # print("call else stmt player0")
-                    # print("call drawCountryByCountryParam rgb self.playerId:", self.playerId, " self.player1.id:", self.player1.id, " playerIdParam:", playerIdParam)
                     self.player1.incorrectCountries.append(country)
                     red = (255, 0, 0)
                     self.drawCountryByCountryParam(country, red)
@@ -265,8 +256,6 @@ class Game:
                     self.hoverColoredCountries.remove(country)
 
     def undrawCountries(self, newRGB):
-        # print("before - player0:", self.player0.hoverColoredCountries)
-        # print("before - player1:", self.player1.hoverColoredCountries)
         if self.isMultiplayer:
             for incorrectCountry in self.player0.incorrectCountries:
                 if incorrectCountry != self.player0.currentHoveredCountry:
@@ -291,8 +280,6 @@ class Game:
             for country in self.hoverColoredCountries:
                 self.drawCountryByCountryParam(country, newRGB)
                 self.hoverColoredCountries.remove(country)
-        # print("after - player0:", self.player0.hoverColoredCountries)
-        # print("after - player1:", self.player1.hoverColoredCountries)
 
     def drawCountryByCountryParam(self, country, newRGB):
         countryPixelsFile = open(f"countries\\{self.CONTINENT}\\{country}\\pixels.txt", "r")
@@ -542,13 +529,6 @@ class Game:
         WHITE = (255, 255, 255)
         RED = (255, 0, 0)
 
-        # draw circle
-        # radius = 100
-        # center = (1100, 500)
-        # pygame.draw.circle(window, RED, center, radius)
-
-        # draw oval
-
         rect = pygame.Rect(xCoord + 990, yCoord + 100, 200, 120)  # left, top, width, height
         pygame.draw.ellipse(self.window, BLACK, rect, width=20)
         pygame.draw.ellipse(self.window, RED, rect.inflate(-9, -9))
@@ -700,80 +680,6 @@ class Game:
 
             pygame.display.update()
 
-    def main_menu(self):
-        while True:
-            self.window.blit(self.BG, (0, 0))
-
-            MENU_MOUSE_POS = pygame.mouse.get_pos()
-
-            MENU_TEXT = self.get_font(100).render("MAIN MENU", True, "#b68f40")
-            MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
-
-            PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(640, 250),
-                                 text_input="PLAY", font=self.get_font(75), base_color="#d7fcd4",
-                                 hovering_color="White")
-            OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400),
-                                    text_input="OPTIONS", font=self.get_font(75), base_color="#d7fcd4",
-                                    hovering_color="White")
-            QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 550),
-                                 text_input="QUIT", font=self.get_font(75), base_color="#d7fcd4",
-                                 hovering_color="White")
-
-            self.window.blit(MENU_TEXT, MENU_RECT)
-
-            for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
-                button.changeColor(MENU_MOUSE_POS)
-                button.update(self.window)
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                        # play()
-                        self.continentsMenu()
-                    if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
-                        self.options()
-                    if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
-                        pygame.quit()
-                        sys.exit()
-
-            pygame.display.update()
-
-    def continentsMenu(self):
-        while True:
-            self.window.blit(self.BG, (0, 0))
-
-            MENU_MOUSE_POS = pygame.mouse.get_pos()
-
-            MENU_TEXT = self.get_font(100).render("MAIN MENU", True, "#b68f40")
-            MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
-            EUROPE_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400),
-                                   text_input="EUROPE", font=self.get_font(75), base_color="#d7fcd4",
-                                   hovering_color="White")
-            AFRICA_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 550),
-                                   text_input="AFRICA", font=self.get_font(75), base_color="#d7fcd4",
-                                   hovering_color="White")
-
-            self.window.blit(MENU_TEXT, MENU_RECT)
-
-            for button in [EUROPE_BUTTON, AFRICA_BUTTON]:
-                button.changeColor(MENU_MOUSE_POS)
-                button.update(self.window)
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if EUROPE_BUTTON.checkForInput(MENU_MOUSE_POS):
-                        self.playGame()
-                    if AFRICA_BUTTON.checkForInput(MENU_MOUSE_POS):
-                        self.playGame()
-
-            pygame.display.update()
-
     def load_camera(self):
         self.frame, self.img = self.cap.read()
 
@@ -785,31 +691,16 @@ class Game:
         pygame.image.save(cropped_surface, "state/cropped_image.png")
 
     def redrawWindow(self):
-        yellow = (238, 224, 29)
-        green = (23, 165, 23)
-        blue1 = (0, 51, 153)
         self.window.fill((255, 255, 255))
         bg_img = pygame.image.load("state/cropped_image.png")
-        # bg_img = pygame.transform.scale(bg_img, (897, 680))
         self.window.blit(bg_img, (20, 20), )
-        # mouse
-        # cursor_img = pygame.image.load("cursor1.png")
-        # cursor_img = pygame.transform.scale(cursor_img, (50, 40))
 
         self.displayOptionData()
         self.displayCurrentGameTitle()
         self.displayTimeLeft()
 
-    def drawMouse(self):
-        cursor_img = pygame.image.load("cursor1.png")
-        cursor_img = pygame.transform.scale(cursor_img, (50, 40))
-
     def playGame(self):
         handTrackingModule = HandTrackingModule.HandDetector()
-        # hand.show()
-        # self.c_thread=threading.Thread(target=hand.show, args=())
-        # self.c_thread.start()
-        # print("hello, thread")
         yellow = (238, 224, 29)
         green = (23, 165, 23)
         blue1 = (0, 51, 153)
@@ -824,25 +715,15 @@ class Game:
         cursor_img = pygame.image.load("cursor1.png")
         cursor_img = pygame.transform.scale(cursor_img, (50, 40))
 
-        self.currentOption = "Russia" # self.getRandomOption()
-        # self.displayOption()
-        #
-        # arrow_right = pygame.image.load("arrow_right.png")
-        # arrow_right = pygame.transform.scale(arrow_right, (80, 65))
-        # self.window.blit(arrow_right, (1170, 215))
-        #
-        # arrow_left = pygame.image.load("arrow_left.png")
-        # arrow_left = pygame.transform.scale(arrow_left, (80, 65))
-        # self.window.blit(arrow_left, (920, 215))
+        self.currentOption = self.getRandomOption()
 
         self.displayOptionData()
         self.displayCurrentGameTitle()
         self.displayTimeLeft()
 
-        arrowColor = (34, 177, 76)
         runing = True
 
-        self.computerVision = True
+        # self.computerVision = True
         if self.computerVision:
             self.cap = cv2.VideoCapture(0)
             self.frame = self.cap.read()
@@ -893,8 +774,211 @@ class Game:
             pygame.display.update()
         pygame.quit()
 
+    def originalMainMenu(self):
+        backgroundImage = pygame.image.load("menu/1.jpg")
+        backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        while True:
+            self.window.blit(backgroundImageScaled, (0, 0))
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+            MENU_TEXT = self.get_font(100).render("MAIN MENU", True, "#b68f40")
+            MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
+
+            PLAY_BUTTON = Button(image=None, pos=(280, 655),
+                                 text_input="Play", font=self.get_font(30), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            OPTIONS_BUTTON = Button(image=None, pos=(640, 655),
+                                    text_input="Options", font=self.get_font(30), base_color="#d7fcd4",
+                                    hovering_color="Blue")
+            QUIT_BUTTON = Button(image=None, pos=(1005, 655),
+                                 text_input="Quit", font=self.get_font(30), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            # self.window.blit(MENU_TEXT, MENU_RECT)
+            for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        # play()
+                        # self.continentsMenu()
+                        self.singlePlayerOrMultiplayerMenu()
+                    if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.options()
+                    if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        pygame.quit()
+                        sys.exit()
+
+            pygame.display.update()
+
+    def singlePlayerOrMultiplayerMenu(self):
+        backgroundImage = pygame.image.load("menu/2.jpg")
+        backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        while True:
+            self.window.blit(backgroundImageScaled, (0, 0))
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+            SINGLEPLAYER_BUTTON = Button(image=None, pos=(640, 215),
+                                 text_input="Single Player", font=self.get_font(30), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            MULTIPLAYER_BUTTON = Button(image=None, pos=(640, 370),
+                                    text_input="Multiplayer", font=self.get_font(30), base_color="#d7fcd4",
+                                    hovering_color="Blue")
+            BACK_BUTTON = Button(image=None, pos=(640, 528),
+                                 text_input="Back", font=self.get_font(30), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            # self.window.blit(MENU_TEXT, MENU_RECT)
+            for button in [SINGLEPLAYER_BUTTON, MULTIPLAYER_BUTTON, BACK_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if SINGLEPLAYER_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.flagsCapitalsCountriesMenu()
+                    if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.originalMainMenu()
+
+            pygame.display.update()
+
+    def flagsCapitalsCountriesMenu(self):
+        backgroundImage = pygame.image.load("menu/3.jpg")
+        backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        while True:
+            self.window.blit(backgroundImageScaled, (0, 0))
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+            FLAGS_BUTTON = Button(image=None, pos=(640, 190),
+                                 text_input="Flags", font=self.get_font(30), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            CAPITALS_BUTTON = Button(image=None, pos=(640, 305),
+                                    text_input="Capitals", font=self.get_font(30), base_color="#d7fcd4",
+                                    hovering_color="Blue")
+            COUNTRIES_BUTTON = Button(image=None, pos=(640, 420),
+                                 text_input="Countries", font=self.get_font(30), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            BACK_BUTTON = Button(image=None, pos=(640, 535),
+                                 text_input="Back", font=self.get_font(30), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            # self.window.blit(MENU_TEXT, MENU_RECT)
+            for button in [FLAGS_BUTTON, CAPITALS_BUTTON, COUNTRIES_BUTTON, BACK_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if FLAGS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.continentsMenu(self.gameTypeFlags)
+                    if CAPITALS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.continentsMenu(self.gameTypeCapitals)
+                    if COUNTRIES_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.continentsMenu(self.gameTypeCountries)
+                    if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.singlePlayerOrMultiplayerMenu()
+
+            pygame.display.update()
+    def continentsMenu(self, gameTypeParam):
+        self.gameType = gameTypeParam
+        backgroundImage = pygame.image.load("menu/4.jpg")
+        backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        while True:
+            self.window.blit(backgroundImageScaled, (0, 0))
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+            NORTH_BUTTON = Button(image=None, pos=(480, 220),
+                                 text_input="North", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            AMERICA_N_BUTTON = Button(image=None, pos=(480, 250),
+                                 text_input="America", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            SOUTH_BUTTON = Button(image=None, pos=(480, 330),
+                                 text_input="South", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            AMERICA_S_BUTTON = Button(image=None, pos=(480, 360),
+                                 text_input="America", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            AFRICA_BUTTON = Button(image=None, pos=(480, 455),
+                                 text_input="Africa", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            EUROPE_BUTTON = Button(image=None, pos=(800, 235),
+                                 text_input="Europe", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            ASIA_BUTTON = Button(image=None, pos=(800, 345),
+                                    text_input="Asia", font=self.get_font(25), base_color="#d7fcd4",
+                                    hovering_color="Blue")
+            OCEANIA_BUTTON = Button(image=None, pos=(800, 455),
+                                 text_input="Oceania", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            BACK_BUTTON = Button(image=None, pos=(640, 560),
+                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            # self.window.blit(MENU_TEXT, MENU_RECT)
+            for button in [AFRICA_BUTTON, ASIA_BUTTON, NORTH_BUTTON, AMERICA_N_BUTTON, SOUTH_BUTTON, AMERICA_S_BUTTON, OCEANIA_BUTTON, EUROPE_BUTTON, BACK_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+
+                    self.maps = ['Europe_map1.png', 'south_america112.png', 'north-america111.png', 'asia1.png',
+                                 'africa111.png',
+                                 'oceania111.png']
+                    self.continents = ["Europe", "South-America", "North-America", "Asia", "Africa", "Oceania"]
+                    self.CONTINENT = self.continents[3]
+                    self.currentMap = self.maps[3]
+
+
+                    if NORTH_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.currentMap = self.maps[2]
+                        self.CONTINENT = self.continents[2]
+                        self.playGame()
+                    if AMERICA_N_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.currentMap = self.maps[2]
+                        self.CONTINENT = self.continents[2]
+                        self.playGame()
+                    if SOUTH_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.currentMap = self.maps[1]
+                        self.CONTINENT = self.continents[1]
+                        self.playGame()
+                    if AMERICA_S_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.currentMap = self.maps[1]
+                        self.CONTINENT = self.continents[1]
+                        self.playGame()
+                    if AFRICA_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.currentMap = self.maps[4]
+                        self.CONTINENT = self.continents[4]
+                        self.playGame()
+                    if EUROPE_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.currentMap = self.maps[0]
+                        self.CONTINENT = self.continents[0]
+                        self.playGame()
+                    if ASIA_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.currentMap = self.maps[3]
+                        self.CONTINENT = self.continents[3]
+                        self.playGame()
+                    if OCEANIA_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.currentMap = self.maps[5]
+                        self.CONTINENT = self.continents[5]
+                        self.playGame()
+                    if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.singlePlayerOrMultiplayerMenu()
+
+            pygame.display.update()
+
     def launch(self):
         pygame.init()
         pygame.display.set_caption("Menu")
-        self.playGame()
-        # main_menu()
+        # self.playGame()
+        self.originalMainMenu()

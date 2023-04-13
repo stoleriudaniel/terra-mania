@@ -15,7 +15,6 @@ class Client():
 
     def extractData(self, data):
         try:
-            # print(data) "0:(0,0);(click=0);(currentOption=none);(correctOption=none)"
             pId = data.split(":")[0]
             coordsData = data.split(":")[1].split(";")[0]
             x = coordsData.split(",")[0].split("(")[1]
@@ -30,11 +29,7 @@ class Client():
     def play(self):
         pygame.init()
         pygame.display.set_caption("Menu")
-        # hand = HandTrackingModule.HandDetector()
-        # hand.show()
         self.game.playerId = self.playerId
-        # self.game.player0.id = self.playerId
-        # self.game.player1.id = str(1 - int(self.playerId))
         self.game.player0.currentOption = self.game.getOptionByIndex(0)
         self.game.player1.currentOption = self.game.getOptionByIndex(1)
         yellow = (238, 224, 29)
@@ -50,19 +45,9 @@ class Client():
         self.game.displayOptionData()
         self.game.displayCurrentGameTitle()
         self.game.displayTimeLeft()
-        # arrow_right = pygame.image.load("arrow_right.png")
-        # arrow_right = pygame.transform.scale(arrow_right, (80, 65))
-        # self.game.window.blit(arrow_right, (1170, 215))
-        #
-        # arrow_left = pygame.image.load("arrow_left.png")
-        # arrow_left = pygame.transform.scale(arrow_left, (80, 65))
-        # self.game.window.blit(arrow_left, (920, 215))
 
-        arrowColor = (34, 177, 76)
         runing = True
 
-        font = pygame.font.SysFont(None, 48)  # choose font and font size
-        print("hellooo22")
         while runing:
             self.game.displayOptionData()
             ev = pygame.event.get()
