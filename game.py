@@ -891,7 +891,7 @@ class Game:
         backgroundImage = pygame.image.load("menu/5.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         textFieldSelected = False
-        i_text = "Hello"
+        i_text = ""
         i_text_x = 600
         i_text_y = 200
         i_text_width = 320
@@ -921,6 +921,9 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     print(MENU_MOUSE_POS)
                     if START_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        if len(i_text)>0:
+                            if i_text[-1] == "|":
+                                i_text = i_text[:-1]
                         # Server().create()
                         return_code = subprocess.run(["startServer.bat", i_text], shell=True).returncode
 
@@ -939,21 +942,48 @@ class Game:
                         self.multiplayerMenu()
                     if MENU_MOUSE_POS[0] >= i_text_x and MENU_MOUSE_POS[0] <= i_text_x + i_text_width and MENU_MOUSE_POS[1] >= i_text_y and MENU_MOUSE_POS[1] <= i_text_y + i_text_heigth:
                         textFieldSelected = True
+                        if len(i_text) == 0:
+                            i_text = i_text + "|"
+                        elif i_text[-1] != "|":
+                            i_text = i_text + "|"
                     else:
-                        textFieldSelected = False
+                        if textFieldSelected is True:
+                            if len(i_text) > 0 and i_text[-1] == "|":
+                                i_text = i_text[:-1]
+                            textFieldSelected = False
                 if event.type == pygame.KEYDOWN:
                     print("key down")
                     if textFieldSelected is True:
                         print("Yes, modify")
                         if event.key == pygame.K_RETURN:
                             # Clear the input text when the user presses enter
-                            i_text = ''
+                            if len(i_text) > 0 and i_text[-1] == "|":
+                                i_text = i_text[:-1]
+                            return_code = subprocess.run(["startServer.bat", i_text], shell=True).returncode
+
+                            if return_code == 0:
+                                print("Server started successfully.")
+                                client = Client(self, i_text)
+                                client.play()
+                            elif return_code == 1:
+                                print("Server is already running. Stopped it and started again.")
+                                client = Client(self, i_text)
+                                client.play()
+                            else:
+                                print("An error occurred while starting the server.")
+                            print("create server")
                         elif event.key == pygame.K_BACKSPACE:
                             # Remove the last character when the user presses backspace
-                            i_text = i_text[:-1]
+                            if i_text[-1] == "|":
+                                i_text = i_text[:-1]
+                                i_text = i_text[:-1]
+                                i_text = i_text + "|"
                         else:
                             # Add the pressed character to the text
-                            i_text += event.unicode
+                            if i_text[-1] == "|":
+                                i_text = i_text[:-1]
+                                i_text += event.unicode
+                                i_text = i_text + "|"
 
             insert_address_text_surface = font.render("Server IP Address:", True, color)
             self.window.blit(insert_address_text_surface, (330 + 5, 205 + 5))
@@ -973,7 +1003,7 @@ class Game:
         backgroundImage = pygame.image.load("menu/5.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         textFieldSelected = False
-        i_text = "Hello"
+        i_text = ""
         i_text_x = 600
         i_text_y = 200
         i_text_width = 320
@@ -1006,6 +1036,9 @@ class Game:
                         self.multiplayerMenu()
                     if CONNECT_BUTTON.checkForInput(MENU_MOUSE_POS):
                         # Server().create()
+                        if len(i_text)>0:
+                            if i_text[-1] == "|":
+                                i_text = i_text[:-1]
                         client = Client(self, i_text)
                         client.play()
                         # return_code = subprocess.run(["startClient.bat", i_text], shell=True).returncode
@@ -1023,21 +1056,40 @@ class Game:
                         # print("create server")
                     if MENU_MOUSE_POS[0] >= i_text_x and MENU_MOUSE_POS[0] <= i_text_x + i_text_width and MENU_MOUSE_POS[1] >= i_text_y and MENU_MOUSE_POS[1] <= i_text_y + i_text_heigth:
                         textFieldSelected = True
+                        if textFieldSelected == False:
+                            textFieldSelected = True
+                            i_text = i_text + "|"
+                        if len(i_text) == 0:
+                            i_text = i_text + "|"
+                        elif i_text[-1] != "|":
+                            i_text = i_text + "|"
                     else:
-                        textFieldSelected = False
+                        if textFieldSelected is True:
+                            if len(i_text) > 0 and i_text[-1] == "|":
+                                i_text = i_text[:-1]
+                            textFieldSelected = False
                 if event.type == pygame.KEYDOWN:
                     print("key down")
                     if textFieldSelected is True:
                         print("Yes, modify")
                         if event.key == pygame.K_RETURN:
                             # Clear the input text when the user presses enter
-                            i_text = ''
+                            if len(i_text) > 0 and i_text[-1] == "|":
+                                i_text = i_text[:-1]
+                            client = Client(self, i_text)
+                            client.play()
                         elif event.key == pygame.K_BACKSPACE:
                             # Remove the last character when the user presses backspace
-                            i_text = i_text[:-1]
+                            if i_text[-1] == "|":
+                                i_text = i_text[:-1]
+                                i_text = i_text[:-1]
+                                i_text = i_text + "|"
                         else:
                             # Add the pressed character to the text
-                            i_text += event.unicode
+                            if i_text[-1] == "|":
+                                i_text = i_text[:-1]
+                                i_text += event.unicode
+                                i_text = i_text + "|"
 
             insert_address_text_surface = font.render("Server IP Address:", True, color)
             self.window.blit(insert_address_text_surface, (330 + 5, 205 + 5))
