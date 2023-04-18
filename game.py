@@ -926,11 +926,11 @@ class Game:
 
                         if return_code == 0:
                             print("Server started successfully.")
-                            client = Client(self)
+                            client = Client(self, i_text)
                             client.play()
                         elif return_code == 1:
                             print("Server is already running. Stopped it and started again.")
-                            client = Client(self)
+                            client = Client(self, i_text)
                             client.play()
                         else:
                             print("An error occurred while starting the server.")
