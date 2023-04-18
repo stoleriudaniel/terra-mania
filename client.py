@@ -4,7 +4,7 @@ from player import Player
 from network import Network
 
 
-class Client():
+class Client:
     def __init__(self, gameParam, ipAddress):
         self.game = gameParam
         self.network = Network(ipAddress)
