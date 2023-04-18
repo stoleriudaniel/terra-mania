@@ -469,11 +469,11 @@ class Game:
             self.displayOptionData()
 
     def displayArrows(self, xCoord, yCoord):
-        arrow_right = pygame.image.load("arrow_right.png")
+        arrow_right = pygame.image.load("/assets/arrows/arrow_right.png")
         arrow_right = pygame.transform.scale(arrow_right, (80, 65))
         self.window.blit(arrow_right, (xCoord + 1090, yCoord + 255))
 
-        arrow_left = pygame.image.load("arrow_left.png")
+        arrow_left = pygame.image.load("/assets/arrows/arrow_left.png")
         arrow_left = pygame.transform.scale(arrow_left, (80, 65))
         self.window.blit(arrow_left, (xCoord + 1020, yCoord + 255))
 
@@ -626,7 +626,7 @@ class Game:
             self.displayCountry(xCoord, yCoord, option)
 
     def get_font(self, size):  # Returns Press-Start-2P in the desired size
-        return pygame.font.Font("assets/font.ttf", size)
+        return pygame.font.Font("assets/fonts/font.ttf", size)
 
     def options(self):
         return
@@ -656,14 +656,14 @@ class Game:
         green = (23, 165, 23)
         blue1 = (0, 51, 153)
         self.window.fill((255, 255, 255))
-        bg_img = pygame.image.load(self.currentMap)
+        bg_img = pygame.image.load("/assets/continents/" + self.currentMap)
         self.mapRealWidth = bg_img.get_width()
         self.mapRealHeight = bg_img.get_height()
         bg_img = pygame.transform.scale(bg_img, (897, 680))
         self.window.blit(bg_img, (20, 20), )
 
         # mouse
-        cursor_img = pygame.image.load("cursor1.png")
+        cursor_img = pygame.image.load("/assets/cursor/cursor1.png")
         cursor_img = pygame.transform.scale(cursor_img, (50, 40))
 
         self.currentOption = self.getRandomOption()
@@ -726,7 +726,7 @@ class Game:
         pygame.quit()
 
     def originalMainMenu(self):
-        backgroundImage = pygame.image.load("menu/1.jpg")
+        backgroundImage = pygame.image.load("assets/menu/1.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
@@ -766,7 +766,7 @@ class Game:
             pygame.display.update()
 
     def singlePlayerOrMultiplayerMenu(self):
-        backgroundImage = pygame.image.load("menu/2.jpg")
+        backgroundImage = pygame.image.load("assets/menu/2.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
@@ -801,7 +801,7 @@ class Game:
             pygame.display.update()
 
     def multiplayerMenu(self):
-        backgroundImage = pygame.image.load("menu/2.jpg")
+        backgroundImage = pygame.image.load("assets/menu/2.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
@@ -838,7 +838,7 @@ class Game:
             pygame.display.update()
 
     def createNewServerMenu(self, gameTypeParam, indexMapAndContinent):
-        backgroundImage = pygame.image.load("menu/5.jpg")
+        backgroundImage = pygame.image.load("assets/menu/5.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         textFieldSelected = False
         i_text = ""
@@ -971,7 +971,7 @@ class Game:
             pygame.display.update()
 
     def connectToServerMenu(self):
-        backgroundImage = pygame.image.load("menu/5.jpg")
+        backgroundImage = pygame.image.load("assets/menu/5.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         textFieldSelected = False
         i_text = ""
@@ -1065,7 +1065,7 @@ class Game:
             pygame.display.update()
 
     def flagsCapitalsCountriesMenu(self):
-        backgroundImage = pygame.image.load("menu/3.jpg")
+        backgroundImage = pygame.image.load("assets/menu/3.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
@@ -1105,7 +1105,7 @@ class Game:
             pygame.display.update()
 
     def flagsCapitalsCountriesServerMenu(self):
-        backgroundImage = pygame.image.load("menu/3.jpg")
+        backgroundImage = pygame.image.load("assets/menu/3.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
@@ -1145,7 +1145,7 @@ class Game:
             pygame.display.update()
 
     def continentsServerMenu(self, gameTypeParam):
-        backgroundImage = pygame.image.load("menu/4.jpg")
+        backgroundImage = pygame.image.load("assets/menu/4.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
@@ -1212,7 +1212,7 @@ class Game:
 
     def continentsMenu(self, gameTypeParam):
         self.gameType = gameTypeParam
-        backgroundImage = pygame.image.load("menu/4.jpg")
+        backgroundImage = pygame.image.load("assets/menu/4.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
