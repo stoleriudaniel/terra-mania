@@ -619,7 +619,7 @@ class Game:
         else:
             option = pygame.image.load(f"countries\\{self.CONTINENT}\\{self.currentOption}\\flag.png")
         option = pygame.transform.scale(option, (130, 100))  # 130, 100 for flags
-        self.window.blit(option, (xCoord + 1020, yCoord + 200))  # 1020, 200 for flags
+        self.window.blit(option, (xCoord + 1025, yCoord + 120))  # 1020, 200 for flags
 
     def displayOption(self, xCoord, yCoord, option=""):
         if self.gameType == self.gameTypeFlags:
