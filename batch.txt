@@ -10,4 +10,4 @@ if "%ERRORLEVEL%"=="0" (
 
 REM Start the server by calling the create() method with an argument
 echo Starting server...
-start "" python -c "import sys; from server import Server; s = Server(); s.create(sys.argv[1], sys.argv[2], sys.argv[3])" %3
+start "" python -c "import sys; from server import Server; s = Server(); s.create(sys.argv[1], sys.argv[2], sys.argv[3])" %1 %2 %3
