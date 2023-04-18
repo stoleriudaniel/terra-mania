@@ -560,7 +560,7 @@ class Game:
         capital = ""
         if self.isMultiplayer:
             if option != "":
-                countryFile = open(f"countries\\{self.CONTINENT}\\{option}\\country.txt", "r")
+                capitalFile = open(f"countries\\{self.CONTINENT}\\{option}\\country.txt", "r")
             elif self.playerId == self.player0.id:
                 capitalFile = open(f"countries\\{self.CONTINENT}\\{self.player0.currentOption}\\country.txt", "r")
             else:
