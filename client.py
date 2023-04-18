@@ -8,12 +8,24 @@ class Client:
     def __init__(self, gameParam, ipAddress):
         self.game = gameParam
         self.network = Network(ipAddress)
-        self.playerId = self.network.client.recv(2048).decode()
+        self.playerId, self.game.gameType, self.game.indexMapAndContinent = self.getInitDataFromServer()
+        self.game.CONTINENT = self.game.continents[self.game.indexMapAndContinent]
+        self.game.currentMap = self.game.maps[self.game.indexMapAndContinent]
         self.clickPlayer0 = 0
         self.clickPlayer1 = 0
 
-    def extractData(self, data):
+    def getInitDataFromServer(self):
+        data = self.network.client.recv(2048).decode()
         try:
+            pId = data.split(":")[0]
+            gameType = data.split(":")[1].split(";")[0].split("=")[1].split(")")[0]
+            strIndexMapAndContinent = data.split(":")[1].split(";")[1].split("=")[1].split(")")[0]
+            return pId, gameType, int(strIndexMapAndContinent)
+        except:
+            return "-1", "none", 0
+
+    def extractData(self, data):
+        try: # "0:(0,0);(click=0);(currentOption=none);(correctOption=none);(gameType=none);(indexMapAndContinent=none)",
             pId = data.split(":")[0]
             coordsData = data.split(":")[1].split(";")[0]
             x = coordsData.split(",")[0].split("(")[1]

@@ -32,6 +32,8 @@ class Game:
         self.CONTINENT = self.continents[3]
         self.currentMap = self.maps[3]
 
+        self.indexMapAndContinent = 0
+
         self.language = "Romanian"
 
         self.gameTypeFlags = "flags"
@@ -925,14 +927,22 @@ class Game:
                             if i_text[-1] == "|":
                                 i_text = i_text[:-1]
                         # Server().create()
-                        return_code = subprocess.run(["startServer.bat", i_text], shell=True).returncode
+                        return_code = subprocess.run(["startServer.bat", i_text, gameTypeParam, str(indexMapAndContinent)], shell=True).returncode
 
                         if return_code == 0:
                             print("Server started successfully.")
+                            self.gameType = gameTypeParam
+                            self.indexMapAndContinent = indexMapAndContinent
+                            self.CONTINENT = self.continents[indexMapAndContinent]
+                            self.currentMap = self.maps[indexMapAndContinent]
                             client = Client(self, i_text)
                             client.play()
                         elif return_code == 1:
                             print("Server is already running. Stopped it and started again.")
+                            self.gameType = gameTypeParam
+                            self.indexMapAndContinent = indexMapAndContinent
+                            self.CONTINENT = self.continents[indexMapAndContinent]
+                            self.currentMap = self.maps[indexMapAndContinent]
                             client = Client(self, i_text)
                             client.play()
                         else:
@@ -959,14 +969,22 @@ class Game:
                             # Clear the input text when the user presses enter
                             if len(i_text) > 0 and i_text[-1] == "|":
                                 i_text = i_text[:-1]
-                            return_code = subprocess.run(["startServer.bat", i_text], shell=True).returncode
+                            return_code = subprocess.run(["startServer.bat", i_text, gameTypeParam, str(indexMapAndContinent)], shell=True).returncode
 
                             if return_code == 0:
                                 print("Server started successfully.")
+                                self.gameType = gameTypeParam
+                                self.indexMapAndContinent = indexMapAndContinent
+                                self.CONTINENT = self.continents[indexMapAndContinent]
+                                self.currentMap = self.maps[indexMapAndContinent]
                                 client = Client(self, i_text)
                                 client.play()
                             elif return_code == 1:
                                 print("Server is already running. Stopped it and started again.")
+                                self.gameType = gameTypeParam
+                                self.indexMapAndContinent = indexMapAndContinent
+                                self.CONTINENT = self.continents[indexMapAndContinent]
+                                self.currentMap = self.maps[indexMapAndContinent]
                                 client = Client(self, i_text)
                                 client.play()
                             else:
@@ -1186,7 +1204,6 @@ class Game:
             pygame.display.update()
 
     def continentsServerMenu(self, gameTypeParam):
-        self.gameType = gameTypeParam
         backgroundImage = pygame.image.load("menu/4.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         while True:

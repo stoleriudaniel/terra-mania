@@ -8,9 +8,18 @@ class Server():
         self.port = 5556
         self.maximumPlayers = 2
         self.currentId = "0"
-        self.state = ["0:(0,0);(click=0);(currentOption=none);(correctOption=none)", "1:(0,0);(click=0);(currentOption=none);(correctOption=none)"]
+        self.gameType = ""
+        self.indexMapAndContinent = 0
+        self.state = ["0:(0,0);(click=0);(currentOption=none);(correctOption=none)",
+                      "1:(0,0);(click=0);(currentOption=none);(correctOption=none)"]
 
-    def create(self, ipAddress):
+    def create(self, ipAddress, gameType, strIndexMapAndContinent):
+        self.gameType = gameType
+        self.indexMapAndContinent = int(strIndexMapAndContinent)
+        self.state[0] = self.state[0].replace("gameType=none", f"gameType={gameType}")
+        self.state[0] = self.state[0].replace("indexMapAndContinent=none", f"indexMapAndContinent={strIndexMapAndContinent}")
+        self.state[1] = self.state[1].replace("gameType=none", f"gameType={gameType}")
+        self.state[1] = self.state[1].replace("indexMapAndContinent=none", f"indexMapAndContinent={strIndexMapAndContinent}")
         self.serverIp = socket.gethostbyname(ipAddress)
         try:
             self.sock.bind((self.serverIp, self.port))
@@ -28,7 +37,7 @@ class Server():
             start_new_thread(self.threaded_client, (conn,))
 
     def threaded_client(self, conn):
-        conn.send(str.encode(self.currentId))
+        conn.send(str.encode(f"{self.currentId}:(gameType={self.gameType});(indexMapAndContinent={str(self.indexMapAndContinent)})"))
         self.currentId = "1"
         reply = ''
         while True:
