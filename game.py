@@ -22,7 +22,6 @@ class Game:
         self.SCREEN_WIDTH = 1280
         self.SCREEN_HEIGHT = 720
         self.window = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-        self.BG = pygame.image.load("assets/Background.png")
         self.maps = ['Europe_map1.png', 'south_america112.png', 'north-america111.png', 'asia1.png', 'africa111.png',
                      'oceania111.png']
         self.continents = ["Europe", "South-America", "North-America", "Asia", "Africa", "Oceania"]
@@ -630,30 +629,7 @@ class Game:
         return pygame.font.Font("assets/font.ttf", size)
 
     def options(self):
-        while True:
-            OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
-
-            self.window.fill("white")
-
-            OPTIONS_TEXT = self.get_font(45).render("This is the OPTIONS screen.", True, "Black")
-            OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 260))
-            self.window.blit(OPTIONS_TEXT, OPTIONS_RECT)
-
-            OPTIONS_BACK = Button(image=None, pos=(640, 460),
-                                  text_input="BACK", font=self.get_font(75), base_color="Black", hovering_color="Green")
-
-            OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
-            OPTIONS_BACK.update(self.window)
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
-                        self.main_menu()
-
-            pygame.display.update()
+        return
 
     def load_camera(self):
         self.frame, self.img = self.cap.read()
