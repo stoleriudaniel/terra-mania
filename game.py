@@ -469,11 +469,11 @@ class Game:
             self.displayOptionData()
 
     def displayArrows(self, xCoord, yCoord):
-        arrow_right = pygame.image.load("/assets/arrows/arrow_right.png")
+        arrow_right = pygame.image.load("assets/arrows/arrow_right.png")
         arrow_right = pygame.transform.scale(arrow_right, (80, 65))
         self.window.blit(arrow_right, (xCoord + 1090, yCoord + 255))
 
-        arrow_left = pygame.image.load("/assets/arrows/arrow_left.png")
+        arrow_left = pygame.image.load("assets/arrows/arrow_left.png")
         arrow_left = pygame.transform.scale(arrow_left, (80, 65))
         self.window.blit(arrow_left, (xCoord + 1020, yCoord + 255))
 
@@ -656,14 +656,14 @@ class Game:
         green = (23, 165, 23)
         blue1 = (0, 51, 153)
         self.window.fill((255, 255, 255))
-        bg_img = pygame.image.load("/assets/continents/" + self.currentMap)
+        bg_img = pygame.image.load(f"assets/continents/{self.currentMap}")
         self.mapRealWidth = bg_img.get_width()
         self.mapRealHeight = bg_img.get_height()
         bg_img = pygame.transform.scale(bg_img, (897, 680))
         self.window.blit(bg_img, (20, 20), )
 
         # mouse
-        cursor_img = pygame.image.load("/assets/cursor/cursor1.png")
+        cursor_img = pygame.image.load("assets/cursor/cursor1.png")
         cursor_img = pygame.transform.scale(cursor_img, (50, 40))
 
         self.currentOption = self.getRandomOption()
