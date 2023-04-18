@@ -1,9 +1,7 @@
-import threading
 import cv2.data
 import HandTrackingModule
 from InputText import InputText
 from client import Client
-from network import Network
 import os
 import random
 from pathlib import Path
@@ -12,7 +10,6 @@ import pygame
 import sys
 from player import Player
 from button import Button
-from server import Server
 
 
 class Game:
@@ -632,33 +629,6 @@ class Game:
     def get_font(self, size):  # Returns Press-Start-2P in the desired size
         return pygame.font.Font("assets/font.ttf", size)
 
-    def play(self):
-        self.playGame()
-        # while True:
-        #     PLAY_MOUSE_POS = pygame.mouse.get_pos()
-        #
-        #     window.fill("black")
-        #
-        #     PLAY_TEXT = get_font(45).render("This is the PLAY screen.", True, "White")
-        #     PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 260))
-        #     window.blit(PLAY_TEXT, PLAY_RECT)
-        #
-        #     PLAY_BACK = Button(image=None, pos=(640, 460),
-        #                        text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
-        #
-        #     PLAY_BACK.changeColor(PLAY_MOUSE_POS)
-        #     PLAY_BACK.update(window)
-        #
-        #     for event in pygame.event.get():
-        #         if event.type == pygame.QUIT:
-        #             pygame.quit()
-        #             sys.exit()
-        #         if event.type == pygame.MOUSEBUTTONDOWN:
-        #             if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
-        #                 main_menu()
-        #
-        #     pygame.display.update()
-
     def options(self):
         while True:
             OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
@@ -827,11 +797,11 @@ class Game:
             MENU_MOUSE_POS = pygame.mouse.get_pos()
 
             SINGLEPLAYER_BUTTON = Button(image=None, pos=(640, 215),
-                                 text_input="Single Player", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                         text_input="Single Player", font=self.get_font(25), base_color="#d7fcd4",
+                                         hovering_color="Blue")
             MULTIPLAYER_BUTTON = Button(image=None, pos=(640, 370),
-                                    text_input="Multiplayer", font=self.get_font(25), base_color="#d7fcd4",
-                                    hovering_color="Blue")
+                                        text_input="Multiplayer", font=self.get_font(25), base_color="#d7fcd4",
+                                        hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 528),
                                  text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
@@ -862,11 +832,13 @@ class Game:
             MENU_MOUSE_POS = pygame.mouse.get_pos()
 
             CREATE_NEW_SERVER_BUTTON = Button(image=None, pos=(640, 210),
-                                 text_input="Create new server", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                              text_input="Create new server", font=self.get_font(25),
+                                              base_color="#d7fcd4",
+                                              hovering_color="Blue")
             CONNECT_TO_SERVER_BUTTON = Button(image=None, pos=(640, 370),
-                                    text_input="Connect to server", font=self.get_font(25), base_color="#d7fcd4",
-                                    hovering_color="Blue")
+                                              text_input="Connect to server", font=self.get_font(25),
+                                              base_color="#d7fcd4",
+                                              hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 528),
                                  text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
@@ -904,8 +876,8 @@ class Game:
             self.window.blit(backgroundImageScaled, (0, 0))
             MENU_MOUSE_POS = pygame.mouse.get_pos()
             START_BUTTON = Button(image=None, pos=(620, 355),
-                                 text_input="Start", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                  text_input="Start", font=self.get_font(25), base_color="#d7fcd4",
+                                  hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(620, 480),
                                  text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
@@ -923,11 +895,13 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     print(MENU_MOUSE_POS)
                     if START_BUTTON.checkForInput(MENU_MOUSE_POS):
-                        if len(i_text)>0:
+                        if len(i_text) > 0:
                             if i_text[-1] == "|":
                                 i_text = i_text[:-1]
                         # Server().create()
-                        return_code = subprocess.run(["startServer.bat", i_text, gameTypeParam, str(indexMapAndContinent)], shell=True).returncode
+                        return_code = subprocess.run(
+                            ["startServer.bat", i_text, gameTypeParam, str(indexMapAndContinent)],
+                            shell=True).returncode
 
                         if return_code == 0:
                             print("Server started successfully.")
@@ -950,7 +924,8 @@ class Game:
                         print("create server")
                     if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.multiplayerMenu()
-                    if MENU_MOUSE_POS[0] >= i_text_x and MENU_MOUSE_POS[0] <= i_text_x + i_text_width and MENU_MOUSE_POS[1] >= i_text_y and MENU_MOUSE_POS[1] <= i_text_y + i_text_heigth:
+                    if MENU_MOUSE_POS[0] >= i_text_x and MENU_MOUSE_POS[0] <= i_text_x + i_text_width and \
+                            MENU_MOUSE_POS[1] >= i_text_y and MENU_MOUSE_POS[1] <= i_text_y + i_text_heigth:
                         textFieldSelected = True
                         if len(i_text) == 0:
                             i_text = i_text + "|"
@@ -969,7 +944,9 @@ class Game:
                             # Clear the input text when the user presses enter
                             if len(i_text) > 0 and i_text[-1] == "|":
                                 i_text = i_text[:-1]
-                            return_code = subprocess.run(["startServer.bat", i_text, gameTypeParam, str(indexMapAndContinent)], shell=True).returncode
+                            return_code = subprocess.run(
+                                ["startServer.bat", i_text, gameTypeParam, str(indexMapAndContinent)],
+                                shell=True).returncode
 
                             if return_code == 0:
                                 print("Server started successfully.")
@@ -1006,7 +983,7 @@ class Game:
             insert_address_text_surface = font.render("Server IP Address:", True, color)
             self.window.blit(insert_address_text_surface, (330 + 5, 205 + 5))
 
-            #update text input
+            # update text input
             text_surface = font.render(i_text, True, color)
 
             # Draw the text input object on the screen
@@ -1032,8 +1009,8 @@ class Game:
             self.window.blit(backgroundImageScaled, (0, 0))
             MENU_MOUSE_POS = pygame.mouse.get_pos()
             CONNECT_BUTTON = Button(image=None, pos=(620, 355),
-                                 text_input="Connect", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                    text_input="Connect", font=self.get_font(25), base_color="#d7fcd4",
+                                    hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(620, 480),
                                  text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
@@ -1054,25 +1031,13 @@ class Game:
                         self.multiplayerMenu()
                     if CONNECT_BUTTON.checkForInput(MENU_MOUSE_POS):
                         # Server().create()
-                        if len(i_text)>0:
+                        if len(i_text) > 0:
                             if i_text[-1] == "|":
                                 i_text = i_text[:-1]
                         client = Client(self, i_text)
                         client.play()
-                        # return_code = subprocess.run(["startClient.bat", i_text], shell=True).returncode
-                        #
-                        # if return_code == 0:
-                        #     print("Server started successfully.")
-                        #     client = Client(self)
-                        #     client.play()
-                        # elif return_code == 1:
-                        #     print("Server is already running. Stopped it and started again.")
-                        #     client = Client(self)
-                        #     client.play()
-                        # else:
-                        #     print("An error occurred while starting the server.")
-                        # print("create server")
-                    if MENU_MOUSE_POS[0] >= i_text_x and MENU_MOUSE_POS[0] <= i_text_x + i_text_width and MENU_MOUSE_POS[1] >= i_text_y and MENU_MOUSE_POS[1] <= i_text_y + i_text_heigth:
+                    if MENU_MOUSE_POS[0] >= i_text_x and MENU_MOUSE_POS[0] <= i_text_x + i_text_width and \
+                            MENU_MOUSE_POS[1] >= i_text_y and MENU_MOUSE_POS[1] <= i_text_y + i_text_heigth:
                         textFieldSelected = True
                         if textFieldSelected == False:
                             textFieldSelected = True
@@ -1112,7 +1077,7 @@ class Game:
             insert_address_text_surface = font.render("Server IP Address:", True, color)
             self.window.blit(insert_address_text_surface, (330 + 5, 205 + 5))
 
-            #update text input
+            # update text input
             text_surface = font.render(i_text, True, color)
 
             # Draw the text input object on the screen
@@ -1131,14 +1096,14 @@ class Game:
             MENU_MOUSE_POS = pygame.mouse.get_pos()
 
             FLAGS_BUTTON = Button(image=None, pos=(640, 190),
-                                 text_input="Flags", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                  text_input="Flags", font=self.get_font(25), base_color="#d7fcd4",
+                                  hovering_color="Blue")
             CAPITALS_BUTTON = Button(image=None, pos=(640, 305),
-                                    text_input="Capitals", font=self.get_font(25), base_color="#d7fcd4",
-                                    hovering_color="Blue")
+                                     text_input="Capitals", font=self.get_font(25), base_color="#d7fcd4",
+                                     hovering_color="Blue")
             COUNTRIES_BUTTON = Button(image=None, pos=(640, 420),
-                                 text_input="Countries", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                      text_input="Countries", font=self.get_font(25), base_color="#d7fcd4",
+                                      hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 535),
                                  text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
@@ -1171,14 +1136,14 @@ class Game:
             MENU_MOUSE_POS = pygame.mouse.get_pos()
 
             FLAGS_BUTTON = Button(image=None, pos=(640, 190),
-                                 text_input="Flags", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                  text_input="Flags", font=self.get_font(25), base_color="#d7fcd4",
+                                  hovering_color="Blue")
             CAPITALS_BUTTON = Button(image=None, pos=(640, 305),
-                                    text_input="Capitals", font=self.get_font(25), base_color="#d7fcd4",
-                                    hovering_color="Blue")
+                                     text_input="Capitals", font=self.get_font(25), base_color="#d7fcd4",
+                                     hovering_color="Blue")
             COUNTRIES_BUTTON = Button(image=None, pos=(640, 420),
-                                 text_input="Countries", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                      text_input="Countries", font=self.get_font(25), base_color="#d7fcd4",
+                                      hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 535),
                                  text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
@@ -1211,34 +1176,35 @@ class Game:
             MENU_MOUSE_POS = pygame.mouse.get_pos()
 
             NORTH_BUTTON = Button(image=None, pos=(480, 220),
-                                 text_input="North", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                  text_input="North", font=self.get_font(25), base_color="#d7fcd4",
+                                  hovering_color="Blue")
             AMERICA_N_BUTTON = Button(image=None, pos=(480, 250),
-                                 text_input="America", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                      text_input="America", font=self.get_font(25), base_color="#d7fcd4",
+                                      hovering_color="Blue")
             SOUTH_BUTTON = Button(image=None, pos=(480, 330),
-                                 text_input="South", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                  text_input="South", font=self.get_font(25), base_color="#d7fcd4",
+                                  hovering_color="Blue")
             AMERICA_S_BUTTON = Button(image=None, pos=(480, 360),
-                                 text_input="America", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                      text_input="America", font=self.get_font(25), base_color="#d7fcd4",
+                                      hovering_color="Blue")
             AFRICA_BUTTON = Button(image=None, pos=(480, 455),
-                                 text_input="Africa", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                   text_input="Africa", font=self.get_font(25), base_color="#d7fcd4",
+                                   hovering_color="Blue")
             EUROPE_BUTTON = Button(image=None, pos=(800, 235),
-                                 text_input="Europe", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                   text_input="Europe", font=self.get_font(25), base_color="#d7fcd4",
+                                   hovering_color="Blue")
             ASIA_BUTTON = Button(image=None, pos=(800, 345),
-                                    text_input="Asia", font=self.get_font(25), base_color="#d7fcd4",
-                                    hovering_color="Blue")
-            OCEANIA_BUTTON = Button(image=None, pos=(800, 455),
-                                 text_input="Oceania", font=self.get_font(25), base_color="#d7fcd4",
+                                 text_input="Asia", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
+            OCEANIA_BUTTON = Button(image=None, pos=(800, 455),
+                                    text_input="Oceania", font=self.get_font(25), base_color="#d7fcd4",
+                                    hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 560),
                                  text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
-            for button in [AFRICA_BUTTON, ASIA_BUTTON, NORTH_BUTTON, AMERICA_N_BUTTON, SOUTH_BUTTON, AMERICA_S_BUTTON, OCEANIA_BUTTON, EUROPE_BUTTON, BACK_BUTTON]:
+            for button in [AFRICA_BUTTON, ASIA_BUTTON, NORTH_BUTTON, AMERICA_N_BUTTON, SOUTH_BUTTON, AMERICA_S_BUTTON,
+                           OCEANIA_BUTTON, EUROPE_BUTTON, BACK_BUTTON]:
                 button.changeColor(MENU_MOUSE_POS)
                 button.update(self.window)
 
@@ -1247,15 +1213,6 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-
-                    self.maps = ['Europe_map1.png', 'south_america112.png', 'north-america111.png', 'asia1.png',
-                                 'africa111.png',
-                                 'oceania111.png']
-                    self.continents = ["Europe", "South-America", "North-America", "Asia", "Africa", "Oceania"]
-                    self.CONTINENT = self.continents[3]
-                    self.currentMap = self.maps[3]
-
-
                     if NORTH_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.createNewServerMenu(gameTypeParam, 2)
                     if AMERICA_N_BUTTON.checkForInput(MENU_MOUSE_POS):
@@ -1276,6 +1233,7 @@ class Game:
                         self.singlePlayerOrMultiplayerMenu()
 
             pygame.display.update()
+
     def continentsMenu(self, gameTypeParam):
         self.gameType = gameTypeParam
         backgroundImage = pygame.image.load("menu/4.jpg")
@@ -1285,34 +1243,35 @@ class Game:
             MENU_MOUSE_POS = pygame.mouse.get_pos()
 
             NORTH_BUTTON = Button(image=None, pos=(480, 220),
-                                 text_input="North", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                  text_input="North", font=self.get_font(25), base_color="#d7fcd4",
+                                  hovering_color="Blue")
             AMERICA_N_BUTTON = Button(image=None, pos=(480, 250),
-                                 text_input="America", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                      text_input="America", font=self.get_font(25), base_color="#d7fcd4",
+                                      hovering_color="Blue")
             SOUTH_BUTTON = Button(image=None, pos=(480, 330),
-                                 text_input="South", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                  text_input="South", font=self.get_font(25), base_color="#d7fcd4",
+                                  hovering_color="Blue")
             AMERICA_S_BUTTON = Button(image=None, pos=(480, 360),
-                                 text_input="America", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                      text_input="America", font=self.get_font(25), base_color="#d7fcd4",
+                                      hovering_color="Blue")
             AFRICA_BUTTON = Button(image=None, pos=(480, 455),
-                                 text_input="Africa", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                   text_input="Africa", font=self.get_font(25), base_color="#d7fcd4",
+                                   hovering_color="Blue")
             EUROPE_BUTTON = Button(image=None, pos=(800, 235),
-                                 text_input="Europe", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                   text_input="Europe", font=self.get_font(25), base_color="#d7fcd4",
+                                   hovering_color="Blue")
             ASIA_BUTTON = Button(image=None, pos=(800, 345),
-                                    text_input="Asia", font=self.get_font(25), base_color="#d7fcd4",
-                                    hovering_color="Blue")
-            OCEANIA_BUTTON = Button(image=None, pos=(800, 455),
-                                 text_input="Oceania", font=self.get_font(25), base_color="#d7fcd4",
+                                 text_input="Asia", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
+            OCEANIA_BUTTON = Button(image=None, pos=(800, 455),
+                                    text_input="Oceania", font=self.get_font(25), base_color="#d7fcd4",
+                                    hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 560),
                                  text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
-            for button in [AFRICA_BUTTON, ASIA_BUTTON, NORTH_BUTTON, AMERICA_N_BUTTON, SOUTH_BUTTON, AMERICA_S_BUTTON, OCEANIA_BUTTON, EUROPE_BUTTON, BACK_BUTTON]:
+            for button in [AFRICA_BUTTON, ASIA_BUTTON, NORTH_BUTTON, AMERICA_N_BUTTON, SOUTH_BUTTON, AMERICA_S_BUTTON,
+                           OCEANIA_BUTTON, EUROPE_BUTTON, BACK_BUTTON]:
                 button.changeColor(MENU_MOUSE_POS)
                 button.update(self.window)
 
@@ -1328,7 +1287,6 @@ class Game:
                     self.continents = ["Europe", "South-America", "North-America", "Asia", "Africa", "Oceania"]
                     self.CONTINENT = self.continents[3]
                     self.currentMap = self.maps[3]
-
 
                     if NORTH_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.currentMap = self.maps[2]
@@ -1370,7 +1328,4 @@ class Game:
     def launch(self):
         pygame.init()
         pygame.display.set_caption("Menu")
-        # self.playGame()
         self.originalMainMenu()
-        # self.multiplayerMenu()
-        # self.connectToServerMenu()

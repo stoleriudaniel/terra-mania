@@ -1,6 +1,7 @@
 import socket
 from _thread import *
 
+
 class Server():
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -17,9 +18,11 @@ class Server():
         self.gameType = gameType
         self.indexMapAndContinent = int(strIndexMapAndContinent)
         self.state[0] = self.state[0].replace("gameType=none", f"gameType={gameType}")
-        self.state[0] = self.state[0].replace("indexMapAndContinent=none", f"indexMapAndContinent={strIndexMapAndContinent}")
+        self.state[0] = self.state[0].replace("indexMapAndContinent=none",
+                                              f"indexMapAndContinent={strIndexMapAndContinent}")
         self.state[1] = self.state[1].replace("gameType=none", f"gameType={gameType}")
-        self.state[1] = self.state[1].replace("indexMapAndContinent=none", f"indexMapAndContinent={strIndexMapAndContinent}")
+        self.state[1] = self.state[1].replace("indexMapAndContinent=none",
+                                              f"indexMapAndContinent={strIndexMapAndContinent}")
         self.serverIp = socket.gethostbyname(ipAddress)
         try:
             self.sock.bind((self.serverIp, self.port))
@@ -37,7 +40,8 @@ class Server():
             start_new_thread(self.threaded_client, (conn,))
 
     def threaded_client(self, conn):
-        conn.send(str.encode(f"{self.currentId}:(gameType={self.gameType});(indexMapAndContinent={str(self.indexMapAndContinent)})"))
+        conn.send(str.encode(
+            f"{self.currentId}:(gameType={self.gameType});(indexMapAndContinent={str(self.indexMapAndContinent)})"))
         self.currentId = "1"
         reply = ''
         while True:

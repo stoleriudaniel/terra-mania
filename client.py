@@ -1,6 +1,4 @@
-import socket
 import pygame
-from player import Player
 from network import Network
 
 
@@ -25,7 +23,7 @@ class Client:
             return "-1", "none", 0
 
     def extractData(self, data):
-        try: # "0:(0,0);(click=0);(currentOption=none);(correctOption=none);(gameType=none);(indexMapAndContinent=none)",
+        try:  # "0:(0,0);(click=0);(currentOption=none);(correctOption=none);(gameType=none);(indexMapAndContinent=none)",
             pId = data.split(":")[0]
             coordsData = data.split(":")[1].split(";")[0]
             x = coordsData.split(",")[0].split("(")[1]
@@ -81,10 +79,12 @@ class Client:
                     elif self.playerId == self.game.player1.id:
                         self.game.player1.click = 1 - self.game.player1.click
             if self.playerId != self.game.player0.id and self.game.player0.click != self.clickPlayer0:
-                self.game.drawCorrectCountry(self.game.player0.x, self.game.player0.y, yellow, green, self.game.player0.id)
+                self.game.drawCorrectCountry(self.game.player0.x, self.game.player0.y, yellow, green,
+                                             self.game.player0.id)
                 self.clickPlayer0 = self.game.player0.click
             elif self.playerId != self.game.player1.id and self.game.player1.click != self.clickPlayer1:
-                self.game.drawCorrectCountry(self.game.player1.x, self.game.player1.y, yellow, green, self.game.player1.id)
+                self.game.drawCorrectCountry(self.game.player1.x, self.game.player1.y, yellow, green,
+                                             self.game.player1.id)
                 self.clickPlayer1 = self.game.player1.click
             self.game.undrawCountries(blue1)
             self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow, self.game.player0.id)
