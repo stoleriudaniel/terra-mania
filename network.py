@@ -1,9 +1,9 @@
 import socket
 
 class Network():
-    def __init__(self):
+    def __init__(self, ipAddress):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.host = "192.168.43.175"
-        self.port = 5555
+        self.host = ipAddress
+        self.port = 5556
         self.addr = (self.host, self.port)
         self.client.connect(self.addr)

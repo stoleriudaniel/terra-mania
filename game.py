@@ -2,11 +2,12 @@ import threading
 import cv2.data
 import HandTrackingModule
 from InputText import InputText
+from client import Client
 from network import Network
 import os
 import random
 from pathlib import Path
-
+import subprocess
 import pygame
 import sys
 from player import Player
@@ -920,7 +921,19 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     print(MENU_MOUSE_POS)
                     if START_BUTTON.checkForInput(MENU_MOUSE_POS):
-                        Server().create()
+                        # Server().create()
+                        return_code = subprocess.run(["startServer.bat", i_text], shell=True).returncode
+
+                        if return_code == 0:
+                            print("Server started successfully.")
+                            client = Client(self)
+                            client.play()
+                        elif return_code == 1:
+                            print("Server is already running. Stopped it and started again.")
+                            client = Client(self)
+                            client.play()
+                        else:
+                            print("An error occurred while starting the server.")
                         print("create server")
                     if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.multiplayerMenu()
@@ -991,6 +1004,23 @@ class Game:
                     print(MENU_MOUSE_POS)
                     if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.multiplayerMenu()
+                    if CONNECT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        # Server().create()
+                        client = Client(self, i_text)
+                        client.play()
+                        # return_code = subprocess.run(["startClient.bat", i_text], shell=True).returncode
+                        #
+                        # if return_code == 0:
+                        #     print("Server started successfully.")
+                        #     client = Client(self)
+                        #     client.play()
+                        # elif return_code == 1:
+                        #     print("Server is already running. Stopped it and started again.")
+                        #     client = Client(self)
+                        #     client.play()
+                        # else:
+                        #     print("An error occurred while starting the server.")
+                        # print("create server")
                     if MENU_MOUSE_POS[0] >= i_text_x and MENU_MOUSE_POS[0] <= i_text_x + i_text_width and MENU_MOUSE_POS[1] >= i_text_y and MENU_MOUSE_POS[1] <= i_text_y + i_text_heigth:
                         textFieldSelected = True
                     else:

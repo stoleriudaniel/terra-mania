@@ -4,13 +4,14 @@ from _thread import *
 class Server():
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.serverIp = socket.gethostbyname('192.168.43.175')
-        self.port = 5555
+        self.serverIp = socket.gethostbyname('localhost')
+        self.port = 5556
         self.maximumPlayers = 2
         self.currentId = "0"
         self.state = ["0:(0,0);(click=0);(currentOption=none);(correctOption=none)", "1:(0,0);(click=0);(currentOption=none);(correctOption=none)"]
 
-    def create(self):
+    def create(self, ipAddress):
+        self.serverIp = socket.gethostbyname(ipAddress)
         try:
             self.sock.bind((self.serverIp, self.port))
 
@@ -52,3 +53,5 @@ class Server():
 
         print("Connection Closed")
         conn.close()
+
+# Server().create()

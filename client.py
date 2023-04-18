@@ -2,13 +2,12 @@ import socket
 import pygame
 from player import Player
 from network import Network
-from game import Game
 
 
 class Client():
-    def __init__(self):
-        self.game = Game()
-        self.network = Network()
+    def __init__(self, gameParam, ipAddress):
+        self.game = gameParam
+        self.network = Network(ipAddress)
         self.playerId = self.network.client.recv(2048).decode()
         self.clickPlayer0 = 0
         self.clickPlayer1 = 0
