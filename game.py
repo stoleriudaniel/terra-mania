@@ -650,6 +650,53 @@ class Game:
         self.displayCurrentGameTitle()
         self.displayTimeLeft()
 
+    def singlePlayerQuitButton(self):
+        while True:
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+            QUIT_BUTTON = Button(image=None, pos=(1005, 655),
+                                 text_input="Quit", font=self.get_font(30), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            # self.window.blit(MENU_TEXT, MENU_RECT)
+            for button in [QUIT_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.originalMainMenu()
+                        # pygame.quit()
+                        # sys.exit()
+
+            # pygame.display.update()
+
+    def singlePlayerPause(self):
+        backgroundImage = pygame.image.load("assets/menu/6.jpg")
+        backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        while True:
+            self.window.blit(backgroundImageScaled, (0, 0))
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+            MENU_TEXT = self.get_font(40).render("Game is paused", True, "#0f8aaf")
+            MENU_RECT = MENU_TEXT.get_rect(center=(640, 270))
+
+            RESUME_BUTTON = Button(image=None, pos=(640, 465),
+                                 text_input="Resume", font=self.get_font(30), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            self.window.blit(MENU_TEXT, MENU_RECT)
+            for button in [RESUME_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if RESUME_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        return
+
+            pygame.display.update()
+
     def playGame(self):
         handTrackingModule = HandTrackingModule.HandDetector()
         yellow = (238, 224, 29)
@@ -672,14 +719,31 @@ class Game:
         self.displayCurrentGameTitle()
         self.displayTimeLeft()
 
+        PAUSE_BUTTON = Button(image=None, pos=(1030, 655),
+                             text_input="Pause", font=self.get_font(30), base_color="Red",
+                             hovering_color="Blue")
+        QUIT_BUTTON = Button(image=None, pos=(1190, 655),
+                             text_input="Quit", font=self.get_font(30), base_color="Red",
+                             hovering_color="Blue")
+
+        # self.singlePlayerQuitButton()
+
         runing = True
 
         # self.computerVision = True
+
         if self.computerVision:
             self.cap = cv2.VideoCapture(0)
             self.frame = self.cap.read()
             self.saveState()
         while runing:
+
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+            for button in [QUIT_BUTTON, PAUSE_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.window)
+
+
             if self.computerVision:
                 self.load_camera()
                 newScannedHandsImg = handTrackingModule.findHands(self.img)
@@ -689,6 +753,10 @@ class Game:
                     self.cvy = handCoords[1]
                     if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
                         self.redrawWindow()
+                        MENU_MOUSE_POS = pygame.mouse.get_pos()
+                        for button in [QUIT_BUTTON, PAUSE_BUTTON]:
+                            button.changeColor(MENU_MOUSE_POS)
+                            button.update(self.window)
                         self.undrawCountries(blue1)
                         self.drawCountry(self.cvx, self.cvy, blue1, yellow)
                         self.window.blit(cursor_img, (self.cvx, self.cvy), )
@@ -697,7 +765,24 @@ class Game:
                         self.window.blit(cursor_img, (self.cvx, self.cvy), )
                 if handTrackingModule.isHandClosed():
                     if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
+                        if QUIT_BUTTON.checkForInput((self.cvx, self.cvy)):
+                            self.cap.release()
+                            cv2.destroyAllWindows()
+                            self.originalMainMenu()
+                        if PAUSE_BUTTON.checkForInput((self.cvx, self.cvy)):
+                            self.saveState()
+                            self.singlePlayerPause()
+                            self.redrawWindow()
+                            self.cvx, self.cvy = 0, 0
+                            MENU_MOUSE_POS = pygame.mouse.get_pos()
+                            for button in [QUIT_BUTTON, PAUSE_BUTTON]:
+                                button.changeColor(MENU_MOUSE_POS)
+                                button.update(self.window)
                         self.redrawWindow()
+                        MENU_MOUSE_POS = pygame.mouse.get_pos()
+                        for button in [QUIT_BUTTON, PAUSE_BUTTON]:
+                            button.changeColor(MENU_MOUSE_POS)
+                            button.update(self.window)
                         self.changeOptionIfArrowClicked(self.cvx, self.cvy)
                         self.displayOptionData()
                         self.drawCorrectCountry(self.cvx, self.cvy, blue1, green)
@@ -719,7 +804,13 @@ class Game:
                         self.changeOptionIfArrowClicked(pos[0], pos[1])
                         self.displayOptionData()
                         self.drawCorrectCountry(pos[0], pos[1], yellow, green)
-
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                            self.originalMainMenu()
+                        if PAUSE_BUTTON.checkForInput(MENU_MOUSE_POS):
+                            self.saveState()
+                            self.singlePlayerPause()
+                            self.redrawWindow()
                         # self.initTreePixels()
                         # self.writeCountryPixelsInFile("arrow_left_player1", pos[0], pos[1])
             pygame.display.update()
