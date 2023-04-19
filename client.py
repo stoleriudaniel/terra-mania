@@ -46,7 +46,7 @@ class Client:
         blue1 = (0, 51, 153)
         self.game.isMultiplayer = True
         self.game.window.fill((255, 255, 255))
-        bg_img = pygame.image.load(self.game.currentMap)
+        bg_img = pygame.image.load(f"assets/continents/{self.game.currentMap}")
         bg_img = pygame.transform.scale(bg_img, (897, 680))
         self.game.window.blit(bg_img, (20, 20), )
 
