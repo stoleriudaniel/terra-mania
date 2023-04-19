@@ -697,6 +697,38 @@ class Game:
 
             pygame.display.update()
 
+    def singlePlayerQuit(self):
+        backgroundImage = pygame.image.load("assets/menu/5.jpg")
+        backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        while True:
+            self.window.blit(backgroundImageScaled, (0, 0))
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+            MENU_TEXT = self.get_font(30).render("Do you want to quit?", True, "#0f8aaf")
+            MENU_RECT = MENU_TEXT.get_rect(center=(640, 230))
+
+            NO_BUTTON = Button(image=None, pos=(640, 355),
+                                 text_input="No", font=self.get_font(30), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            YES_BUTTON = Button(image=None, pos=(640, 480),
+                                 text_input="Yes", font=self.get_font(30), base_color="#d7fcd4",
+                                 hovering_color="Blue")
+            self.window.blit(MENU_TEXT, MENU_RECT)
+            for button in [YES_BUTTON, NO_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if NO_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        return
+                    if YES_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        if self.computerVision:
+                            self.cap.release()
+                            cv2.destroyAllWindows()
+                        self.originalMainMenu()
+
+            pygame.display.update()
+
     def playGame(self):
         handTrackingModule = HandTrackingModule.HandDetector()
         yellow = (238, 224, 29)
@@ -766,9 +798,10 @@ class Game:
                 if handTrackingModule.isHandClosed():
                     if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
                         if QUIT_BUTTON.checkForInput((self.cvx, self.cvy)):
-                            self.cap.release()
-                            cv2.destroyAllWindows()
-                            self.originalMainMenu()
+                            self.saveState()
+                            self.singlePlayerQuit()
+                            self.redrawWindow()
+                            self.cvx, self.cvy = 0, 0
                         if PAUSE_BUTTON.checkForInput((self.cvx, self.cvy)):
                             self.saveState()
                             self.singlePlayerPause()
@@ -806,7 +839,10 @@ class Game:
                         self.drawCorrectCountry(pos[0], pos[1], yellow, green)
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
-                            self.originalMainMenu()
+                            self.saveState()
+                            self.singlePlayerQuit()
+                            self.redrawWindow()
+                            self.cvx, self.cvy = 0, 0
                         if PAUSE_BUTTON.checkForInput(MENU_MOUSE_POS):
                             self.saveState()
                             self.singlePlayerPause()
