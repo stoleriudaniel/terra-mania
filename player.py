@@ -17,6 +17,8 @@ class Player():
 
         self.incorrectCountries = []
 
+        self.nickname = ""
+
     def move(self, xCood, yCoord):
         self.x = xCood
         self.y = yCoord

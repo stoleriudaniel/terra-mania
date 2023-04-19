@@ -504,13 +504,13 @@ class Game:
             # player0 data
             self.displayOption(+10, 70, self.player0.currentOption)
             self.displayArrows(+10, 70)
-            text_surface0 = font.render(f"Daniel: {len(self.player0.correctOptions)}/30", True, BLACK)
+            text_surface0 = font.render(f"{self.player0.nickname}: {len(self.player0.correctOptions)}/30", True, BLACK)
             self.window.blit(text_surface0, (1040, 305))
 
             # player1 data
             self.displayOption(+10, 310, self.player1.currentOption)
             self.displayArrows(+10, 310)
-            text_surface1 = font.render(f"Claudiu: {len(self.player1.correctOptions)}/30", True, BLACK)
+            text_surface1 = font.render(f"{self.player1.nickname}: {len(self.player1.correctOptions)}/30", True, BLACK)
             self.window.blit(text_surface1, (1040, 545))
 
     def drawScoreRect(self):
@@ -967,21 +967,28 @@ class Game:
     def createNewServerMenu(self, gameTypeParam, indexMapAndContinent):
         backgroundImage = pygame.image.load("assets/menu/5.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-        textFieldSelected = False
-        i_text = ""
-        i_text_x = 600
-        i_text_y = 200
-        i_text_width = 320
-        i_text_heigth = 50
+        ipTextFieldSelected = False
+        nicknameTextFieldSelected = False
+        ip_text = ""
+        ip_text_x = 600
+        ip_text_y = 200
+        ip_text_width = 320
+        ip_text_heigth = 50
+
+        nickname_text = ""
+        nickname_text_x = 600
+        nickname_text_y = 270
+        nickname_text_width = 320
+        nickname_text_heigth = 50
         color = (255, 255, 255)
         font = pygame.font.Font(None, 40)
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
             MENU_MOUSE_POS = pygame.mouse.get_pos()
-            START_BUTTON = Button(image=None, pos=(620, 355),
+            START_BUTTON = Button(image=None, pos=(640, 390),
                                   text_input="Start", font=self.get_font(25), base_color="#d7fcd4",
                                   hovering_color="Blue")
-            BACK_BUTTON = Button(image=None, pos=(620, 480),
+            BACK_BUTTON = Button(image=None, pos=(640, 502),
                                  text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
 
@@ -998,12 +1005,15 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     print(MENU_MOUSE_POS)
                     if START_BUTTON.checkForInput(MENU_MOUSE_POS):
-                        if len(i_text) > 0:
-                            if i_text[-1] == "|":
-                                i_text = i_text[:-1]
+                        if len(ip_text) > 0:
+                            if ip_text[-1] == "|":
+                                ip_text = ip_text[:-1]
+                        if len(nickname_text) > 0:
+                            if nickname_text[-1] == "|":
+                                nickname_text = nickname_text[:-1]
                         # Server().create()
                         return_code = subprocess.run(
-                            ["startServer.bat", i_text, gameTypeParam, str(indexMapAndContinent)],
+                            ["startServer.bat", ip_text, gameTypeParam, str(indexMapAndContinent)],
                             shell=True).returncode
 
                         if return_code == 0:
@@ -1012,7 +1022,7 @@ class Game:
                             self.indexMapAndContinent = indexMapAndContinent
                             self.CONTINENT = self.continents[indexMapAndContinent]
                             self.currentMap = self.maps[indexMapAndContinent]
-                            client = Client(self, i_text)
+                            client = Client(self, ip_text, nickname_text)
                             client.play()
                         elif return_code == 1:
                             print("Server is already running. Stopped it and started again.")
@@ -1020,35 +1030,47 @@ class Game:
                             self.indexMapAndContinent = indexMapAndContinent
                             self.CONTINENT = self.continents[indexMapAndContinent]
                             self.currentMap = self.maps[indexMapAndContinent]
-                            client = Client(self, i_text)
+                            client = Client(self, ip_text, nickname_text)
                             client.play()
                         else:
                             print("An error occurred while starting the server.")
                         print("create server")
                     if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.multiplayerMenu()
-                    if MENU_MOUSE_POS[0] >= i_text_x and MENU_MOUSE_POS[0] <= i_text_x + i_text_width and \
-                            MENU_MOUSE_POS[1] >= i_text_y and MENU_MOUSE_POS[1] <= i_text_y + i_text_heigth:
-                        textFieldSelected = True
-                        if len(i_text) == 0:
-                            i_text = i_text + "|"
-                        elif i_text[-1] != "|":
-                            i_text = i_text + "|"
+                    if MENU_MOUSE_POS[0] >= ip_text_x and MENU_MOUSE_POS[0] <= ip_text_x + ip_text_width and \
+                            MENU_MOUSE_POS[1] >= ip_text_y and MENU_MOUSE_POS[1] <= ip_text_y + ip_text_heigth:
+                        ipTextFieldSelected = True
+                        if len(ip_text) == 0:
+                            ip_text = ip_text + "|"
+                        elif ip_text[-1] != "|":
+                            ip_text = ip_text + "|"
                     else:
-                        if textFieldSelected is True:
-                            if len(i_text) > 0 and i_text[-1] == "|":
-                                i_text = i_text[:-1]
-                            textFieldSelected = False
+                        if ipTextFieldSelected is True:
+                            if len(ip_text) > 0 and ip_text[-1] == "|":
+                                ip_text = ip_text[:-1]
+                            ipTextFieldSelected = False
+                    if MENU_MOUSE_POS[0] >= nickname_text_x and MENU_MOUSE_POS[0] <= nickname_text_x + nickname_text_width and \
+                            MENU_MOUSE_POS[1] >= nickname_text_y and MENU_MOUSE_POS[1] <= nickname_text_y + nickname_text_heigth:
+                        nicknameTextFieldSelected = True
+                        if len(nickname_text) == 0:
+                            nickname_text = nickname_text + "|"
+                        elif nickname_text[-1] != "|":
+                            nickname_text = nickname_text + "|"
+                    else:
+                        if nicknameTextFieldSelected is True:
+                            if len(nickname_text) > 0 and nickname_text[-1] == "|":
+                                nickname_text = nickname_text[:-1]
+                            nicknameTextFieldSelected = False
                 if event.type == pygame.KEYDOWN:
                     print("key down")
-                    if textFieldSelected is True:
+                    if ipTextFieldSelected is True:
                         print("Yes, modify")
                         if event.key == pygame.K_RETURN:
                             # Clear the input text when the user presses enter
-                            if len(i_text) > 0 and i_text[-1] == "|":
-                                i_text = i_text[:-1]
+                            if len(ip_text) > 0 and ip_text[-1] == "|":
+                                ip_text = ip_text[:-1]
                             return_code = subprocess.run(
-                                ["startServer.bat", i_text, gameTypeParam, str(indexMapAndContinent)],
+                                ["startServer.bat", ip_text, gameTypeParam, str(indexMapAndContinent)],
                                 shell=True).returncode
 
                             if return_code == 0:
@@ -1057,7 +1079,7 @@ class Game:
                                 self.indexMapAndContinent = indexMapAndContinent
                                 self.CONTINENT = self.continents[indexMapAndContinent]
                                 self.currentMap = self.maps[indexMapAndContinent]
-                                client = Client(self, i_text)
+                                client = Client(self, ip_text, nickname_text)
                                 client.play()
                             elif return_code == 1:
                                 print("Server is already running. Stopped it and started again.")
@@ -1065,56 +1087,112 @@ class Game:
                                 self.indexMapAndContinent = indexMapAndContinent
                                 self.CONTINENT = self.continents[indexMapAndContinent]
                                 self.currentMap = self.maps[indexMapAndContinent]
-                                client = Client(self, i_text)
+                                client = Client(self, ip_text, nickname_text)
                                 client.play()
                             else:
                                 print("An error occurred while starting the server.")
                             print("create server")
                         elif event.key == pygame.K_BACKSPACE:
                             # Remove the last character when the user presses backspace
-                            if i_text[-1] == "|":
-                                i_text = i_text[:-1]
-                                i_text = i_text[:-1]
-                                i_text = i_text + "|"
+                            if ip_text[-1] == "|":
+                                ip_text = ip_text[:-1]
+                                ip_text = ip_text[:-1]
+                                ip_text = ip_text + "|"
                         else:
                             # Add the pressed character to the text
-                            if i_text[-1] == "|":
-                                i_text = i_text[:-1]
-                                i_text += event.unicode
-                                i_text = i_text + "|"
+                            if ip_text[-1] == "|":
+                                ip_text = ip_text[:-1]
+                                ip_text += event.unicode
+                                ip_text = ip_text + "|"
+                    if nicknameTextFieldSelected is True:
+                        print("Yes, modify")
+                        if event.key == pygame.K_RETURN:
+                            # Clear the input text when the user presses enter
+                            if len(nickname_text) > 0 and nickname_text[-1] == "|":
+                                nickname_text = nickname_text[:-1]
+                            return_code = subprocess.run(
+                                ["startServer.bat", nickname_text, gameTypeParam, str(indexMapAndContinent)],
+                                shell=True).returncode
+
+                            if return_code == 0:
+                                print("Server started successfully.")
+                                self.gameType = gameTypeParam
+                                self.indexMapAndContinent = indexMapAndContinent
+                                self.CONTINENT = self.continents[indexMapAndContinent]
+                                self.currentMap = self.maps[indexMapAndContinent]
+                                client = Client(self, ip_text, nickname_text)
+                                client.play()
+                            elif return_code == 1:
+                                print("Server is already running. Stopped it and started again.")
+                                self.gameType = gameTypeParam
+                                self.indexMapAndContinent = indexMapAndContinent
+                                self.CONTINENT = self.continents[indexMapAndContinent]
+                                self.currentMap = self.maps[indexMapAndContinent]
+                                client = Client(self, ip_text, nickname_text)
+                                client.play()
+                            else:
+                                print("An error occurred while starting the server.")
+                            print("create server")
+                        elif event.key == pygame.K_BACKSPACE:
+                            # Remove the last character when the user presses backspace
+                            if nickname_text[-1] == "|":
+                                nickname_text = nickname_text[:-1]
+                                nickname_text = nickname_text[:-1]
+                                nickname_text = nickname_text + "|"
+                        else:
+                            # Add the pressed character to the text
+                            if nickname_text[-1] == "|":
+                                nickname_text = nickname_text[:-1]
+                                nickname_text += event.unicode
+                                nickname_text = nickname_text + "|"
 
             insert_address_text_surface = font.render("Server IP Address:", True, color)
             self.window.blit(insert_address_text_surface, (330 + 5, 205 + 5))
 
+            insert_nickname_text_surface = font.render("Your nickname:", True, color)
+            self.window.blit(insert_nickname_text_surface, (330 + 5, 275 + 5))
+
             # update text input
-            text_surface = font.render(i_text, True, color)
+            text_surface_address = font.render(ip_text, True, color)
+            text_surface_nickname = font.render(nickname_text, True, color)
 
             # Draw the text input object on the screen
             # self.window.fill((20, 20, 0))
-            rect = pygame.Rect(i_text_x, i_text_y, i_text_width, i_text_heigth)
-            pygame.draw.rect(self.window, color, rect, 2)
-            self.window.blit(text_surface, (i_text_x + 15, i_text_y + 12))
+            rect_address = pygame.Rect(ip_text_x, ip_text_y, ip_text_width, ip_text_heigth)
+            pygame.draw.rect(self.window, color, rect_address, 2)
+            self.window.blit(text_surface_address, (ip_text_x + 15, ip_text_y + 12))
+
+            rect_nickname = pygame.Rect(nickname_text_x, nickname_text_y, nickname_text_width, nickname_text_heigth)
+            pygame.draw.rect(self.window, color, rect_nickname, 2)
+            self.window.blit(text_surface_nickname, (nickname_text_x + 15, nickname_text_y + 12))
 
             pygame.display.update()
 
     def connectToServerMenu(self):
         backgroundImage = pygame.image.load("assets/menu/5.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-        textFieldSelected = False
-        i_text = ""
-        i_text_x = 600
-        i_text_y = 200
-        i_text_width = 320
-        i_text_heigth = 50
+        ipTextFieldSelected = False
+        nicknameTextFieldSelected = False
+        ip_text = ""
+        ip_text_x = 600
+        ip_text_y = 200
+        ip_text_width = 320
+        ip_text_heigth = 50
+
+        nickname_text = ""
+        nickname_text_x = 600
+        nickname_text_y = 270
+        nickname_text_width = 320
+        nickname_text_heigth = 50
         color = (255, 255, 255)
         font = pygame.font.Font(None, 40)
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
             MENU_MOUSE_POS = pygame.mouse.get_pos()
-            CONNECT_BUTTON = Button(image=None, pos=(620, 355),
+            CONNECT_BUTTON = Button(image=None, pos=(640, 390),
                                     text_input="Connect", font=self.get_font(25), base_color="#d7fcd4",
                                     hovering_color="Blue")
-            BACK_BUTTON = Button(image=None, pos=(620, 480),
+            BACK_BUTTON = Button(image=None, pos=(640, 502),
                                  text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
 
@@ -1134,60 +1212,106 @@ class Game:
                         self.multiplayerMenu()
                     if CONNECT_BUTTON.checkForInput(MENU_MOUSE_POS):
                         # Server().create()
-                        if len(i_text) > 0:
-                            if i_text[-1] == "|":
-                                i_text = i_text[:-1]
-                        client = Client(self, i_text)
+                        if len(ip_text) > 0:
+                            if ip_text[-1] == "|":
+                                ip_text = ip_text[:-1]
+                        if len(nickname_text) > 0:
+                            if nickname_text[-1] == "|":
+                                nickname_text = nickname_text[:-1]
+                        client = Client(self, ip_text, nickname_text)
                         client.play()
-                    if MENU_MOUSE_POS[0] >= i_text_x and MENU_MOUSE_POS[0] <= i_text_x + i_text_width and \
-                            MENU_MOUSE_POS[1] >= i_text_y and MENU_MOUSE_POS[1] <= i_text_y + i_text_heigth:
-                        textFieldSelected = True
-                        if textFieldSelected == False:
-                            textFieldSelected = True
-                            i_text = i_text + "|"
-                        if len(i_text) == 0:
-                            i_text = i_text + "|"
-                        elif i_text[-1] != "|":
-                            i_text = i_text + "|"
+                    if MENU_MOUSE_POS[0] >= ip_text_x and MENU_MOUSE_POS[0] <= ip_text_x + ip_text_width and \
+                            MENU_MOUSE_POS[1] >= ip_text_y and MENU_MOUSE_POS[1] <= ip_text_y + ip_text_heigth:
+                        ipTextFieldSelected = True
+                        if ipTextFieldSelected == False:
+                            ipTextFieldSelected = True
+                            ip_text = ip_text + "|"
+                        if len(ip_text) == 0:
+                            ip_text = ip_text + "|"
+                        elif ip_text[-1] != "|":
+                            ip_text = ip_text + "|"
                     else:
-                        if textFieldSelected is True:
-                            if len(i_text) > 0 and i_text[-1] == "|":
-                                i_text = i_text[:-1]
-                            textFieldSelected = False
+                        if ipTextFieldSelected is True:
+                            if len(ip_text) > 0 and ip_text[-1] == "|":
+                                ip_text = ip_text[:-1]
+                            ipTextFieldSelected = False
+                    if MENU_MOUSE_POS[0] >= nickname_text_x and MENU_MOUSE_POS[0] <= nickname_text_x + nickname_text_width and \
+                            MENU_MOUSE_POS[1] >= nickname_text_y and MENU_MOUSE_POS[1] <= nickname_text_y + nickname_text_heigth:
+                        nicknameTextFieldSelected = True
+                        if nicknameTextFieldSelected == False:
+                            nicknameTextFieldSelected = True
+                            nickname_text = nickname_text + "|"
+                        if len(nickname_text) == 0:
+                            nickname_text = nickname_text + "|"
+                        elif nickname_text[-1] != "|":
+                            nickname_text = nickname_text + "|"
+                    else:
+                        if nicknameTextFieldSelected is True:
+                            if len(nickname_text) > 0 and nickname_text[-1] == "|":
+                                nickname_text = nickname_text[:-1]
+                            nicknameTextFieldSelected = False
                 if event.type == pygame.KEYDOWN:
                     print("key down")
-                    if textFieldSelected is True:
+                    if ipTextFieldSelected is True:
                         print("Yes, modify")
                         if event.key == pygame.K_RETURN:
                             # Clear the input text when the user presses enter
-                            if len(i_text) > 0 and i_text[-1] == "|":
-                                i_text = i_text[:-1]
-                            client = Client(self, i_text)
+                            if len(ip_text) > 0 and ip_text[-1] == "|":
+                                ip_text = ip_text[:-1]
+                            client = Client(self, ip_text, nickname_text)
                             client.play()
                         elif event.key == pygame.K_BACKSPACE:
                             # Remove the last character when the user presses backspace
-                            if i_text[-1] == "|":
-                                i_text = i_text[:-1]
-                                i_text = i_text[:-1]
-                                i_text = i_text + "|"
+                            if ip_text[-1] == "|":
+                                ip_text = ip_text[:-1]
+                                ip_text = ip_text[:-1]
+                                ip_text = ip_text + "|"
                         else:
                             # Add the pressed character to the text
-                            if i_text[-1] == "|":
-                                i_text = i_text[:-1]
-                                i_text += event.unicode
-                                i_text = i_text + "|"
+                            if ip_text[-1] == "|":
+                                ip_text = ip_text[:-1]
+                                ip_text += event.unicode
+                                ip_text = ip_text + "|"
+                    elif nicknameTextFieldSelected is True:
+                        print("Yes, modify")
+                        if event.key == pygame.K_RETURN:
+                            # Clear the input text when the user presses enter
+                            if len(nickname_text) > 0 and nickname_text[-1] == "|":
+                                nickname_text = nickname_text[:-1]
+                            client = Client(self, ip_text, nickname_text)
+                            client.play()
+                        elif event.key == pygame.K_BACKSPACE:
+                            # Remove the last character when the user presses backspace
+                            if nickname_text[-1] == "|":
+                                nickname_text = nickname_text[:-1]
+                                nickname_text = nickname_text[:-1]
+                                nickname_text = nickname_text + "|"
+                        else:
+                            # Add the pressed character to the text
+                            if nickname_text[-1] == "|":
+                                nickname_text = nickname_text[:-1]
+                                nickname_text += event.unicode
+                                nickname_text = nickname_text + "|"
 
             insert_address_text_surface = font.render("Server IP Address:", True, color)
             self.window.blit(insert_address_text_surface, (330 + 5, 205 + 5))
 
+            insert_nickname_text_surface = font.render("Your nickname:", True, color)
+            self.window.blit(insert_nickname_text_surface, (330 + 5, 275 + 5))
+
             # update text input
-            text_surface = font.render(i_text, True, color)
+            text_surface_address = font.render(ip_text, True, color)
+            text_surface_nickname = font.render(nickname_text, True, color)
 
             # Draw the text input object on the screen
             # self.window.fill((20, 20, 0))
-            rect = pygame.Rect(i_text_x, i_text_y, i_text_width, i_text_heigth)
-            pygame.draw.rect(self.window, color, rect, 2)
-            self.window.blit(text_surface, (i_text_x + 15, i_text_y + 12))
+            rect_address = pygame.Rect(ip_text_x, ip_text_y, ip_text_width, ip_text_heigth)
+            pygame.draw.rect(self.window, color, rect_address, 2)
+            self.window.blit(text_surface_address, (ip_text_x + 15, ip_text_y + 12))
+
+            rect_nickname = pygame.Rect(nickname_text_x, nickname_text_y, nickname_text_width, nickname_text_heigth)
+            pygame.draw.rect(self.window, color, rect_nickname, 2)
+            self.window.blit(text_surface_nickname, (nickname_text_x + 15, nickname_text_y + 12))
 
             pygame.display.update()
 

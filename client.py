@@ -3,7 +3,7 @@ from network import Network
 
 
 class Client:
-    def __init__(self, gameParam, ipAddress):
+    def __init__(self, gameParam, ipAddress, nickname):
         self.game = gameParam
         self.network = Network(ipAddress)
         self.playerId, self.game.gameType, self.game.indexMapAndContinent = self.getInitDataFromServer()
@@ -11,6 +11,13 @@ class Client:
         self.game.currentMap = self.game.maps[self.game.indexMapAndContinent]
         self.clickPlayer0 = 0
         self.clickPlayer1 = 0
+        self.initNickname(nickname)
+
+    def initNickname(self, nickname):
+        if self.playerId == "0":
+            self.game.player0.nickname = nickname
+        elif self.playerId == "1":
+            self.game.player1.nickname = nickname
 
     def getInitDataFromServer(self):
         data = self.network.client.recv(2048).decode()
@@ -23,7 +30,7 @@ class Client:
             return "-1", "none", 0
 
     def extractData(self, data):
-        try:  # "0:(0,0);(click=0);(currentOption=none);(correctOption=none);(gameType=none);(indexMapAndContinent=none)",
+        try:  # "0:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=asd)",
             pId = data.split(":")[0]
             coordsData = data.split(":")[1].split(";")[0]
             x = coordsData.split(",")[0].split("(")[1]
@@ -31,9 +38,10 @@ class Client:
             click = data.split(":")[1].split(";")[1].split("=")[1].split(")")[0]
             currentOption = data.split(":")[1].split(";")[2].split("=")[1].split(")")[0]
             correctOption = data.split(":")[1].split(";")[3].split("=")[1].split(")")[0]
-            return pId, int(x), int(y), int(click), currentOption, correctOption
+            nickname = data.split(":")[1].split(";")[4].split("=")[1].split(")")[0]
+            return pId, int(x), int(y), int(click), currentOption, correctOption, nickname
         except:
-            return "-1", 0, 0, 0, "none", "none"
+            return "-1", 0, 0, 0, "none", "none", "none"
 
     def play(self):
         pygame.init()
@@ -93,15 +101,15 @@ class Client:
             # initTreePixels()
             # writeCountryPixelsInFile("Test", pos[0], pos[1])
             if self.game.player0.id == self.playerId:
-                data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption})"
+                data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption});(nickname={self.game.player0.nickname})"
             else:
-                data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption})"
+                data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption});(nickname={self.game.player1.nickname})"
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
 
-            pId, xData, yData, clickData, currentOption, correctOption = self.extractData(reply)
+            pId, xData, yData, clickData, currentOption, correctOption, nickname = self.extractData(reply)
             if pId == self.game.player0.id:
-                self.game.player0.x, self.game.player0.y, self.game.player0.click = xData, yData, clickData
+                self.game.player0.x, self.game.player0.y, self.game.player0.click, self.game.player0.nickname = xData, yData, clickData, nickname
                 if currentOption != "none":
                     self.game.player0.currentOption = currentOption
                 if correctOption != "none":
@@ -109,7 +117,7 @@ class Client:
                     if correctOption not in self.game.player0.correctOptions:
                         self.game.player0.correctOptions.append(correctOption)
             elif pId == self.game.player1.id:
-                self.game.player1.x, self.game.player1.y, self.game.player1.click = xData, yData, clickData
+                self.game.player1.x, self.game.player1.y, self.game.player1.click, self.game.player1.nickname = xData, yData, clickData, nickname
                 if currentOption != "none":
                     self.game.player1.currentOption = currentOption
                 if correctOption != "none":
@@ -118,9 +126,9 @@ class Client:
                         self.game.player1.correctOptions.append(correctOption)
             # Render the coordinates text
             if self.game.player0.id == self.playerId:
-                data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption})"
+                data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption});(nickname={self.game.player0.nickname})"
             else:
-                data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption})"
+                data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption});(nickname={self.game.player1.nickname})"
             self.network.client.send(str.encode(data))
             reply = self.network.client.recv(2048).decode()
 
