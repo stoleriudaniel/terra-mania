@@ -54,7 +54,7 @@ class Game:
         self.mapRealWidth = 0
         self.mapRealHeight = 0
 
-        self.computerVision = False
+        self.computerVision = True
 
         self.cvx = 0
         self.cvy = 0

@@ -11,8 +11,8 @@ class Server():
         self.currentId = "0"
         self.gameType = ""
         self.indexMapAndContinent = 0
-        self.state = ["0:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=none)",
-                      "1:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=none)"]
+        self.state = ["0:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=)",
+                      "1:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=)"]
 
     def create(self, ipAddress, gameType, strIndexMapAndContinent):
         self.gameType = gameType
