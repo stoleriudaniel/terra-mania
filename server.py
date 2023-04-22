@@ -17,9 +17,8 @@ class Server():
                       "1:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none)"]
 
     def playerQuit(self):
-        statusPlayer0 = self.state[0].split(":")[1].split(";")[5].split("=")[1].split(")")
-        statusPlayer1 = self.state[1].split(":")[1].split(";")[5].split("=")[1].split(")")
-
+        statusPlayer0 = self.state[0].split(":")[1].split(";")[5].split("=")[1].split(")")[0]
+        statusPlayer1 = self.state[1].split(":")[1].split(";")[5].split("=")[1].split(")")[0]
         if "quit" in [statusPlayer0, statusPlayer1]:
             return True
         return False
