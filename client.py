@@ -134,9 +134,19 @@ class Client:
 
         runing = True
 
+        QUIT_BUTTON = Button(image=None, pos=(1190, 655),
+                             text_input="Quit", font=self.game.get_font(30), base_color="Red",
+                             hovering_color="Blue")
+
         while runing:
             if self.start is True:
                 self.game.displayOptionData()
+
+                MENU_MOUSE_POS = pygame.mouse.get_pos()
+                for button in [QUIT_BUTTON]:
+                    button.changeColor(MENU_MOUSE_POS)
+                    button.update(self.game.window)
+
                 ev = pygame.event.get()
                 for event in ev:
                     if event.type == pygame.MOUSEMOTION:  # MOUSEBUTTONUP MOUSEMOTION
@@ -149,6 +159,8 @@ class Client:
                             self.game.player1.y = pos[1]
                     if event.type == pygame.MOUSEBUTTONUP:
                         pos = pygame.mouse.get_pos()
+                        if QUIT_BUTTON.checkForInput((pos[0], pos[1])):
+                            return
                         self.game.changeOptionIfArrowClicked(pos[0], pos[1])
                         self.game.displayOptionData()
                         self.game.drawCorrectCountry(pos[0], pos[1], yellow, green, self.playerId)

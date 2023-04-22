@@ -650,29 +650,6 @@ class Game:
         self.displayCurrentGameTitle()
         self.displayTimeLeft()
 
-    def singlePlayerQuitButton(self):
-        while True:
-            MENU_MOUSE_POS = pygame.mouse.get_pos()
-            QUIT_BUTTON = Button(image=None, pos=(1005, 655),
-                                 text_input="Quit", font=self.get_font(30), base_color="#d7fcd4",
-                                 hovering_color="Blue")
-            # self.window.blit(MENU_TEXT, MENU_RECT)
-            for button in [QUIT_BUTTON]:
-                button.changeColor(MENU_MOUSE_POS)
-                button.update(self.window)
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
-                        self.originalMainMenu()
-                        # pygame.quit()
-                        # sys.exit()
-
-            # pygame.display.update()
-
     def singlePlayerPause(self):
         backgroundImage = pygame.image.load("assets/menu/6.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
@@ -1024,6 +1001,7 @@ class Game:
                             self.currentMap = self.maps[indexMapAndContinent]
                             client = Client(self, ip_text, nickname_text)
                             client.play()
+                            self.originalMainMenu()
                         elif return_code == 1:
                             print("Server is already running. Stopped it and started again.")
                             self.gameType = gameTypeParam
@@ -1032,6 +1010,7 @@ class Game:
                             self.currentMap = self.maps[indexMapAndContinent]
                             client = Client(self, ip_text, nickname_text)
                             client.play()
+                            self.originalMainMenu()
                         else:
                             print("An error occurred while starting the server.")
                         print("create server")
@@ -1081,6 +1060,7 @@ class Game:
                                 self.currentMap = self.maps[indexMapAndContinent]
                                 client = Client(self, ip_text, nickname_text)
                                 client.play()
+                                self.originalMainMenu()
                             elif return_code == 1:
                                 print("Server is already running. Stopped it and started again.")
                                 self.gameType = gameTypeParam
@@ -1089,6 +1069,7 @@ class Game:
                                 self.currentMap = self.maps[indexMapAndContinent]
                                 client = Client(self, ip_text, nickname_text)
                                 client.play()
+                                self.originalMainMenu()
                             else:
                                 print("An error occurred while starting the server.")
                             print("create server")
@@ -1122,6 +1103,7 @@ class Game:
                                 self.currentMap = self.maps[indexMapAndContinent]
                                 client = Client(self, ip_text, nickname_text)
                                 client.play()
+                                self.originalMainMenu()
                             elif return_code == 1:
                                 print("Server is already running. Stopped it and started again.")
                                 self.gameType = gameTypeParam
@@ -1130,6 +1112,7 @@ class Game:
                                 self.currentMap = self.maps[indexMapAndContinent]
                                 client = Client(self, ip_text, nickname_text)
                                 client.play()
+                                self.originalMainMenu()
                             else:
                                 print("An error occurred while starting the server.")
                             print("create server")
@@ -1220,6 +1203,7 @@ class Game:
                                 nickname_text = nickname_text[:-1]
                         client = Client(self, ip_text, nickname_text)
                         client.play()
+                        self.originalMainMenu()
                     if MENU_MOUSE_POS[0] >= ip_text_x and MENU_MOUSE_POS[0] <= ip_text_x + ip_text_width and \
                             MENU_MOUSE_POS[1] >= ip_text_y and MENU_MOUSE_POS[1] <= ip_text_y + ip_text_heigth:
                         ipTextFieldSelected = True
@@ -1260,6 +1244,7 @@ class Game:
                                 ip_text = ip_text[:-1]
                             client = Client(self, ip_text, nickname_text)
                             client.play()
+                            self.originalMainMenu()
                         elif event.key == pygame.K_BACKSPACE:
                             # Remove the last character when the user presses backspace
                             if ip_text[-1] == "|":
@@ -1280,6 +1265,7 @@ class Game:
                                 nickname_text = nickname_text[:-1]
                             client = Client(self, ip_text, nickname_text)
                             client.play()
+                            self.originalMainMenu()
                         elif event.key == pygame.K_BACKSPACE:
                             # Remove the last character when the user presses backspace
                             if nickname_text[-1] == "|":
