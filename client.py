@@ -1,3 +1,4 @@
+import psutil
 import pygame
 from network import Network
 from button import Button
@@ -90,6 +91,16 @@ class Client:
 
             pygame.display.update()
 
+    def killProcessByPort(self, port):
+        for conn in psutil.net_connections():
+            if conn.status == 'LISTEN' and conn.laddr.port == port:
+                pid = conn.pid
+                process = psutil.Process(pid)
+                process.kill()
+                print(f"Killed process {pid} listening on port {port}")
+                return
+        print(f"No process found listening on port {port}")
+
     def getDataFromServer(self):
         if self.game.player0.id == self.playerId:
             data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption});(nickname={self.game.player0.nickname});(status={self.gameStatus})"
@@ -141,53 +152,56 @@ class Client:
                              hovering_color="Blue")
 
         while runing:
-            if self.start is True:
-                self.game.displayOptionData()
+            try:
+                if self.start is True:
+                    self.game.displayOptionData()
 
-                MENU_MOUSE_POS = pygame.mouse.get_pos()
-                for button in [QUIT_BUTTON]:
-                    button.changeColor(MENU_MOUSE_POS)
-                    button.update(self.game.window)
+                    MENU_MOUSE_POS = pygame.mouse.get_pos()
+                    for button in [QUIT_BUTTON]:
+                        button.changeColor(MENU_MOUSE_POS)
+                        button.update(self.game.window)
 
-                ev = pygame.event.get()
-                for event in ev:
-                    if event.type == pygame.MOUSEMOTION:  # MOUSEBUTTONUP MOUSEMOTION
-                        pos = pygame.mouse.get_pos()
-                        if self.playerId == self.game.player0.id:
-                            self.game.player0.x = pos[0]
-                            self.game.player0.y = pos[1]
-                        else:
-                            self.game.player1.x = pos[0]
-                            self.game.player1.y = pos[1]
-                    if event.type == pygame.MOUSEBUTTONUP:
-                        pos = pygame.mouse.get_pos()
-                        if QUIT_BUTTON.checkForInput((pos[0], pos[1])):
-                            self.gameStatus = "quit"
-                        self.game.changeOptionIfArrowClicked(pos[0], pos[1])
-                        self.game.displayOptionData()
-                        self.game.drawCorrectCountry(pos[0], pos[1], yellow, green, self.playerId)
-                        if self.playerId == self.game.player0.id:
-                            self.game.player0.click = 1 - self.game.player0.click
-                        elif self.playerId == self.game.player1.id:
-                            self.game.player1.click = 1 - self.game.player1.click
-                if self.playerId != self.game.player0.id and self.game.player0.click != self.clickPlayer0:
-                    self.game.drawCorrectCountry(self.game.player0.x, self.game.player0.y, yellow, green,
-                                                 self.game.player0.id)
-                    self.clickPlayer0 = self.game.player0.click
-                elif self.playerId != self.game.player1.id and self.game.player1.click != self.clickPlayer1:
-                    self.game.drawCorrectCountry(self.game.player1.x, self.game.player1.y, yellow, green,
-                                                 self.game.player1.id)
-                    self.clickPlayer1 = self.game.player1.click
-                self.game.undrawCountries(blue1)
-                self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow, self.game.player0.id)
-                self.game.drawCountry(self.game.player1.x, self.game.player1.y, blue1, yellow, self.game.player1.id)
-            if self.start is False:
-                self.waitingForTheSecondPlayer()
-                if self.stopServer is True:
-                    return
-            # initTreePixels()
-            # writeCountryPixelsInFile("Test", pos[0], pos[1])
-            self.getDataFromServer()
+                    ev = pygame.event.get()
+                    for event in ev:
+                        if event.type == pygame.MOUSEMOTION:  # MOUSEBUTTONUP MOUSEMOTION
+                            pos = pygame.mouse.get_pos()
+                            if self.playerId == self.game.player0.id:
+                                self.game.player0.x = pos[0]
+                                self.game.player0.y = pos[1]
+                            else:
+                                self.game.player1.x = pos[0]
+                                self.game.player1.y = pos[1]
+                        if event.type == pygame.MOUSEBUTTONUP:
+                            pos = pygame.mouse.get_pos()
+                            if QUIT_BUTTON.checkForInput((pos[0], pos[1])):
+                                self.gameStatus = "quit"
+                            self.game.changeOptionIfArrowClicked(pos[0], pos[1])
+                            self.game.displayOptionData()
+                            self.game.drawCorrectCountry(pos[0], pos[1], yellow, green, self.playerId)
+                            if self.playerId == self.game.player0.id:
+                                self.game.player0.click = 1 - self.game.player0.click
+                            elif self.playerId == self.game.player1.id:
+                                self.game.player1.click = 1 - self.game.player1.click
+                    if self.playerId != self.game.player0.id and self.game.player0.click != self.clickPlayer0:
+                        self.game.drawCorrectCountry(self.game.player0.x, self.game.player0.y, yellow, green,
+                                                     self.game.player0.id)
+                        self.clickPlayer0 = self.game.player0.click
+                    elif self.playerId != self.game.player1.id and self.game.player1.click != self.clickPlayer1:
+                        self.game.drawCorrectCountry(self.game.player1.x, self.game.player1.y, yellow, green,
+                                                     self.game.player1.id)
+                        self.clickPlayer1 = self.game.player1.click
+                    self.game.undrawCountries(blue1)
+                    self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow, self.game.player0.id)
+                    self.game.drawCountry(self.game.player1.x, self.game.player1.y, blue1, yellow, self.game.player1.id)
+                if self.start is False:
+                    self.waitingForTheSecondPlayer()
+                    if self.stopServer is True:
+                        self.killProcessByPort(5556)
+                        return
+                self.getDataFromServer()
 
-            pygame.display.update()
+                pygame.display.update()
+            except:
+                return
+
         pygame.quit()
