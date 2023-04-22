@@ -162,7 +162,7 @@ class Client:
                     if event.type == pygame.MOUSEBUTTONUP:
                         pos = pygame.mouse.get_pos()
                         if QUIT_BUTTON.checkForInput((pos[0], pos[1])):
-                            self.gameStatus = "exit"
+                            self.gameStatus = "quit"
                         self.game.changeOptionIfArrowClicked(pos[0], pos[1])
                         self.game.displayOptionData()
                         self.game.drawCorrectCountry(pos[0], pos[1], yellow, green, self.playerId)
