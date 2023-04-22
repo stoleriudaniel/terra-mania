@@ -14,6 +14,7 @@ class Client:
         self.initNickname(nickname)
         self.start = False
         self.stopServer = False
+        self.gameStatus = None
 
     def initNickname(self, nickname):
         if self.playerId == "0":
@@ -91,9 +92,9 @@ class Client:
 
     def getDataFromServer(self):
         if self.game.player0.id == self.playerId:
-            data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption});(nickname={self.game.player0.nickname});(status=play)"
+            data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption});(nickname={self.game.player0.nickname});(status={self.gameStatus})"
         else:
-            data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption});(nickname={self.game.player1.nickname});(status=play)"
+            data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption});(nickname={self.game.player1.nickname});(status={self.gameStatus})"
         self.network.client.send(str.encode(data))
         reply = self.network.client.recv(2048).decode()
 
@@ -116,9 +117,9 @@ class Client:
                     self.game.player1.correctOptions.append(correctOption)
         # Render the coordinates text
         if self.game.player0.id == self.playerId:
-            data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption});(nickname={self.game.player0.nickname});(status=play)"
+            data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption});(nickname={self.game.player0.nickname});(status={self.gameStatus})"
         else:
-            data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption});(nickname={self.game.player1.nickname});(status=play)"
+            data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption});(nickname={self.game.player1.nickname});(status={self.gameStatus})"
         self.network.client.send(str.encode(data))
         reply = self.network.client.recv(2048).decode()
 
@@ -161,7 +162,7 @@ class Client:
                     if event.type == pygame.MOUSEBUTTONUP:
                         pos = pygame.mouse.get_pos()
                         if QUIT_BUTTON.checkForInput((pos[0], pos[1])):
-                            return
+                            self.gameStatus = "exit"
                         self.game.changeOptionIfArrowClicked(pos[0], pos[1])
                         self.game.displayOptionData()
                         self.game.drawCorrectCountry(pos[0], pos[1], yellow, green, self.playerId)

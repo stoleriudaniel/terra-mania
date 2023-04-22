@@ -66,8 +66,7 @@ class Server():
                     id = int(arr[0])
                     self.state[id] = reply
                     if self.playerQuit():
-                        # self.killProcessByPort()
-                        print("hello")
+                        self.killProcessByPort()
                     opponentId = 0
                     if id == 0: opponentId = 1
                     if id == 1: opponentId = 0
