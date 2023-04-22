@@ -1,6 +1,8 @@
 import socket
 from _thread import *
 
+import psutil
+
 
 class Server():
     def __init__(self):
@@ -11,8 +13,16 @@ class Server():
         self.currentId = "0"
         self.gameType = ""
         self.indexMapAndContinent = 0
-        self.state = ["0:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=)",
-                      "1:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=)"]
+        self.state = ["0:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none)",
+                      "1:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none)"]
+
+    def playerQuit(self):
+        statusPlayer0 = self.state[0].split(":")[1].split(";")[5].split("=")[1].split(")")
+        statusPlayer1 = self.state[1].split(":")[1].split(";")[5].split("=")[1].split(")")
+
+        if "quit" in [statusPlayer0, statusPlayer1]:
+            return True
+        return False
 
     def create(self, ipAddress, gameType, strIndexMapAndContinent):
         self.gameType = gameType
@@ -55,6 +65,8 @@ class Server():
                     arr = reply.split(":")
                     id = int(arr[0])
                     self.state[id] = reply
+                    if self.playerQuit():
+                        self.killProcessByPort()
                     opponentId = 0
                     if id == 0: opponentId = 1
                     if id == 1: opponentId = 0
@@ -66,5 +78,15 @@ class Server():
 
         print("Connection Closed")
         conn.close()
+
+    def killProcessByPort(self):
+        for conn in psutil.net_connections():
+            if conn.status == 'LISTEN' and conn.laddr.port == self.port:
+                pid = conn.pid
+                process = psutil.Process(pid)
+                process.kill()
+                print(f"Killed process {pid} listening on port {self.port}")
+                return
+        print(f"No process found listening on port {self.port}")
 
 # Server().create()

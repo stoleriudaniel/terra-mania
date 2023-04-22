@@ -10,6 +10,7 @@ import pygame
 import sys
 from player import Player
 from button import Button
+import psutil
 
 
 class Game:
@@ -1001,6 +1002,7 @@ class Game:
                             self.currentMap = self.maps[indexMapAndContinent]
                             client = Client(self, ip_text, nickname_text)
                             client.play()
+                            self.killProcessByPort(5556)
                             self.originalMainMenu()
                         elif return_code == 1:
                             print("Server is already running. Stopped it and started again.")
@@ -1010,6 +1012,7 @@ class Game:
                             self.currentMap = self.maps[indexMapAndContinent]
                             client = Client(self, ip_text, nickname_text)
                             client.play()
+                            self.killProcessByPort(5556)
                             self.originalMainMenu()
                         else:
                             print("An error occurred while starting the server.")
@@ -1060,6 +1063,7 @@ class Game:
                                 self.currentMap = self.maps[indexMapAndContinent]
                                 client = Client(self, ip_text, nickname_text)
                                 client.play()
+                                self.killProcessByPort(5556)
                                 self.originalMainMenu()
                             elif return_code == 1:
                                 print("Server is already running. Stopped it and started again.")
@@ -1069,6 +1073,7 @@ class Game:
                                 self.currentMap = self.maps[indexMapAndContinent]
                                 client = Client(self, ip_text, nickname_text)
                                 client.play()
+                                self.killProcessByPort(5556)
                                 self.originalMainMenu()
                             else:
                                 print("An error occurred while starting the server.")
@@ -1103,6 +1108,7 @@ class Game:
                                 self.currentMap = self.maps[indexMapAndContinent]
                                 client = Client(self, ip_text, nickname_text)
                                 client.play()
+                                self.killProcessByPort(5556)
                                 self.originalMainMenu()
                             elif return_code == 1:
                                 print("Server is already running. Stopped it and started again.")
@@ -1112,6 +1118,7 @@ class Game:
                                 self.currentMap = self.maps[indexMapAndContinent]
                                 client = Client(self, ip_text, nickname_text)
                                 client.play()
+                                self.killProcessByPort(5556)
                                 self.originalMainMenu()
                             else:
                                 print("An error occurred while starting the server.")
@@ -1537,6 +1544,16 @@ class Game:
                         self.singlePlayerOrMultiplayerMenu()
 
             pygame.display.update()
+
+    def killProcessByPort(self, port):
+        for conn in psutil.net_connections():
+            if conn.status == 'LISTEN' and conn.laddr.port == port:
+                pid = conn.pid
+                process = psutil.Process(pid)
+                process.kill()
+                print(f"Killed process {pid} listening on port {port}")
+                return
+        print(f"No process found listening on port {port}")
 
     def launch(self):
         pygame.init()

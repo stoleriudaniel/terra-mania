@@ -32,7 +32,7 @@ class Client:
             return "-1", "none", 0
 
     def extractData(self, data):
-        try:  # "0:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=asd)",
+        try:  # "0:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=asd);(status=play)",
             pId = data.split(":")[0]
             coordsData = data.split(":")[1].split(";")[0]
             x = coordsData.split(",")[0].split("(")[1]
@@ -41,9 +41,10 @@ class Client:
             currentOption = data.split(":")[1].split(";")[2].split("=")[1].split(")")[0]
             correctOption = data.split(":")[1].split(";")[3].split("=")[1].split(")")[0]
             nickname = data.split(":")[1].split(";")[4].split("=")[1].split(")")[0]
-            return pId, int(x), int(y), int(click), currentOption, correctOption, nickname
+            status = data.split(":")[1].split(";")[5].split("=")[1].split(")")[0]
+            return pId, int(x), int(y), int(click), currentOption, correctOption, nickname, status
         except:
-            return "-1", 0, 0, 0, "none", "none", ""
+            return "-1", 0, 0, 0, "none", "none", "", "play"
 
     def initGame(self):
         self.game.window.fill((255, 255, 255))
@@ -90,13 +91,13 @@ class Client:
 
     def getDataFromServer(self):
         if self.game.player0.id == self.playerId:
-            data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption});(nickname={self.game.player0.nickname})"
+            data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption});(nickname={self.game.player0.nickname});(status=play)"
         else:
-            data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption});(nickname={self.game.player1.nickname})"
+            data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption});(nickname={self.game.player1.nickname});(status=play)"
         self.network.client.send(str.encode(data))
         reply = self.network.client.recv(2048).decode()
 
-        pId, xData, yData, clickData, currentOption, correctOption, nickname = self.extractData(reply)
+        pId, xData, yData, clickData, currentOption, correctOption, nickname, status = self.extractData(reply)
         if pId == self.game.player0.id:
             self.game.player0.x, self.game.player0.y, self.game.player0.click, self.game.player0.nickname = xData, yData, clickData, nickname
             if currentOption != "none":
@@ -115,9 +116,9 @@ class Client:
                     self.game.player1.correctOptions.append(correctOption)
         # Render the coordinates text
         if self.game.player0.id == self.playerId:
-            data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption});(nickname={self.game.player0.nickname})"
+            data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption});(nickname={self.game.player0.nickname});(status=play)"
         else:
-            data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption});(nickname={self.game.player1.nickname})"
+            data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption});(nickname={self.game.player1.nickname});(status=play)"
         self.network.client.send(str.encode(data))
         reply = self.network.client.recv(2048).decode()
 
