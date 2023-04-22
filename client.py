@@ -96,7 +96,7 @@ class Client:
         bg_img = pygame.image.load(f"assets/menu/7.jpg")
         bg_img = pygame.transform.scale(bg_img, (self.game.SCREEN_WIDTH, self.game.SCREEN_HEIGHT))
 
-        while self.start is False:
+        while True:
             self.game.window.blit(bg_img, (0, 0), )
             MENU_MOUSE_POS = pygame.mouse.get_pos()
 
