@@ -91,6 +91,30 @@ class Client:
 
             pygame.display.update()
 
+    def serverClosed(self):
+        self.game.window.fill((255, 255, 255))
+        bg_img = pygame.image.load(f"assets/menu/7.jpg")
+        bg_img = pygame.transform.scale(bg_img, (self.game.SCREEN_WIDTH, self.game.SCREEN_HEIGHT))
+
+        while self.start is False:
+            self.game.window.blit(bg_img, (0, 0), )
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+            BACK_BUTTON = Button(image=None, pos=(640, 190),
+                                  text_input="Back", font=self.game.get_font(25), base_color="#d7fcd4",
+                                  hovering_color="Blue")
+            # self.window.blit(MENU_TEXT, MENU_RECT)
+            for button in [BACK_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.game.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        return True
+
+            pygame.display.update()
+
     def killProcessByPort(self, port):
         for conn in psutil.net_connections():
             if conn.status == 'LISTEN' and conn.laddr.port == port:
@@ -202,6 +226,7 @@ class Client:
 
                 pygame.display.update()
             except:
-                return
+                if self.serverClosed():
+                    return
 
         pygame.quit()
