@@ -110,6 +110,10 @@ class Game:
                     file.write(f"{xCord} {yCord} {country[2]}\n")
         print("Finish")
 
+    def getAllOptionsOfTheContinent(self):
+        directories = [x[0] for x in os.walk(f"countries\\{self.CONTINENT}")]
+        return len(directories) - 1
+
     def writeCountryPixelsInFile(self, countryName, mousex, mousey):
         file = open(f"arrows\\{countryName}\\pixels.txt", "w")
         # file = open(f"arrows\\{countryName}\\pixels.txt", "w")
@@ -506,7 +510,13 @@ class Game:
         if not self.isMultiplayer:
             self.displayOption(+10, 170)
             self.displayArrows(+10, 170)
-            text_surface = font.render("Your score: 2/30", True, BLACK)
+            rect_size = (340, 37)
+            rect_color = WHITE
+            rect1_position = (930, 395)
+
+            # Draw the rectangle
+            pygame.draw.rect(self.window, rect_color, pygame.Rect(rect1_position, rect_size))
+            text_surface = font.render(f"Your score: {len(self.correctOptions)}/{self.getAllOptionsOfTheContinent()}", True, BLACK)
             self.window.blit(text_surface, (1020, 405))
         else:
             self.drawScoreRect()
@@ -716,127 +726,166 @@ class Game:
             pygame.display.update()
 
     def playGame(self):
-        handTrackingModule = HandTrackingModule.HandDetector()
-        yellow = (238, 224, 29)
-        green = (23, 165, 23)
-        blue1 = (0, 51, 153)
-        self.window.fill((255, 255, 255))
-        bg_img = pygame.image.load(f"assets/continents/{self.currentMap}")
-        self.mapRealWidth = bg_img.get_width()
-        self.mapRealHeight = bg_img.get_height()
-        bg_img = pygame.transform.scale(bg_img, (897, 680))
-        self.window.blit(bg_img, (20, 20), )
+        try:
+            handTrackingModule = HandTrackingModule.HandDetector()
+            yellow = (238, 224, 29)
+            green = (23, 165, 23)
+            blue1 = (0, 51, 153)
+            self.window.fill((255, 255, 255))
+            bg_img = pygame.image.load(f"assets/continents/{self.currentMap}")
+            self.mapRealWidth = bg_img.get_width()
+            self.mapRealHeight = bg_img.get_height()
+            bg_img = pygame.transform.scale(bg_img, (897, 680))
+            self.window.blit(bg_img, (20, 20), )
 
-        # mouse
-        cursor_img = pygame.image.load("assets/cursor/cursor.png")
-        cursor_img = pygame.transform.scale(cursor_img, (50, 40))
+            # mouse
+            cursor_img = pygame.image.load("assets/cursor/cursor.png")
+            cursor_img = pygame.transform.scale(cursor_img, (50, 40))
 
-        self.currentOption = self.getRandomOption()
+            self.currentOption = self.getRandomOption()
 
-        self.displayOptionData()
-        self.displayCurrentGameTitle()
-        self.displayTimeLeft()
+            self.displayOptionData()
+            self.displayCurrentGameTitle()
+            self.displayTimeLeft()
 
-        PAUSE_BUTTON = Button(image=None, pos=(1030, 655),
-                             text_input="Pause", font=self.get_font(30), base_color="Red",
-                             hovering_color="Blue")
-        QUIT_BUTTON = Button(image=None, pos=(1190, 655),
-                             text_input="Quit", font=self.get_font(30), base_color="Red",
-                             hovering_color="Blue")
+            PAUSE_BUTTON = Button(image=None, pos=(1030, 655),
+                                 text_input="Pause", font=self.get_font(30), base_color="Red",
+                                 hovering_color="Blue")
+            QUIT_BUTTON = Button(image=None, pos=(1190, 655),
+                                 text_input="Quit", font=self.get_font(30), base_color="Red",
+                                 hovering_color="Blue")
 
-        # self.singlePlayerQuitButton()
+            # self.singlePlayerQuitButton()
+            self.correctOptions = []
 
-        runing = True
+            runing = True
 
-        # self.computerVision = True
-
-        if self.computerVision:
-            self.cap = cv2.VideoCapture(0)
-            self.frame = self.cap.read()
-            self.saveState()
-        while runing:
-
-            MENU_MOUSE_POS = pygame.mouse.get_pos()
-            for button in [QUIT_BUTTON, PAUSE_BUTTON]:
-                button.changeColor(MENU_MOUSE_POS)
-                button.update(self.window)
-
+            # self.computerVision = True
 
             if self.computerVision:
-                self.load_camera()
-                newScannedHandsImg = handTrackingModule.findHands(self.img)
-                handCoords = handTrackingModule.getCoords(newScannedHandsImg)
-                if handCoords != None:
-                    self.cvx = self.SCREEN_WIDTH - handCoords[0]
-                    self.cvy = handCoords[1]
-                    if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
-                        self.redrawWindow()
-                        MENU_MOUSE_POS = pygame.mouse.get_pos()
-                        for button in [QUIT_BUTTON, PAUSE_BUTTON]:
-                            button.changeColor(MENU_MOUSE_POS)
-                            button.update(self.window)
-                        self.undrawCountries(blue1)
-                        self.drawCountry(self.cvx, self.cvy, blue1, yellow)
-                        self.window.blit(cursor_img, (self.cvx, self.cvy), )
-                elif self.cvx > 0 or self.cvy > 0:
-                    if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
-                        self.window.blit(cursor_img, (self.cvx, self.cvy), )
-                if handTrackingModule.isHandClosed():
-                    if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
-                        if QUIT_BUTTON.checkForInput((self.cvx, self.cvy)):
-                            self.saveState()
-                            self.singlePlayerQuit()
+                self.cap = cv2.VideoCapture(0)
+                self.frame = self.cap.read()
+                self.saveState()
+            while runing:
+
+                MENU_MOUSE_POS = pygame.mouse.get_pos()
+                for button in [QUIT_BUTTON, PAUSE_BUTTON]:
+                    button.changeColor(MENU_MOUSE_POS)
+                    button.update(self.window)
+
+
+                if self.computerVision:
+                    self.load_camera()
+                    newScannedHandsImg = handTrackingModule.findHands(self.img)
+                    handCoords = handTrackingModule.getCoords(newScannedHandsImg)
+                    if handCoords != None:
+                        self.cvx = self.SCREEN_WIDTH - handCoords[0]
+                        self.cvy = handCoords[1]
+                        if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
                             self.redrawWindow()
-                            self.cvx, self.cvy = 0, 0
-                        if PAUSE_BUTTON.checkForInput((self.cvx, self.cvy)):
-                            self.saveState()
-                            self.singlePlayerPause()
-                            self.redrawWindow()
-                            self.cvx, self.cvy = 0, 0
                             MENU_MOUSE_POS = pygame.mouse.get_pos()
                             for button in [QUIT_BUTTON, PAUSE_BUTTON]:
                                 button.changeColor(MENU_MOUSE_POS)
                                 button.update(self.window)
-                        self.redrawWindow()
-                        MENU_MOUSE_POS = pygame.mouse.get_pos()
-                        for button in [QUIT_BUTTON, PAUSE_BUTTON]:
-                            button.changeColor(MENU_MOUSE_POS)
-                            button.update(self.window)
-                        self.changeOptionIfArrowClicked(self.cvx, self.cvy)
-                        self.displayOptionData()
-                        self.drawCorrectCountry(self.cvx, self.cvy, blue1, green)
-                        self.window.blit(cursor_img, (self.cvx, self.cvy), )
-                    # self.initTreePixels()
-                    # self.writeCountryPixelsInFile("arrow_left_player1", pos[0], pos[1])
-                newScannedHandsImg = cv2.flip(newScannedHandsImg, 1)
-                cv2.imshow("Camera", newScannedHandsImg)
-                cv2.waitKey(1)
-            else:
-                ev = pygame.event.get()
-                for event in ev:
-                    if event.type == pygame.MOUSEMOTION:  # MOUSEBUTTONUP MOUSEMOTION
-                        pos = pygame.mouse.get_pos()
-                        self.undrawCountries(blue1)
-                        self.drawCountry(pos[0], pos[1], blue1, yellow)
-                    if event.type == pygame.MOUSEBUTTONUP:
-                        pos = pygame.mouse.get_pos()
-                        self.changeOptionIfArrowClicked(pos[0], pos[1])
-                        self.displayOptionData()
-                        self.drawCorrectCountry(pos[0], pos[1], yellow, green)
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
-                            self.saveState()
-                            self.singlePlayerQuit()
+                            self.undrawCountries(blue1)
+                            self.drawCountry(self.cvx, self.cvy, blue1, yellow)
+                            self.window.blit(cursor_img, (self.cvx, self.cvy), )
+                    elif self.cvx > 0 or self.cvy > 0:
+                        if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
+                            self.window.blit(cursor_img, (self.cvx, self.cvy), )
+                    if handTrackingModule.isHandClosed():
+                        if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
+                            if QUIT_BUTTON.checkForInput((self.cvx, self.cvy)):
+                                self.saveState()
+                                self.singlePlayerQuit()
+                                self.redrawWindow()
+                                self.cvx, self.cvy = 0, 0
+                            if PAUSE_BUTTON.checkForInput((self.cvx, self.cvy)):
+                                self.saveState()
+                                self.singlePlayerPause()
+                                self.redrawWindow()
+                                self.cvx, self.cvy = 0, 0
+                                MENU_MOUSE_POS = pygame.mouse.get_pos()
+                                for button in [QUIT_BUTTON, PAUSE_BUTTON]:
+                                    button.changeColor(MENU_MOUSE_POS)
+                                    button.update(self.window)
                             self.redrawWindow()
-                            self.cvx, self.cvy = 0, 0
-                        if PAUSE_BUTTON.checkForInput(MENU_MOUSE_POS):
-                            self.saveState()
-                            self.singlePlayerPause()
-                            self.redrawWindow()
+                            MENU_MOUSE_POS = pygame.mouse.get_pos()
+                            for button in [QUIT_BUTTON, PAUSE_BUTTON]:
+                                button.changeColor(MENU_MOUSE_POS)
+                                button.update(self.window)
+                            self.changeOptionIfArrowClicked(self.cvx, self.cvy)
+                            self.displayOptionData()
+                            self.drawCorrectCountry(self.cvx, self.cvy, blue1, green)
+                            self.window.blit(cursor_img, (self.cvx, self.cvy), )
                         # self.initTreePixels()
                         # self.writeCountryPixelsInFile("arrow_left_player1", pos[0], pos[1])
-            pygame.display.update()
-        pygame.quit()
+                    newScannedHandsImg = cv2.flip(newScannedHandsImg, 1)
+                    cv2.imshow("Camera", newScannedHandsImg)
+                    cv2.waitKey(1)
+                else:
+                    ev = pygame.event.get()
+                    for event in ev:
+                        if event.type == pygame.MOUSEMOTION:  # MOUSEBUTTONUP MOUSEMOTION
+                            pos = pygame.mouse.get_pos()
+                            self.undrawCountries(blue1)
+                            self.drawCountry(pos[0], pos[1], blue1, yellow)
+                        if event.type == pygame.MOUSEBUTTONUP:
+                            pos = pygame.mouse.get_pos()
+                            self.changeOptionIfArrowClicked(pos[0], pos[1])
+                            self.displayOptionData()
+                            self.drawCorrectCountry(pos[0], pos[1], yellow, green)
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                                self.saveState()
+                                self.singlePlayerQuit()
+                                self.redrawWindow()
+                                self.cvx, self.cvy = 0, 0
+                            if PAUSE_BUTTON.checkForInput(MENU_MOUSE_POS):
+                                self.saveState()
+                                self.singlePlayerPause()
+                                self.redrawWindow()
+                            # self.initTreePixels()
+                            # self.writeCountryPixelsInFile("arrow_left_player1", pos[0], pos[1])
+                pygame.display.update()
+            pygame.quit()
+        except:
+            if self.computerVision:
+                self.cap.release()
+                cv2.destroyAllWindows()
+            if len(self.correctOptions) == self.getAllOptionsOfTheContinent():
+                self.window.fill((255, 255, 255))
+                bg_img = pygame.image.load(f"assets/menu/8.jpg")
+                bg_img = pygame.transform.scale(bg_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+                win = "You win!"
+                while True:
+                    self.window.blit(bg_img, (0, 0), )
+                    MENU_MOUSE_POS = pygame.mouse.get_pos()
+                    MENU_TEXT = self.get_font(40).render("Game is ended.", True, "#d7fcd4")
+                    MENU_RECT = MENU_TEXT.get_rect(center=(640, 220))
+                    self.window.blit(MENU_TEXT, MENU_RECT)
+
+                    WIN_TEXT = self.get_font(30).render(win, True, "Green")
+                    WIN_RECT = WIN_TEXT.get_rect(center=(640, 360))
+                    self.window.blit(WIN_TEXT, WIN_RECT)
+
+                    BACK_BUTTON = Button(image=None, pos=(640, 532),
+                                         text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                         hovering_color="Blue")
+                    # self.window.blit(MENU_TEXT, MENU_RECT)
+                    for button in [BACK_BUTTON]:
+                        button.changeColor(MENU_MOUSE_POS)
+                        button.update(self.window)
+
+                    for event in pygame.event.get():
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
+                                self.originalMainMenu()
+
+                    pygame.display.update()
+            else:
+                self.originalMainMenu()
+
 
     def originalMainMenu(self):
         backgroundImage = pygame.image.load("assets/menu/1.jpg")
