@@ -657,7 +657,7 @@ class Game:
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
             MENU_MOUSE_POS = pygame.mouse.get_pos()
-            MENU_TEXT = self.get_font(40).render("Game is paused", True, "#0f8aaf")
+            MENU_TEXT = self.get_font(40).render("Game is paused", True, "#d7fcd4")
             MENU_RECT = MENU_TEXT.get_rect(center=(640, 270))
 
             RESUME_BUTTON = Button(image=None, pos=(640, 465),
@@ -681,7 +681,7 @@ class Game:
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
             MENU_MOUSE_POS = pygame.mouse.get_pos()
-            MENU_TEXT = self.get_font(30).render("Do you want to quit?", True, "#0f8aaf")
+            MENU_TEXT = self.get_font(30).render("Do you want to quit?", True, "#d7fcd4")
             MENU_RECT = MENU_TEXT.get_rect(center=(640, 230))
 
             NO_BUTTON = Button(image=None, pos=(640, 390),
@@ -939,6 +939,37 @@ class Game:
                         self.connectToServerMenu()
                     if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.singlePlayerOrMultiplayerMenu()
+
+            pygame.display.update()
+
+    def singlePlayerHandTrackinMenu(self):
+        backgroundImage = pygame.image.load("assets/menu/5.jpg")
+        backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        while True:
+            self.window.blit(backgroundImageScaled, (0, 0))
+            MENU_MOUSE_POS = pygame.mouse.get_pos()
+            MENU_TEXT = self.get_font(30).render("Use hand tracking?", True, "#d7fcd4")
+            MENU_RECT = MENU_TEXT.get_rect(center=(640, 230))
+
+            NO_BUTTON = Button(image=None, pos=(640, 505),
+                               text_input="No", font=self.get_font(25), base_color="#d7fcd4",
+                               hovering_color="Blue")
+            YES_BUTTON = Button(image=None, pos=(640, 390),
+                                text_input="Yes", font=self.get_font(25), base_color="#d7fcd4",
+                                hovering_color="Blue")
+            self.window.blit(MENU_TEXT, MENU_RECT)
+            for button in [YES_BUTTON, NO_BUTTON]:
+                button.changeColor(MENU_MOUSE_POS)
+                button.update(self.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if NO_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.computerVision = False
+                        self.playGame()
+                    if YES_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        self.computerVision = True
+                        self.playGame()
 
             pygame.display.update()
 
@@ -1505,35 +1536,35 @@ class Game:
                     if NORTH_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.currentMap = self.maps[2]
                         self.CONTINENT = self.continents[2]
-                        self.playGame()
+                        self.singlePlayerHandTrackinMenu()
                     if AMERICA_N_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.currentMap = self.maps[2]
                         self.CONTINENT = self.continents[2]
-                        self.playGame()
+                        self.singlePlayerHandTrackinMenu()
                     if SOUTH_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.currentMap = self.maps[1]
                         self.CONTINENT = self.continents[1]
-                        self.playGame()
+                        self.singlePlayerHandTrackinMenu()
                     if AMERICA_S_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.currentMap = self.maps[1]
                         self.CONTINENT = self.continents[1]
-                        self.playGame()
+                        self.singlePlayerHandTrackinMenu()
                     if AFRICA_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.currentMap = self.maps[4]
                         self.CONTINENT = self.continents[4]
-                        self.playGame()
+                        self.singlePlayerHandTrackinMenu()
                     if EUROPE_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.currentMap = self.maps[0]
                         self.CONTINENT = self.continents[0]
-                        self.playGame()
+                        self.singlePlayerHandTrackinMenu()
                     if ASIA_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.currentMap = self.maps[3]
                         self.CONTINENT = self.continents[3]
-                        self.playGame()
+                        self.singlePlayerHandTrackinMenu()
                     if OCEANIA_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.currentMap = self.maps[5]
                         self.CONTINENT = self.continents[5]
-                        self.playGame()
+                        self.singlePlayerHandTrackinMenu()
                     if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
                         self.singlePlayerOrMultiplayerMenu()
 
