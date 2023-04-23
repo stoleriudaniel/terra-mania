@@ -480,6 +480,13 @@ class Game:
         self.window.blit(arrow_left, (xCoord + 1020, yCoord + 255))
 
     def displayTimeLeft(self):
+        rect_size = (260, 50)
+        rect_color = (255, 255, 255)
+        rect1_position = (970, 100)
+
+        # Draw the rectangle
+        pygame.draw.rect(self.window, rect_color, pygame.Rect(rect1_position, rect_size))
+
         RED = (255, 0, 0)
         font = pygame.font.Font(None, 33)
         text_surface = font.render(f"Time Left: {self.gameTime}", True, RED)

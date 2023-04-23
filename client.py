@@ -189,6 +189,7 @@ class Client:
             try:
                 if self.start is True:
                     self.game.displayOptionData()
+                    self.game.displayTimeLeft()
 
                     MENU_MOUSE_POS = pygame.mouse.get_pos()
                     for button in [QUIT_BUTTON]:
