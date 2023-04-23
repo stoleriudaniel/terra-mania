@@ -18,7 +18,7 @@ class Server():
         self.state = [f"0:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none)%(gameTime={self.gameTime})",
                       f"1:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none)%(gameTime={self.gameTime})"]
         self.timeStarted = False
-        self.t = 30
+        self.t = 20*60 # 20 * 60 seconds = 20 minutes
 
     def bothPlayersConnected(self):
         nickname0 = self.state[0].split(":")[1].split(";")[4].split("=")[1].split(")")[0]
