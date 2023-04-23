@@ -894,6 +894,7 @@ class Game:
     def originalMainMenu(self):
         backgroundImage = pygame.image.load("assets/menu/1.jpg")
         backgroundImageScaled = pygame.transform.scale(backgroundImage, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        self.isMultiplayer = False
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
             MENU_MOUSE_POS = pygame.mouse.get_pos()

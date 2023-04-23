@@ -2,10 +2,14 @@ import psutil
 import pygame
 from network import Network
 from button import Button
+from player import Player
+
 
 class Client:
     def __init__(self, gameParam, ipAddress, nickname):
         self.game = gameParam
+        self.game.player0 = Player(0, 0, "0")
+        self.game.player1 = Player(0, 0, "1")
         self.network = Network(ipAddress)
         self.playerId, self.game.gameType, self.game.indexMapAndContinent = self.getInitDataFromServer()
         self.game.CONTINENT = self.game.continents[self.game.indexMapAndContinent]
