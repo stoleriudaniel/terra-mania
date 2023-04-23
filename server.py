@@ -15,8 +15,8 @@ class Server():
         self.gameType = ""
         self.indexMapAndContinent = 0
         self.gameTime = ""
-        self.state = [f"0:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none);(gameTime={self.gameTime})",
-                      f"1:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none);(gameTime={self.gameTime})"]
+        self.state = [f"0:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none)%(gameTime={self.gameTime})",
+                      f"1:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none)%(gameTime={self.gameTime})"]
         self.timeStarted = False
         self.t = 120
 
@@ -31,6 +31,10 @@ class Server():
         while self.t:
             mins, secs = divmod(self.t, 60)
             self.gameTime = '{:02d}:{:02d}'.format(mins, secs)
+            arrSplited = self.state[0].split("%")
+            self.state[0] = f"{arrSplited[0]}%(gameTime={self.gameTime})"
+            arrSplited = self.state[1].split("%")
+            self.state[1] = f"{arrSplited[0]}%(gameTime={self.gameTime})"
             print(self.gameTime, end="\r")
             time.sleep(1)
             self.t -= 1
