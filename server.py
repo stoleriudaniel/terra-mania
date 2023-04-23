@@ -1,5 +1,6 @@
 import socket
 from _thread import *
+import time
 
 import psutil
 
@@ -13,8 +14,26 @@ class Server():
         self.currentId = "0"
         self.gameType = ""
         self.indexMapAndContinent = 0
-        self.state = ["0:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none)",
-                      "1:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none)"]
+        self.gameTime = ""
+        self.state = [f"0:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none);(gameTime={self.gameTime})",
+                      f"1:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none);(gameTime={self.gameTime})"]
+        self.timeStarted = False
+        self.t = 120
+
+    def bothPlayersConnected(self):
+        nickname0 = self.state[0].split(":")[1].split(";")[4].split("=")[1].split(")")[0]
+        nickname1 = self.state[1].split(":")[1].split(";")[4].split("=")[1].split(")")[0]
+        if nickname0 != "" and nickname1 != "":
+            return True
+        return False
+
+    def countdown(self):
+        while self.t:
+            mins, secs = divmod(self.t, 60)
+            self.gameTime = '{:02d}:{:02d}'.format(mins, secs)
+            print(self.gameTime, end="\r")
+            time.sleep(1)
+            self.t -= 1
 
     def playerQuit(self):
         statusPlayer0 = self.state[0].split(":")[1].split(";")[5].split("=")[1].split(")")[0]
@@ -61,6 +80,10 @@ class Server():
                     conn.send(str.encode("Goodbye"))
                     break
                 else:
+                    if self.timeStarted is False:
+                        if self.bothPlayersConnected():
+                            self.timeStarted = True
+                            start_new_thread(self.countdown, ())
                     arr = reply.split(":")
                     id = int(arr[0])
                     self.state[id] = reply

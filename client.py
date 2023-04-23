@@ -44,9 +44,10 @@ class Client:
             correctOption = data.split(":")[1].split(";")[3].split("=")[1].split(")")[0]
             nickname = data.split(":")[1].split(";")[4].split("=")[1].split(")")[0]
             status = data.split(":")[1].split(";")[5].split("=")[1].split(")")[0]
-            return pId, int(x), int(y), int(click), currentOption, correctOption, nickname, status
+            gameTime = data.split(":")[1].split(";")[6].split("=")[1].split(")")[0]
+            return pId, int(x), int(y), int(click), currentOption, correctOption, nickname, status, gameTime
         except:
-            return "-1", 0, 0, 0, "none", "none", "", "play"
+            return "-1", 0, 0, 0, "none", "none", "", "play", "none"
 
     def initGame(self):
         self.game.window.fill((255, 255, 255))
@@ -134,13 +135,14 @@ class Client:
 
     def getDataFromServer(self):
         if self.game.player0.id == self.playerId:
-            data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption});(nickname={self.game.player0.nickname});(status={self.gameStatus})"
+            data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption});(nickname={self.game.player0.nickname});(status={self.gameStatus});(gameTime={self.game.gameTime})"
         else:
-            data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption});(nickname={self.game.player1.nickname});(status={self.gameStatus})"
+            data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption});(nickname={self.game.player1.nickname});(status={self.gameStatus});(gameTime={self.game.gameTime})"
         self.network.client.send(str.encode(data))
         reply = self.network.client.recv(2048).decode()
 
-        pId, xData, yData, clickData, currentOption, correctOption, nickname, status = self.extractData(reply)
+        pId, xData, yData, clickData, currentOption, correctOption, nickname, status, gameTime = self.extractData(reply)
+        self.game.gameTime = gameTime
         if pId == self.game.player0.id:
             self.game.player0.x, self.game.player0.y, self.game.player0.click, self.game.player0.nickname = xData, yData, clickData, nickname
             if currentOption != "none":
@@ -159,9 +161,9 @@ class Client:
                     self.game.player1.correctOptions.append(correctOption)
         # Render the coordinates text
         if self.game.player0.id == self.playerId:
-            data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption});(nickname={self.game.player0.nickname});(status={self.gameStatus})"
+            data = f"{self.game.player0.id}:({str(self.game.player0.x)},{str(self.game.player0.y)});(click={self.game.player0.click});(currentOption={self.game.player0.currentOption});(correctOption={self.game.player0.lastCorrectOption});(nickname={self.game.player0.nickname});(status={self.gameStatus});(gameTime={self.game.gameTime})"
         else:
-            data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption});(nickname={self.game.player1.nickname});(status={self.gameStatus})"
+            data = f"{self.game.player1.id}:({str(self.game.player1.x)},{str(self.game.player1.y)});(click={self.game.player1.click});(currentOption={self.game.player1.currentOption});(correctOption={self.game.player1.lastCorrectOption});(nickname={self.game.player1.nickname});(status={self.gameStatus});(gameTime={self.game.gameTime})"
         self.network.client.send(str.encode(data))
         reply = self.network.client.recv(2048).decode()
 

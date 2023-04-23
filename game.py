@@ -56,6 +56,7 @@ class Game:
         self.mapRealHeight = 0
 
         self.computerVision = True
+        self.gameTime = "none"
 
         self.cvx = 0
         self.cvy = 0
@@ -481,7 +482,7 @@ class Game:
     def displayTimeLeft(self):
         RED = (255, 0, 0)
         font = pygame.font.Font(None, 33)
-        text_surface = font.render("Time Left: 13:09", True, RED)
+        text_surface = font.render(f"Time Left: {self.gameTime}", True, RED)
         self.window.blit(text_surface, (1015, 115))
 
     def displayCurrentGameTitle(self):
