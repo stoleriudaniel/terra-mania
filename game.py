@@ -507,12 +507,14 @@ class Game:
         WHITE = (255, 255, 255)
         big_font = pygame.font.Font(None, 34)
         font = pygame.font.Font(None, 30)
+        rect_size = (340, 37)
+        rect_color = WHITE
+        rect1_position = (930, 395)
+        rect2_position = (930, 295)
+        rect3_position = (930, 535)
         if not self.isMultiplayer:
             self.displayOption(+10, 170)
             self.displayArrows(+10, 170)
-            rect_size = (340, 37)
-            rect_color = WHITE
-            rect1_position = (930, 395)
 
             # Draw the rectangle
             pygame.draw.rect(self.window, rect_color, pygame.Rect(rect1_position, rect_size))
@@ -523,13 +525,15 @@ class Game:
             # player0 data
             self.displayOption(+10, 70, self.player0.currentOption)
             self.displayArrows(+10, 70)
-            text_surface0 = font.render(f"{self.player0.nickname}: {len(self.player0.correctOptions)}/30", True, BLACK)
+            pygame.draw.rect(self.window, rect_color, pygame.Rect(rect2_position, rect_size))
+            text_surface0 = font.render(f"{self.player0.nickname}: {len(self.player0.correctOptions)}/{self.getAllOptionsOfTheContinent()}", True, BLACK)
             self.window.blit(text_surface0, (1040, 305))
 
             # player1 data
             self.displayOption(+10, 310, self.player1.currentOption)
             self.displayArrows(+10, 310)
-            text_surface1 = font.render(f"{self.player1.nickname}: {len(self.player1.correctOptions)}/30", True, BLACK)
+            pygame.draw.rect(self.window, rect_color, pygame.Rect(rect3_position, rect_size))
+            text_surface1 = font.render(f"{self.player1.nickname}: {len(self.player1.correctOptions)}/{self.getAllOptionsOfTheContinent()}", True, BLACK)
             self.window.blit(text_surface1, (1040, 545))
 
     def drawScoreRect(self):
