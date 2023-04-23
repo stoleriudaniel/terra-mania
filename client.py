@@ -44,7 +44,7 @@ class Client:
             correctOption = data.split(":")[1].split(";")[3].split("=")[1].split(")")[0]
             nickname = data.split(":")[1].split(";")[4].split("=")[1].split(")")[0]
             status = data.split(":")[1].split(";")[5].split("=")[1].split(")")[0]
-            gameTime = data.split(":")[1].split(";")[6].split("=")[1].split(")")[0]
+            gameTime = data.split("%")[1].split("=")[1].split(")")[0]
             return pId, int(x), int(y), int(click), currentOption, correctOption, nickname, status, gameTime
         except:
             return "-1", 0, 0, 0, "none", "none", "", "play", "none"
