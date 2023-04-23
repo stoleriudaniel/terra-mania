@@ -31,13 +31,15 @@ class Server():
         while self.t:
             mins, secs = divmod(self.t, 60)
             self.gameTime = '{:02d}:{:02d}'.format(mins, secs)
-            arrSplited = self.state[0].split("%")
-            self.state[0] = f"{arrSplited[0]}%(gameTime={self.gameTime})"
-            arrSplited = self.state[1].split("%")
-            self.state[1] = f"{arrSplited[0]}%(gameTime={self.gameTime})"
             print(self.gameTime, end="\r")
             time.sleep(1)
             self.t -= 1
+
+    def replaceTime(self):
+        arrSplited = self.state[0].split("%")
+        self.state[0] = f"{arrSplited[0]}%(gameTime={self.gameTime})"
+        arrSplited = self.state[1].split("%")
+        self.state[1] = f"{arrSplited[0]}%(gameTime={self.gameTime})"
 
     def playerQuit(self):
         statusPlayer0 = self.state[0].split(":")[1].split(";")[5].split("=")[1].split(")")[0]
@@ -91,6 +93,7 @@ class Server():
                     arr = reply.split(":")
                     id = int(arr[0])
                     self.state[id] = reply
+                    self.replaceTime()
                     if self.playerQuit():
                         self.killProcessByPort()
                     opponentId = 0
