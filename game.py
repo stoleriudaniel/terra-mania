@@ -661,7 +661,7 @@ class Game:
             MENU_RECT = MENU_TEXT.get_rect(center=(640, 270))
 
             RESUME_BUTTON = Button(image=None, pos=(640, 465),
-                                 text_input="Resume", font=self.get_font(30), base_color="#d7fcd4",
+                                 text_input="Resume", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
             self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [RESUME_BUTTON]:
@@ -684,11 +684,11 @@ class Game:
             MENU_TEXT = self.get_font(30).render("Do you want to quit?", True, "#0f8aaf")
             MENU_RECT = MENU_TEXT.get_rect(center=(640, 230))
 
-            NO_BUTTON = Button(image=None, pos=(640, 355),
-                                 text_input="No", font=self.get_font(30), base_color="#d7fcd4",
+            NO_BUTTON = Button(image=None, pos=(640, 390),
+                                 text_input="No", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
-            YES_BUTTON = Button(image=None, pos=(640, 480),
-                                 text_input="Yes", font=self.get_font(30), base_color="#d7fcd4",
+            YES_BUTTON = Button(image=None, pos=(640, 505),
+                                 text_input="Yes", font=self.get_font(25), base_color="#d7fcd4",
                                  hovering_color="Blue")
             self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [YES_BUTTON, NO_BUTTON]:
@@ -720,7 +720,7 @@ class Game:
         self.window.blit(bg_img, (20, 20), )
 
         # mouse
-        cursor_img = pygame.image.load("assets/cursor/cursor1.png")
+        cursor_img = pygame.image.load("assets/cursor/cursor.png")
         cursor_img = pygame.transform.scale(cursor_img, (50, 40))
 
         self.currentOption = self.getRandomOption()

@@ -61,14 +61,19 @@ class Client:
 
     def waitingForTheSecondPlayer(self):
         self.game.window.fill((255, 255, 255))
-        bg_img = pygame.image.load(f"assets/menu/7.jpg")
+        bg_img = pygame.image.load(f"assets/menu/8.jpg")
         bg_img = pygame.transform.scale(bg_img, (self.game.SCREEN_WIDTH, self.game.SCREEN_HEIGHT))
 
         while self.start is False:
             self.game.window.blit(bg_img, (0, 0), )
             MENU_MOUSE_POS = pygame.mouse.get_pos()
-
-            STOP_SERVER_BUTTON = Button(image=None, pos=(640, 190),
+            MENU_TEXT1 = self.game.get_font(30).render("Waiting for the second", True, "#d7fcd4")
+            MENU_RECT1 = MENU_TEXT1.get_rect(center=(640, 230))
+            self.game.window.blit(MENU_TEXT1, MENU_RECT1)
+            MENU_TEXT = self.game.get_font(30).render("player to connect...", True, "#d7fcd4")
+            MENU_RECT = MENU_TEXT.get_rect(center=(640, 270))
+            self.game.window.blit(MENU_TEXT, MENU_RECT)
+            STOP_SERVER_BUTTON = Button(image=None, pos=(650, 532),
                                   text_input="Stop Server", font=self.game.get_font(25), base_color="#d7fcd4",
                                   hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
@@ -93,14 +98,16 @@ class Client:
 
     def serverClosed(self):
         self.game.window.fill((255, 255, 255))
-        bg_img = pygame.image.load(f"assets/menu/7.jpg")
+        bg_img = pygame.image.load(f"assets/menu/8.jpg")
         bg_img = pygame.transform.scale(bg_img, (self.game.SCREEN_WIDTH, self.game.SCREEN_HEIGHT))
-
         while True:
             self.game.window.blit(bg_img, (0, 0), )
             MENU_MOUSE_POS = pygame.mouse.get_pos()
+            MENU_TEXT = self.game.get_font(30).render("Game is ended.", True, "#d7fcd4")
+            MENU_RECT = MENU_TEXT.get_rect(center=(640, 230))
+            self.game.window.blit(MENU_TEXT, MENU_RECT)
 
-            BACK_BUTTON = Button(image=None, pos=(640, 190),
+            BACK_BUTTON = Button(image=None, pos=(640, 532),
                                   text_input="Back", font=self.game.get_font(25), base_color="#d7fcd4",
                                   hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
