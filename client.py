@@ -101,12 +101,38 @@ class Client:
         self.game.window.fill((255, 255, 255))
         bg_img = pygame.image.load(f"assets/menu/8.jpg")
         bg_img = pygame.transform.scale(bg_img, (self.game.SCREEN_WIDTH, self.game.SCREEN_HEIGHT))
+        betterPlayer = ""
+        win = ""
+        if len(self.game.player0.correctOptions) <= 0 and len(self.game.player1.correctOptions) <= 0:
+            betterPlayer = ""
+        elif len(self.game.player0.correctOptions) > len(self.game.player1.correctOptions):
+            betterPlayer = self.game.player0.nickname
+        elif len(self.game.player0.correctOptions) < len(self.game.player1.correctOptions):
+            betterPlayer = self.game.player1.nickname
+
+        if betterPlayer != "":
+            win = f"Win: {betterPlayer}"
         while True:
             self.game.window.blit(bg_img, (0, 0), )
             MENU_MOUSE_POS = pygame.mouse.get_pos()
-            MENU_TEXT = self.game.get_font(30).render("Game is ended.", True, "#d7fcd4")
-            MENU_RECT = MENU_TEXT.get_rect(center=(640, 230))
+            MENU_TEXT = self.game.get_font(40).render("Game is ended.", True, "#d7fcd4")
+            MENU_RECT = MENU_TEXT.get_rect(center=(640, 220))
             self.game.window.blit(MENU_TEXT, MENU_RECT)
+
+            player0text = f"{self.game.player0.nickname} score: {len(self.game.player0.correctOptions)}"
+            player1text = f"{self.game.player1.nickname} score: {len(self.game.player1.correctOptions)}"
+
+            PLAYER0_TEXT = self.game.get_font(25).render(player0text, True, "#d7fcd4")
+            PLAYER0_RECT = PLAYER0_TEXT.get_rect(center=(640, 290))
+            self.game.window.blit(PLAYER0_TEXT, PLAYER0_RECT)
+
+            PLAYER1_TEXT = self.game.get_font(25).render(player1text, True, "#d7fcd4")
+            PLAYER1_RECT = PLAYER1_TEXT.get_rect(center=(640, 340))
+            self.game.window.blit(PLAYER1_TEXT, PLAYER1_RECT)
+
+            WIN_TEXT = self.game.get_font(25).render(win, True, "Green")
+            WIN_RECT = WIN_TEXT.get_rect(center=(640, 390))
+            self.game.window.blit(WIN_TEXT, WIN_RECT)
 
             BACK_BUTTON = Button(image=None, pos=(640, 532),
                                   text_input="Back", font=self.game.get_font(25), base_color="#d7fcd4",

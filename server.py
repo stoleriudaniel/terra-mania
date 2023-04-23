@@ -18,7 +18,7 @@ class Server():
         self.state = [f"0:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none)%(gameTime={self.gameTime})",
                       f"1:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none)%(gameTime={self.gameTime})"]
         self.timeStarted = False
-        self.t = 10
+        self.t = 30
 
     def bothPlayersConnected(self):
         nickname0 = self.state[0].split(":")[1].split(";")[4].split("=")[1].split(")")[0]
@@ -33,6 +33,7 @@ class Server():
             self.gameTime = '{:02d}:{:02d}'.format(mins, secs)
             time.sleep(1)
             self.t -= 1
+        self.killProcessByPort()
 
     def replaceTime(self):
         arrSplited = self.state[0].split("%")
