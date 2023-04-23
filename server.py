@@ -30,7 +30,7 @@ class Server():
     def countdown(self):
         while self.t:
             mins, secs = divmod(self.t, 60)
-            self.gameTime = '{:02d}:{:02d}'.format(mins, secs)
+            self.gameTime = '{:02d}#{:02d}'.format(mins, secs)
             print(self.gameTime, end="\r")
             time.sleep(1)
             self.t -= 1
@@ -94,6 +94,8 @@ class Server():
                     id = int(arr[0])
                     self.state[id] = reply
                     self.replaceTime()
+                    print("state0: ", self.state[0])
+                    print("state1: ", self.state[1])
                     if self.playerQuit():
                         self.killProcessByPort()
                     opponentId = 0

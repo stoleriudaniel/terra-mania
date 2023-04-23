@@ -143,6 +143,7 @@ class Client:
 
         pId, xData, yData, clickData, currentOption, correctOption, nickname, status, gameTime = self.extractData(reply)
         self.game.gameTime = gameTime
+        print(gameTime)
         if pId == self.game.player0.id:
             self.game.player0.x, self.game.player0.y, self.game.player0.click, self.game.player0.nickname = xData, yData, clickData, nickname
             if currentOption != "none":
