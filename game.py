@@ -31,7 +31,7 @@ class Game:
 
         self.indexMapAndContinent = 0
 
-        self.language = "Romanian"
+        self.language = "English"
 
         self.gameTypeFlags = "flags"
         self.gameTypeCapitals = "capitals"
