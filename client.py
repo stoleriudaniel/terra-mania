@@ -199,7 +199,7 @@ class Client:
 
     def play(self):
         pygame.init()
-        pygame.display.set_caption("Menu")
+        pygame.display.set_caption("Terra mania")
         self.game.playerId = self.playerId
         self.game.player0.currentOption = self.game.getOptionByIndex(0)
         self.game.player1.currentOption = self.game.getOptionByIndex(1)

@@ -499,7 +499,7 @@ class Game:
     def displayCurrentGameTitle(self):
         BLACK = (0, 0, 0)
         font = pygame.font.Font(None, 50)
-        text_surface = font.render("Countries game", True, BLACK)
+        text_surface = font.render(f"{self.gameType.capitalize()} game", True, BLACK)
         self.window.blit(text_surface, (965, 50))
 
     def displayOptionData(self):
@@ -671,7 +671,6 @@ class Game:
 
         self.displayOptionData()
         self.displayCurrentGameTitle()
-        self.displayTimeLeft()
 
     def singlePlayerPause(self):
         backgroundImage = pygame.image.load("assets/menu/6.jpg")
@@ -750,7 +749,6 @@ class Game:
 
             self.displayOptionData()
             self.displayCurrentGameTitle()
-            self.displayTimeLeft()
 
             PAUSE_BUTTON = Button(image=None, pos=(1030, 655),
                                  text_input="Pause", font=self.get_font(30), base_color="Red",
@@ -1634,5 +1632,5 @@ class Game:
 
     def launch(self):
         pygame.init()
-        pygame.display.set_caption("Menu")
+        pygame.display.set_caption("Terra mania")
         self.originalMainMenu()
