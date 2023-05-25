@@ -107,7 +107,7 @@ class Game:
                     yCord = result[1]
                     filename = int(xCord) // 100 * 100
                     file = open(f"tree\\countries\\{self.CONTINENT}\\pixels\\{filename}.txt", "a")
-                    file.write(f"{xCord} {yCord} {country[2]}\n")
+                    file.write(f"{xCord} {yCord} {country[2]}\n") 
         print("Finish")
 
     def getAllOptionsOfTheContinent(self):
@@ -475,13 +475,13 @@ class Game:
             self.displayOptionData()
 
     def displayArrows(self, xCoord, yCoord):
-        arrow_right = pygame.image.load("assets/arrows/arrow_right.png")
-        arrow_right = pygame.transform.scale(arrow_right, (80, 65))
-        self.window.blit(arrow_right, (xCoord + 1090, yCoord + 255))
+        arrow_right = pygame.image.load("assets/arrows/arrow_r.png")
+        arrow_right = pygame.transform.scale(arrow_right, (65, 50))
+        self.window.blit(arrow_right, (xCoord + 1090, yCoord + 265))
 
-        arrow_left = pygame.image.load("assets/arrows/arrow_left.png")
-        arrow_left = pygame.transform.scale(arrow_left, (80, 65))
-        self.window.blit(arrow_left, (xCoord + 1020, yCoord + 255))
+        arrow_left = pygame.image.load("assets/arrows/arrow_l.png")
+        arrow_left = pygame.transform.scale(arrow_left, (65, 50))
+        self.window.blit(arrow_left, (xCoord + 1020, yCoord + 265))
 
     def displayTimeLeft(self):
         rect_size = (260, 50)
