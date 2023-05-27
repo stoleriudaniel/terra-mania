@@ -636,9 +636,6 @@ class Game:
     def get_font(self, size):  # Returns Press-Start-2P in the desired size
         return pygame.font.Font("assets/fonts/font.ttf", size)
 
-    def options(self):
-        return
-
     def load_camera(self):
         self.frame, self.img = self.cap.read()
 
@@ -869,19 +866,15 @@ class Game:
             self.window.blit(backgroundImageScaled, (0, 0))
             MENU_MOUSE_POS = pygame.mouse.get_pos()
             MENU_TEXT = self.get_font(custom_font_size.TEXT_MAIN_MENU_FONT_SIZE).render("MAIN MENU", True, "#b68f40")
-            MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
 
-            PLAY_BUTTON = Button(image=None, pos=(280, 655),
+            PLAY_BUTTON = Button(image=None, pos=(385, 655),
                                  text_input="Play", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                  hovering_color="Blue")
-            OPTIONS_BUTTON = Button(image=None, pos=(640, 655),
-                                    text_input="Options", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
-                                    hovering_color="Blue")
-            QUIT_BUTTON = Button(image=None, pos=(1005, 655),
+            QUIT_BUTTON = Button(image=None, pos=(895, 655),
                                  text_input="Quit", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                  hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
-            for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+            for button in [PLAY_BUTTON, QUIT_BUTTON]:
                 button.changeColor(MENU_MOUSE_POS)
                 button.update(self.window)
 
@@ -894,8 +887,6 @@ class Game:
                         # play()
                         # self.continentsMenu()
                         self.singlePlayerOrMultiplayerMenu()
-                    if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
-                        self.options()
                     if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                         pygame.quit()
                         sys.exit()
