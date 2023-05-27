@@ -21,6 +21,7 @@ class Game:
         self.isMultiplayer = False
         self.SCREEN_WIDTH = 1280
         self.SCREEN_HEIGHT = 720
+        self.backgroundColor = (30,144,255)
         self.window = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         self.maps = ['Europe.png', 'South_America.png', 'North-America.png', 'Asia.png', 'Africa.png',
                      'Oceania.png']
@@ -484,7 +485,7 @@ class Game:
 
     def displayTimeLeft(self):
         rect_size = (260, 50)
-        rect_color = (255, 255, 255)
+        rect_color = self.backgroundColor
         rect1_position = (970, 100)
 
         # Draw the rectangle
@@ -503,11 +504,9 @@ class Game:
 
     def displayOptionData(self):
         BLACK = (0, 0, 0)
-        WHITE = (255, 255, 255)
-        big_font = pygame.font.Font(None, 34)
         font = pygame.font.Font(None, 30)
         rect_size = (340, 37)
-        rect_color = WHITE
+        rect_color = self.backgroundColor
         rect1_position = (930, 395)
         rect2_position = (930, 295)
         rect3_position = (930, 535)
@@ -542,7 +541,7 @@ class Game:
 
     def drawScoreRect(self):
         rect_size = (160, 22)
-        rect_color = (255, 255, 255)
+        rect_color = self.backgroundColor
         rect1_position = (1040, 302)
         rect2_position = (1040, 542)
 
@@ -669,7 +668,7 @@ class Game:
         pygame.image.save(cropped_surface, "state/cropped_image.png")
 
     def redrawWindow(self):
-        self.window.fill((255, 255, 255))
+        self.window.fill(self.backgroundColor)
         bg_img = pygame.image.load("state/cropped_image.png")
         self.window.blit(bg_img, (20, 20), )
 
@@ -738,7 +737,7 @@ class Game:
             yellow = (238, 224, 29)
             green = (23, 165, 23)
             blue1 = (0, 51, 153)
-            self.window.fill((255, 255, 255))
+            self.window.fill(self.backgroundColor)
             bg_img = pygame.image.load(f"assets/continents/{self.currentMap}")
             self.mapRealWidth = bg_img.get_width()
             self.mapRealHeight = bg_img.get_height()
@@ -859,7 +858,7 @@ class Game:
                 self.cap.release()
                 cv2.destroyAllWindows()
             if len(self.correctOptions) == self.getAllOptionsOfTheContinent():
-                self.window.fill((255, 255, 255))
+                self.window.fill(self.backgroundColor)
                 bg_img = pygame.image.load(f"assets/menu/8.jpg")
                 bg_img = pygame.transform.scale(bg_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
                 win = "You win!"
