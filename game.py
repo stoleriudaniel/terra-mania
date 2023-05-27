@@ -1,5 +1,7 @@
 import cv2.data
 import HandTrackingModule
+import custom_colors
+import custom_font_size
 from InputText import InputText
 from client import Client
 import os
@@ -10,6 +12,7 @@ import pygame
 import sys
 from player import Player
 from button import Button
+import settings
 
 
 class Game:
@@ -19,19 +22,18 @@ class Game:
         self.player0 = Player(0, 0, "0")
         self.player1 = Player(0, 0, "1")
         self.isMultiplayer = False
-        self.SCREEN_WIDTH = 1280
-        self.SCREEN_HEIGHT = 720
-        self.backgroundColor = (30,144,255)
+        self.SCREEN_WIDTH = settings.SCREEN_WIDTH
+        self.SCREEN_HEIGHT = settings.SCREEN_HEIGHT
+        self.backgroundColor = settings.BACKGROUND_COLOR
         self.window = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-        self.maps = ['Europe.png', 'South_America.png', 'North-America.png', 'Asia.png', 'Africa.png',
-                     'Oceania.png']
-        self.continents = ["Europe", "South-America", "North-America", "Asia", "Africa", "Oceania"]
+        self.maps = settings.MAPS
+        self.continents = settings.CONTINENTS
         self.CONTINENT = self.continents[3]
         self.currentMap = self.maps[3]
 
         self.indexMapAndContinent = 0
 
-        self.language = "English"
+        self.language = settings.LANGUAGE
 
         self.gameTypeFlags = "flags"
         self.gameTypeCapitals = "capitals"
@@ -63,19 +65,15 @@ class Game:
 
     def initTreePixelsArrows(self):
         print("In initTreePixels")
-        # directories = [x[0] for x in os.walk(f"countries\\{self.CONTINENT}")]
         directories = [x[0] for x in os.walk(f"arrows")]
-        countries = []
         print(directories)
         for index in range(0, len(directories)):
             country = directories[index].split("\\")
             if len(country) > 1:
-                # path = Path(f"countries\\{self.CONTINENT}\\{country[2]}\\pixels.txt")
                 path = Path(f"arrows\\{country[1]}\\pixels.txt")
                 if not path.is_file():
                     continue
                 print("country: ", country[1])
-                # pixelsFile = open(f"countries\\{self.CONTINENT}\\{country[2]}\\pixels.txt", "r")
                 pixelsFile = open(f"arrows\\{country[1]}\\pixels.txt", "r")
                 rows = pixelsFile.readlines()
                 for row in rows:
@@ -83,10 +81,9 @@ class Game:
                     xCord = result[0]
                     yCord = result[1]
                     filename = int(xCord) // 100 * 100
-                    # file = open(f"tree\\countries\\{self.CONTINENT}\\pixels\\{filename}.txt", "a")
                     file = open(f"tree\\others\\pixels\\{filename}.txt", "a")
                     file.write(f"{xCord} {yCord} {country[1]}\n")
-        print("Finish")
+        print("Finish tree pixels")
 
     def initTreePixels(self):
         print("In initTreePixels")
@@ -108,7 +105,7 @@ class Game:
                     filename = int(xCord) // 100 * 100
                     file = open(f"tree\\countries\\{self.CONTINENT}\\pixels\\{filename}.txt", "a")
                     file.write(f"{xCord} {yCord} {country[2]}\n")
-        print("Finish")
+        print("Finish init tree pixels")
 
     def getAllOptionsOfTheContinent(self):
         directories = [x[0] for x in os.walk(f"countries\\{self.CONTINENT}")]
@@ -116,13 +113,9 @@ class Game:
 
     def writeCountryPixelsInFile(self, countryName, mousex, mousey):
         file = open(f"arrows\\{countryName}\\pixels.txt", "w")
-        # file = open(f"arrows\\{countryName}\\pixels.txt", "w")
-        margin = (0, 0, 0)  # black
-        uncolored = (0, 51, 153)  # blue
-        newColor = (238, 224, 29)  # yellow
-        arrowColor = (34, 177, 76)
+        newColor = custom_colors.COUNTRY_MOUSE_HOVER_COLOR  # yellow
+        arrowColor = custom_colors.ARROW_COLOR
         uncolored = arrowColor
-        finished = False
         uncoloredPixelsList = []
         c = self.window.get_at((mousex, mousey))
         if (c[0], c[1], c[2]) == uncolored:
@@ -161,11 +154,10 @@ class Game:
         file.close()
 
     def drawCountry(self, mouseX, mouseY, initRgb, newRgb, playerIdParam="0"):
-        red = (255, 0, 0)
         country = ""
         c = self.window.get_at((mouseX, mouseY))
         if (c[0], c[1], c[2]) != initRgb:
-            if (c[0], c[1], c[2]) != red:
+            if (c[0], c[1], c[2]) != custom_colors.COUNTRY_INCORRECT_COLOR:
                 if self.isMultiplayer:
                     if playerIdParam == self.player0.id:
                         self.player0.currentHoveredCountry = country
@@ -229,8 +221,7 @@ class Game:
                     self.getNextOption()
                 else:
                     self.player0.incorrectCountries.append(country)
-                    red = (255, 0, 0)
-                    self.drawCountryByCountryParam(country, red)
+                    self.drawCountryByCountryParam(country, custom_colors.COUNTRY_INCORRECT_COLOR)
                     self.player0.hoverColoredCountries.remove(country)
             elif self.player1.id == playerIdParam:
                 if country == self.player1.currentOption or country == self.player1.lastCorrectOption:
@@ -241,8 +232,7 @@ class Game:
                     self.getNextOption()
                 else:
                     self.player1.incorrectCountries.append(country)
-                    red = (255, 0, 0)
-                    self.drawCountryByCountryParam(country, red)
+                    self.drawCountryByCountryParam(country, custom_colors.COUNTRY_INCORRECT_COLOR)
                     self.player1.hoverColoredCountries.remove(country)
             self.player0.correctOptions = list(dict.fromkeys(self.player0.correctOptions))
             self.player1.correctOptions = list(dict.fromkeys(self.player1.correctOptions))
@@ -257,8 +247,7 @@ class Game:
                     self.saveState()
             else:
                 self.incorrectCountries.append(country)
-                red = (255, 0, 0)
-                self.drawCountryByCountryParam(country, red)
+                self.drawCountryByCountryParam(country, custom_colors.COUNTRY_INCORRECT_COLOR)
                 if country in self.hoverColoredCountries:
                     self.hoverColoredCountries.remove(country)
 
@@ -491,19 +480,16 @@ class Game:
         # Draw the rectangle
         pygame.draw.rect(self.window, rect_color, pygame.Rect(rect1_position, rect_size))
 
-        RED = (255, 0, 0)
         font = pygame.font.Font(None, 33)
-        text_surface = font.render(f"Time Left: {self.gameTime}", True, RED)
+        text_surface = font.render(f"Time Left: {self.gameTime}", True, custom_colors.RED)
         self.window.blit(text_surface, (1015, 115))
 
     def displayCurrentGameTitle(self):
-        BLACK = (0, 0, 0)
         font = pygame.font.Font(None, 50)
-        text_surface = font.render(f"{self.gameType.capitalize()} game", True, BLACK)
+        text_surface = font.render(f"{self.gameType.capitalize()} game", True, custom_colors.BLACK)
         self.window.blit(text_surface, (965, 50))
 
     def displayOptionData(self):
-        BLACK = (0, 0, 0)
         font = pygame.font.Font(None, 30)
         rect_size = (340, 37)
         rect_color = self.backgroundColor
@@ -517,7 +503,7 @@ class Game:
             # Draw the rectangle
             pygame.draw.rect(self.window, rect_color, pygame.Rect(rect1_position, rect_size))
             text_surface = font.render(f"Your score: {len(self.correctOptions)}/{self.getAllOptionsOfTheContinent()}",
-                                       True, BLACK)
+                                       True, custom_colors.BLACK)
             self.window.blit(text_surface, (1020, 405))
         else:
             self.drawScoreRect()
@@ -527,7 +513,7 @@ class Game:
             pygame.draw.rect(self.window, rect_color, pygame.Rect(rect2_position, rect_size))
             text_surface0 = font.render(
                 f"{self.player0.nickname}: {len(self.player0.correctOptions)}/{self.getAllOptionsOfTheContinent()}",
-                True, BLACK)
+                True, custom_colors.BLACK)
             self.window.blit(text_surface0, (1040, 305))
 
             # player1 data
@@ -536,7 +522,7 @@ class Game:
             pygame.draw.rect(self.window, rect_color, pygame.Rect(rect3_position, rect_size))
             text_surface1 = font.render(
                 f"{self.player1.nickname}: {len(self.player1.correctOptions)}/{self.getAllOptionsOfTheContinent()}",
-                True, BLACK)
+                True, custom_colors.BLACK)
             self.window.blit(text_surface1, (1040, 545))
 
     def drawScoreRect(self):
@@ -552,13 +538,9 @@ class Game:
     def drawAnOval(self, text, xCoord, yCoord):
         # circle
 
-        BLACK = (0, 0, 0)
-        WHITE = (255, 255, 255)
-        RED = (255, 0, 0)
-
         rect = pygame.Rect(xCoord + 990, yCoord + 100, 200, 120)  # left, top, width, height
-        pygame.draw.ellipse(self.window, BLACK, rect, width=20)
-        pygame.draw.ellipse(self.window, RED, rect.inflate(-9, -9))
+        pygame.draw.ellipse(self.window, custom_colors.BLACK, rect, width=20)
+        pygame.draw.ellipse(self.window, custom_colors.RED, rect.inflate(-9, -9))
 
         # add text to oval
         font = pygame.font.Font(None, 34)
@@ -575,7 +557,7 @@ class Game:
 
         y = rect.top + 55 - (len(lines) * 10)
         for line in lines:
-            text_surface = font.render(line, True, WHITE)
+            text_surface = font.render(line, True, custom_colors.WHITE)
             text_rect = text_surface.get_rect(centerx=rect.centerx, y=y)
             self.window.blit(text_surface, text_rect)
             y += font.size(line)[1]
@@ -663,8 +645,6 @@ class Game:
     def saveState(self):
         cropped_rect = pygame.Rect(20, 20, 897, 680)
         cropped_surface = self.window.subsurface(cropped_rect)
-        # realSize = (self.mapRealWidth, self.mapRealHeight)
-        # cropped_surface = pygame.transform.scale(cropped_surface, realSize)
         pygame.image.save(cropped_surface, "state/cropped_image.png")
 
     def redrawWindow(self):
@@ -681,11 +661,11 @@ class Game:
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
             MENU_MOUSE_POS = pygame.mouse.get_pos()
-            MENU_TEXT = self.get_font(40).render("Game is paused", True, "#d7fcd4")
+            MENU_TEXT = self.get_font(custom_font_size.TEXT_GAME_PAUSED_FONT_SIZE).render("Game is paused", True, "#d7fcd4")
             MENU_RECT = MENU_TEXT.get_rect(center=(640, 270))
 
             RESUME_BUTTON = Button(image=None, pos=(640, 465),
-                                   text_input="Resume", font=self.get_font(25), base_color="#d7fcd4",
+                                   text_input="Resume", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                    hovering_color="Blue")
             self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [RESUME_BUTTON]:
@@ -705,14 +685,14 @@ class Game:
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
             MENU_MOUSE_POS = pygame.mouse.get_pos()
-            MENU_TEXT = self.get_font(30).render("Do you want to quit?", True, "#d7fcd4")
+            MENU_TEXT = self.get_font(custom_font_size.TEXT_NORMAL_FONT_SIZE).render("Do you want to quit?", True, "#d7fcd4")
             MENU_RECT = MENU_TEXT.get_rect(center=(640, 230))
 
             NO_BUTTON = Button(image=None, pos=(640, 390),
-                               text_input="No", font=self.get_font(25), base_color="#d7fcd4",
+                               text_input="No", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                hovering_color="Blue")
             YES_BUTTON = Button(image=None, pos=(640, 505),
-                                text_input="Yes", font=self.get_font(25), base_color="#d7fcd4",
+                                text_input="Yes", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                 hovering_color="Blue")
             self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [YES_BUTTON, NO_BUTTON]:
@@ -734,9 +714,6 @@ class Game:
     def playGame(self):
         try:
             handTrackingModule = HandTrackingModule.HandDetector()
-            yellow = (238, 224, 29)
-            green = (23, 165, 23)
-            blue1 = (0, 51, 153)
             self.window.fill(self.backgroundColor)
             bg_img = pygame.image.load(f"assets/continents/{self.currentMap}")
             self.mapRealWidth = bg_img.get_width()
@@ -754,18 +731,14 @@ class Game:
             self.displayCurrentGameTitle()
 
             PAUSE_BUTTON = Button(image=None, pos=(1030, 655),
-                                  text_input="Pause", font=self.get_font(30), base_color="Red",
+                                  text_input="Pause", font=self.get_font(custom_font_size.BUTTON_GAME_FONT_SIZE), base_color="Red",
                                   hovering_color="Blue")
             QUIT_BUTTON = Button(image=None, pos=(1190, 655),
-                                 text_input="Quit", font=self.get_font(30), base_color="Red",
+                                 text_input="Quit", font=self.get_font(custom_font_size.BUTTON_GAME_FONT_SIZE), base_color="Red",
                                  hovering_color="Blue")
-
-            # self.singlePlayerQuitButton()
             self.correctOptions = []
 
             runing = True
-
-            # self.computerVision = True
 
             if self.computerVision:
                 self.cap = cv2.VideoCapture(0)
@@ -791,8 +764,8 @@ class Game:
                             for button in [QUIT_BUTTON, PAUSE_BUTTON]:
                                 button.changeColor(MENU_MOUSE_POS)
                                 button.update(self.window)
-                            self.undrawCountries(blue1)
-                            self.drawCountry(self.cvx, self.cvy, blue1, yellow)
+                            self.undrawCountries(custom_colors.COUNTRY_INIT_COLOR)
+                            self.drawCountry(self.cvx, self.cvy, custom_colors.COUNTRY_INIT_COLOR, custom_colors.COUNTRY_MOUSE_HOVER_COLOR)
                             self.window.blit(cursor_img, (self.cvx, self.cvy), )
                     elif self.cvx > 0 or self.cvy > 0:
                         if self.cvx > 0 and self.cvx < self.SCREEN_WIDTH and self.cvy > 0 and self.cvy < self.SCREEN_HEIGHT:
@@ -820,10 +793,8 @@ class Game:
                                 button.update(self.window)
                             self.changeOptionIfArrowClicked(self.cvx, self.cvy)
                             self.displayOptionData()
-                            self.drawCorrectCountry(self.cvx, self.cvy, blue1, green)
+                            self.drawCorrectCountry(self.cvx, self.cvy, custom_colors.COUNTRY_INIT_COLOR, custom_colors.COUNTRY_CORRECT_COLOR)
                             self.window.blit(cursor_img, (self.cvx, self.cvy), )
-                        # self.initTreePixels()
-                        # self.writeCountryPixelsInFile("arrow_left_player1", pos[0], pos[1])
                     newScannedHandsImg = cv2.flip(newScannedHandsImg, 1)
                     cv2.imshow("Camera", newScannedHandsImg)
                     cv2.waitKey(1)
@@ -832,13 +803,13 @@ class Game:
                     for event in ev:
                         if event.type == pygame.MOUSEMOTION:  # MOUSEBUTTONUP MOUSEMOTION
                             pos = pygame.mouse.get_pos()
-                            self.undrawCountries(blue1)
-                            self.drawCountry(pos[0], pos[1], blue1, yellow)
+                            self.undrawCountries(custom_colors.COUNTRY_INIT_COLOR)
+                            self.drawCountry(pos[0], pos[1], custom_colors.COUNTRY_INIT_COLOR, custom_colors.COUNTRY_MOUSE_HOVER_COLOR)
                         if event.type == pygame.MOUSEBUTTONUP:
                             pos = pygame.mouse.get_pos()
                             self.changeOptionIfArrowClicked(pos[0], pos[1])
                             self.displayOptionData()
-                            self.drawCorrectCountry(pos[0], pos[1], yellow, green)
+                            self.drawCorrectCountry(pos[0], pos[1], custom_colors.COUNTRY_MOUSE_HOVER_COLOR, custom_colors.COUNTRY_CORRECT_COLOR)
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                                 self.saveState()
@@ -865,16 +836,16 @@ class Game:
                 while True:
                     self.window.blit(bg_img, (0, 0), )
                     MENU_MOUSE_POS = pygame.mouse.get_pos()
-                    MENU_TEXT = self.get_font(40).render("Game is ended.", True, "#d7fcd4")
+                    MENU_TEXT = self.get_font(custom_font_size.TEXT_GAME_END_FONT_SIZE).render("Game is ended.", True, "#d7fcd4")
                     MENU_RECT = MENU_TEXT.get_rect(center=(640, 220))
                     self.window.blit(MENU_TEXT, MENU_RECT)
 
-                    WIN_TEXT = self.get_font(30).render(win, True, "Green")
+                    WIN_TEXT = self.get_font(custom_font_size.TEXT_NORMAL_FONT_SIZE).render(win, True, "Green")
                     WIN_RECT = WIN_TEXT.get_rect(center=(640, 360))
                     self.window.blit(WIN_TEXT, WIN_RECT)
 
                     BACK_BUTTON = Button(image=None, pos=(640, 532),
-                                         text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                         text_input="Back", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                          hovering_color="Blue")
                     # self.window.blit(MENU_TEXT, MENU_RECT)
                     for button in [BACK_BUTTON]:
@@ -897,17 +868,17 @@ class Game:
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
             MENU_MOUSE_POS = pygame.mouse.get_pos()
-            MENU_TEXT = self.get_font(100).render("MAIN MENU", True, "#b68f40")
+            MENU_TEXT = self.get_font(custom_font_size.TEXT_MAIN_MENU_FONT_SIZE).render("MAIN MENU", True, "#b68f40")
             MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
 
             PLAY_BUTTON = Button(image=None, pos=(280, 655),
-                                 text_input="Play", font=self.get_font(30), base_color="#d7fcd4",
+                                 text_input="Play", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                  hovering_color="Blue")
             OPTIONS_BUTTON = Button(image=None, pos=(640, 655),
-                                    text_input="Options", font=self.get_font(30), base_color="#d7fcd4",
+                                    text_input="Options", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                     hovering_color="Blue")
             QUIT_BUTTON = Button(image=None, pos=(1005, 655),
-                                 text_input="Quit", font=self.get_font(30), base_color="#d7fcd4",
+                                 text_input="Quit", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                  hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
@@ -939,13 +910,13 @@ class Game:
             MENU_MOUSE_POS = pygame.mouse.get_pos()
 
             SINGLEPLAYER_BUTTON = Button(image=None, pos=(640, 215),
-                                         text_input="Single Player", font=self.get_font(25), base_color="#d7fcd4",
+                                         text_input="Single Player", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                          hovering_color="Blue")
             MULTIPLAYER_BUTTON = Button(image=None, pos=(640, 370),
-                                        text_input="Multiplayer", font=self.get_font(25), base_color="#d7fcd4",
+                                        text_input="Multiplayer", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                         hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 528),
-                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                 text_input="Back", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                  hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [SINGLEPLAYER_BUTTON, MULTIPLAYER_BUTTON, BACK_BUTTON]:
@@ -974,15 +945,15 @@ class Game:
             MENU_MOUSE_POS = pygame.mouse.get_pos()
 
             CREATE_NEW_SERVER_BUTTON = Button(image=None, pos=(640, 210),
-                                              text_input="Create new server", font=self.get_font(25),
+                                              text_input="Create new server", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE),
                                               base_color="#d7fcd4",
                                               hovering_color="Blue")
             CONNECT_TO_SERVER_BUTTON = Button(image=None, pos=(640, 370),
-                                              text_input="Connect to server", font=self.get_font(25),
+                                              text_input="Connect to server", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE),
                                               base_color="#d7fcd4",
                                               hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 528),
-                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                 text_input="Back", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                  hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [CREATE_NEW_SERVER_BUTTON, CONNECT_TO_SERVER_BUTTON, BACK_BUTTON]:
@@ -1009,14 +980,14 @@ class Game:
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
             MENU_MOUSE_POS = pygame.mouse.get_pos()
-            MENU_TEXT = self.get_font(30).render("Use hand tracking?", True, "#d7fcd4")
+            MENU_TEXT = self.get_font(custom_font_size.TEXT_NORMAL_FONT_SIZE).render("Use hand tracking?", True, "#d7fcd4")
             MENU_RECT = MENU_TEXT.get_rect(center=(640, 230))
 
             NO_BUTTON = Button(image=None, pos=(640, 505),
-                               text_input="No", font=self.get_font(25), base_color="#d7fcd4",
+                               text_input="No", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                hovering_color="Blue")
             YES_BUTTON = Button(image=None, pos=(640, 390),
-                                text_input="Yes", font=self.get_font(25), base_color="#d7fcd4",
+                                text_input="Yes", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                 hovering_color="Blue")
             self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [YES_BUTTON, NO_BUTTON]:
@@ -1050,19 +1021,17 @@ class Game:
         nickname_text_y = 270
         nickname_text_width = 320
         nickname_text_heigth = 50
-        color = (255, 255, 255)
+        textColor = custom_colors.WHITE
         font = pygame.font.Font(None, 40)
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
             MENU_MOUSE_POS = pygame.mouse.get_pos()
             START_BUTTON = Button(image=None, pos=(640, 390),
-                                  text_input="Start", font=self.get_font(25), base_color="#d7fcd4",
+                                  text_input="Start", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                   hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 502),
-                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                 text_input="Back", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                  hovering_color="Blue")
-
-            text_input = InputText(100, 100, 200, 50)
 
             for button in [START_BUTTON, BACK_BUTTON]:
                 button.changeColor(MENU_MOUSE_POS)
@@ -1224,24 +1193,22 @@ class Game:
                                 nickname_text += event.unicode
                                 nickname_text = nickname_text + "|"
 
-            insert_address_text_surface = font.render("Server IP Address:", True, color)
+            insert_address_text_surface = font.render("Server IP Address:", True, textColor)
             self.window.blit(insert_address_text_surface, (330 + 5, 205 + 5))
 
-            insert_nickname_text_surface = font.render("Your nickname:", True, color)
+            insert_nickname_text_surface = font.render("Your nickname:", True, textColor)
             self.window.blit(insert_nickname_text_surface, (330 + 5, 275 + 5))
 
             # update text input
-            text_surface_address = font.render(ip_text, True, color)
-            text_surface_nickname = font.render(nickname_text, True, color)
+            text_surface_address = font.render(ip_text, True, textColor)
+            text_surface_nickname = font.render(nickname_text, True, textColor)
 
-            # Draw the text input object on the screen
-            # self.window.fill((20, 20, 0))
             rect_address = pygame.Rect(ip_text_x, ip_text_y, ip_text_width, ip_text_heigth)
-            pygame.draw.rect(self.window, color, rect_address, 2)
+            pygame.draw.rect(self.window, textColor, rect_address, 2)
             self.window.blit(text_surface_address, (ip_text_x + 15, ip_text_y + 12))
 
             rect_nickname = pygame.Rect(nickname_text_x, nickname_text_y, nickname_text_width, nickname_text_heigth)
-            pygame.draw.rect(self.window, color, rect_nickname, 2)
+            pygame.draw.rect(self.window, textColor, rect_nickname, 2)
             self.window.blit(text_surface_nickname, (nickname_text_x + 15, nickname_text_y + 12))
 
             pygame.display.update()
@@ -1262,16 +1229,16 @@ class Game:
         nickname_text_y = 270
         nickname_text_width = 320
         nickname_text_heigth = 50
-        color = (255, 255, 255)
+        textColor = custom_colors.WHITE
         font = pygame.font.Font(None, 40)
         while True:
             self.window.blit(backgroundImageScaled, (0, 0))
             MENU_MOUSE_POS = pygame.mouse.get_pos()
             CONNECT_BUTTON = Button(image=None, pos=(640, 390),
-                                    text_input="Connect", font=self.get_font(25), base_color="#d7fcd4",
+                                    text_input="Connect", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                     hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 502),
-                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                 text_input="Back", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                  hovering_color="Blue")
 
             text_input = InputText(100, 100, 200, 50)
@@ -1376,24 +1343,23 @@ class Game:
                                 nickname_text += event.unicode
                                 nickname_text = nickname_text + "|"
 
-            insert_address_text_surface = font.render("Server IP Address:", True, color)
+            insert_address_text_surface = font.render("Server IP Address:", True, textColor)
             self.window.blit(insert_address_text_surface, (330 + 5, 205 + 5))
 
-            insert_nickname_text_surface = font.render("Your nickname:", True, color)
+            insert_nickname_text_surface = font.render("Your nickname:", True, textColor)
             self.window.blit(insert_nickname_text_surface, (330 + 5, 275 + 5))
 
             # update text input
-            text_surface_address = font.render(ip_text, True, color)
-            text_surface_nickname = font.render(nickname_text, True, color)
+            text_surface_address = font.render(ip_text, True, textColor)
+            text_surface_nickname = font.render(nickname_text, True, textColor)
 
             # Draw the text input object on the screen
-            # self.window.fill((20, 20, 0))
             rect_address = pygame.Rect(ip_text_x, ip_text_y, ip_text_width, ip_text_heigth)
-            pygame.draw.rect(self.window, color, rect_address, 2)
+            pygame.draw.rect(self.window, textColor, rect_address, 2)
             self.window.blit(text_surface_address, (ip_text_x + 15, ip_text_y + 12))
 
             rect_nickname = pygame.Rect(nickname_text_x, nickname_text_y, nickname_text_width, nickname_text_heigth)
-            pygame.draw.rect(self.window, color, rect_nickname, 2)
+            pygame.draw.rect(self.window, textColor, rect_nickname, 2)
             self.window.blit(text_surface_nickname, (nickname_text_x + 15, nickname_text_y + 12))
 
             pygame.display.update()
@@ -1406,16 +1372,16 @@ class Game:
             MENU_MOUSE_POS = pygame.mouse.get_pos()
 
             FLAGS_BUTTON = Button(image=None, pos=(640, 190),
-                                  text_input="Flags", font=self.get_font(25), base_color="#d7fcd4",
+                                  text_input="Flags", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                   hovering_color="Blue")
             CAPITALS_BUTTON = Button(image=None, pos=(640, 305),
-                                     text_input="Capitals", font=self.get_font(25), base_color="#d7fcd4",
+                                     text_input="Capitals", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                      hovering_color="Blue")
             COUNTRIES_BUTTON = Button(image=None, pos=(640, 420),
-                                      text_input="Countries", font=self.get_font(25), base_color="#d7fcd4",
+                                      text_input="Countries", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                       hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 535),
-                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                 text_input="Back", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                  hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [FLAGS_BUTTON, CAPITALS_BUTTON, COUNTRIES_BUTTON, BACK_BUTTON]:
@@ -1446,16 +1412,16 @@ class Game:
             MENU_MOUSE_POS = pygame.mouse.get_pos()
 
             FLAGS_BUTTON = Button(image=None, pos=(640, 190),
-                                  text_input="Flags", font=self.get_font(25), base_color="#d7fcd4",
+                                  text_input="Flags", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                   hovering_color="Blue")
             CAPITALS_BUTTON = Button(image=None, pos=(640, 305),
-                                     text_input="Capitals", font=self.get_font(25), base_color="#d7fcd4",
+                                     text_input="Capitals", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                      hovering_color="Blue")
             COUNTRIES_BUTTON = Button(image=None, pos=(640, 420),
-                                      text_input="Countries", font=self.get_font(25), base_color="#d7fcd4",
+                                      text_input="Countries", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                       hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 535),
-                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                 text_input="Back", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                  hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [FLAGS_BUTTON, CAPITALS_BUTTON, COUNTRIES_BUTTON, BACK_BUTTON]:
@@ -1486,31 +1452,31 @@ class Game:
             MENU_MOUSE_POS = pygame.mouse.get_pos()
 
             NORTH_BUTTON = Button(image=None, pos=(480, 220),
-                                  text_input="North", font=self.get_font(25), base_color="#d7fcd4",
+                                  text_input="North", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                   hovering_color="Blue")
             AMERICA_N_BUTTON = Button(image=None, pos=(480, 250),
-                                      text_input="America", font=self.get_font(25), base_color="#d7fcd4",
+                                      text_input="America", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                       hovering_color="Blue")
             SOUTH_BUTTON = Button(image=None, pos=(480, 330),
-                                  text_input="South", font=self.get_font(25), base_color="#d7fcd4",
+                                  text_input="South", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                   hovering_color="Blue")
             AMERICA_S_BUTTON = Button(image=None, pos=(480, 360),
-                                      text_input="America", font=self.get_font(25), base_color="#d7fcd4",
+                                      text_input="America", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                       hovering_color="Blue")
             AFRICA_BUTTON = Button(image=None, pos=(480, 455),
-                                   text_input="Africa", font=self.get_font(25), base_color="#d7fcd4",
+                                   text_input="Africa", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                    hovering_color="Blue")
             EUROPE_BUTTON = Button(image=None, pos=(800, 235),
-                                   text_input="Europe", font=self.get_font(25), base_color="#d7fcd4",
+                                   text_input="Europe", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                    hovering_color="Blue")
             ASIA_BUTTON = Button(image=None, pos=(800, 345),
-                                 text_input="Asia", font=self.get_font(25), base_color="#d7fcd4",
+                                 text_input="Asia", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                  hovering_color="Blue")
             OCEANIA_BUTTON = Button(image=None, pos=(800, 455),
-                                    text_input="Oceania", font=self.get_font(25), base_color="#d7fcd4",
+                                    text_input="Oceania", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                     hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 560),
-                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                 text_input="Back", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                  hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [AFRICA_BUTTON, ASIA_BUTTON, NORTH_BUTTON, AMERICA_N_BUTTON, SOUTH_BUTTON, AMERICA_S_BUTTON,
@@ -1553,31 +1519,31 @@ class Game:
             MENU_MOUSE_POS = pygame.mouse.get_pos()
 
             NORTH_BUTTON = Button(image=None, pos=(480, 220),
-                                  text_input="North", font=self.get_font(25), base_color="#d7fcd4",
+                                  text_input="North", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                   hovering_color="Blue")
             AMERICA_N_BUTTON = Button(image=None, pos=(480, 250),
-                                      text_input="America", font=self.get_font(25), base_color="#d7fcd4",
+                                      text_input="America", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                       hovering_color="Blue")
             SOUTH_BUTTON = Button(image=None, pos=(480, 330),
-                                  text_input="South", font=self.get_font(25), base_color="#d7fcd4",
+                                  text_input="South", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                   hovering_color="Blue")
             AMERICA_S_BUTTON = Button(image=None, pos=(480, 360),
-                                      text_input="America", font=self.get_font(25), base_color="#d7fcd4",
+                                      text_input="America", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                       hovering_color="Blue")
             AFRICA_BUTTON = Button(image=None, pos=(480, 455),
-                                   text_input="Africa", font=self.get_font(25), base_color="#d7fcd4",
+                                   text_input="Africa", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                    hovering_color="Blue")
             EUROPE_BUTTON = Button(image=None, pos=(800, 235),
-                                   text_input="Europe", font=self.get_font(25), base_color="#d7fcd4",
+                                   text_input="Europe", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                    hovering_color="Blue")
             ASIA_BUTTON = Button(image=None, pos=(800, 345),
-                                 text_input="Asia", font=self.get_font(25), base_color="#d7fcd4",
+                                 text_input="Asia", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                  hovering_color="Blue")
             OCEANIA_BUTTON = Button(image=None, pos=(800, 455),
-                                    text_input="Oceania", font=self.get_font(25), base_color="#d7fcd4",
+                                    text_input="Oceania", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                     hovering_color="Blue")
             BACK_BUTTON = Button(image=None, pos=(640, 560),
-                                 text_input="Back", font=self.get_font(25), base_color="#d7fcd4",
+                                 text_input="Back", font=self.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                  hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [AFRICA_BUTTON, ASIA_BUTTON, NORTH_BUTTON, AMERICA_N_BUTTON, SOUTH_BUTTON, AMERICA_S_BUTTON,
@@ -1632,5 +1598,5 @@ class Game:
 
     def launch(self):
         pygame.init()
-        pygame.display.set_caption("Terra mania")
+        pygame.display.set_caption(settings.CAPTION)
         self.originalMainMenu()

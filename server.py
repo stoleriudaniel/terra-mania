@@ -1,15 +1,15 @@
 import socket
 from _thread import *
 import time
-
+import settings
 import psutil
 
 
 class Server():
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.serverIp = socket.gethostbyname('localhost')
-        self.port = 5556
+        self.serverIp = socket.gethostbyname(settings.SERVER_START_IP)
+        self.port = settings.SERVER_PORT
         self.maximumPlayers = 2
         self.currentId = "0"
         self.gameType = ""
@@ -19,7 +19,7 @@ class Server():
             f"0:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none)%(gameTime={self.gameTime})",
             f"1:(0,0);(click=0);(currentOption=none);(correctOption=none);(nickname=);(status=none)%(gameTime={self.gameTime})"]
         self.timeStarted = False
-        self.t = 20 * 60  # 20 * 60 seconds = 20 minutes
+        self.t = settings.TIMER_COUNTDOWN
 
     def bothPlayersConnected(self):
         nickname0 = self.state[0].split(":")[1].split(";")[4].split("=")[1].split(")")[0]

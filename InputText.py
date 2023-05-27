@@ -1,8 +1,10 @@
 import pygame
 
+import custom_colors
+
 
 class InputText:
-    def __init__(self, x, y, width, height, font=None, font_size=30, color=(255, 255, 255)):
+    def __init__(self, x, y, width, height, font=None, font_size=30, color=custom_colors.WHITE):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color
         self.text = ''

@@ -1,6 +1,8 @@
 import cv2.data
 import mediapipe as mp
 
+import custom_colors
+
 
 class HandDetector():
     def __init__(self, mode=False, maxHands=2, modelComplexity=1, detectionCon=0.5, trackCon=0.5):
@@ -36,7 +38,7 @@ class HandDetector():
                 cx, cy = int(lm.x * w), int(lm.y * h)
                 lmList.append([id, cx, cy])
                 if (draw):
-                    cv2.circle(img, (cx, cy), 5, (255, 0, 255), cv2.FILLED)
+                    cv2.circle(img, (cx, cy), 5, custom_colors.FINGER_DOT_COLOR, cv2.FILLED)
         if len(lmList) > 0:
             x, y = lmList[9][1], lmList[9][2]
 

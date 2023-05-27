@@ -1,9 +1,12 @@
 import psutil
 import pygame
+
+import custom_colors
+import custom_font_size
 from network import Network
 from button import Button
 from player import Player
-
+import settings
 
 class Client:
     def __init__(self, gameParam, ipAddress, nickname):
@@ -54,7 +57,7 @@ class Client:
             return "-1", 0, 0, 0, "none", "none", "", "play", "none"
 
     def initGame(self):
-        self.game.window.fill((255, 255, 255))
+        self.game.window.fill(settings.BACKGROUND_COLOR)
         bg_img = pygame.image.load(f"assets/continents/{self.game.currentMap}")
         bg_img = pygame.transform.scale(bg_img, (897, 680))
         self.game.window.blit(bg_img, (20, 20), )
@@ -65,21 +68,21 @@ class Client:
         self.game.displayTimeLeft()
 
     def waitingForTheSecondPlayer(self):
-        self.game.window.fill((255, 255, 255))
+        self.game.window.fill(settings.BACKGROUND_COLOR)
         bg_img = pygame.image.load(f"assets/menu/8.jpg")
         bg_img = pygame.transform.scale(bg_img, (self.game.SCREEN_WIDTH, self.game.SCREEN_HEIGHT))
 
         while self.start is False:
             self.game.window.blit(bg_img, (0, 0), )
             MENU_MOUSE_POS = pygame.mouse.get_pos()
-            MENU_TEXT1 = self.game.get_font(30).render("Waiting for the second", True, "#d7fcd4")
+            MENU_TEXT1 = self.game.get_font(custom_font_size.TEXT_NORMAL_FONT_SIZE).render("Waiting for the second", True, "#d7fcd4")
             MENU_RECT1 = MENU_TEXT1.get_rect(center=(640, 230))
             self.game.window.blit(MENU_TEXT1, MENU_RECT1)
-            MENU_TEXT = self.game.get_font(30).render("player to connect...", True, "#d7fcd4")
+            MENU_TEXT = self.game.get_font(custom_font_size.TEXT_NORMAL_FONT_SIZE).render("player to connect...", True, "#d7fcd4")
             MENU_RECT = MENU_TEXT.get_rect(center=(640, 270))
             self.game.window.blit(MENU_TEXT, MENU_RECT)
             STOP_SERVER_BUTTON = Button(image=None, pos=(650, 532),
-                                        text_input="Stop Server", font=self.game.get_font(25), base_color="#d7fcd4",
+                                        text_input="Stop Server", font=self.game.get_font(custom_font_size.BUTTON_MENU_FONT_SIZE), base_color="#d7fcd4",
                                         hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [STOP_SERVER_BUTTON]:
@@ -102,7 +105,7 @@ class Client:
             pygame.display.update()
 
     def serverClosed(self):
-        self.game.window.fill((255, 255, 255))
+        self.game.window.fill(settings.BACKGROUND_COLOR)
         bg_img = pygame.image.load(f"assets/menu/8.jpg")
         bg_img = pygame.transform.scale(bg_img, (self.game.SCREEN_WIDTH, self.game.SCREEN_HEIGHT))
         betterPlayer = ""
@@ -119,22 +122,22 @@ class Client:
         while True:
             self.game.window.blit(bg_img, (0, 0), )
             MENU_MOUSE_POS = pygame.mouse.get_pos()
-            MENU_TEXT = self.game.get_font(40).render("Game is ended.", True, "#d7fcd4")
+            MENU_TEXT = self.game.get_font(custom_font_size.TEXT_GAME_END_FONT_SIZE).render("Game is ended.", True, "#d7fcd4")
             MENU_RECT = MENU_TEXT.get_rect(center=(640, 220))
             self.game.window.blit(MENU_TEXT, MENU_RECT)
 
             player0text = f"{self.game.player0.nickname} score: {len(self.game.player0.correctOptions)}"
             player1text = f"{self.game.player1.nickname} score: {len(self.game.player1.correctOptions)}"
 
-            PLAYER0_TEXT = self.game.get_font(25).render(player0text, True, "#d7fcd4")
+            PLAYER0_TEXT = self.game.get_font(custom_font_size.TEXT_NORMAL_FONT_SIZE).render(player0text, True, "#d7fcd4")
             PLAYER0_RECT = PLAYER0_TEXT.get_rect(center=(640, 290))
             self.game.window.blit(PLAYER0_TEXT, PLAYER0_RECT)
 
-            PLAYER1_TEXT = self.game.get_font(25).render(player1text, True, "#d7fcd4")
+            PLAYER1_TEXT = self.game.get_font(custom_font_size.TEXT_NORMAL_FONT_SIZE).render(player1text, True, "#d7fcd4")
             PLAYER1_RECT = PLAYER1_TEXT.get_rect(center=(640, 340))
             self.game.window.blit(PLAYER1_TEXT, PLAYER1_RECT)
 
-            WIN_TEXT = self.game.get_font(25).render(win, True, "Green")
+            WIN_TEXT = self.game.get_font(custom_font_size.TEXT_NORMAL_FONT_SIZE).render(win, True, "Green")
             WIN_RECT = WIN_TEXT.get_rect(center=(640, 390))
             self.game.window.blit(WIN_TEXT, WIN_RECT)
 
@@ -199,19 +202,16 @@ class Client:
 
     def play(self):
         pygame.init()
-        pygame.display.set_caption("Terra mania")
+        pygame.display.set_caption(settings.CAPTION)
         self.game.playerId = self.playerId
         self.game.player0.currentOption = self.game.getOptionByIndex(0)
         self.game.player1.currentOption = self.game.getOptionByIndex(1)
-        yellow = (238, 224, 29)
-        green = (23, 165, 23)
-        blue1 = (0, 51, 153)
         self.game.isMultiplayer = True
 
         runing = True
 
         QUIT_BUTTON = Button(image=None, pos=(1190, 655),
-                             text_input="Quit", font=self.game.get_font(30), base_color="Red",
+                             text_input="Quit", font=self.game.get_font(custom_font_size.BUTTON_GAME_FONT_SIZE), base_color="Red",
                              hovering_color="Blue")
 
         while runing:
@@ -241,26 +241,26 @@ class Client:
                                 self.gameStatus = "quit"
                             self.game.changeOptionIfArrowClicked(pos[0], pos[1])
                             self.game.displayOptionData()
-                            self.game.drawCorrectCountry(pos[0], pos[1], yellow, green, self.playerId)
+                            self.game.drawCorrectCountry(pos[0], pos[1], custom_colors.COUNTRY_MOUSE_HOVER_COLOR, custom_colors.COUNTRY_CORRECT_COLOR, self.playerId)
                             if self.playerId == self.game.player0.id:
                                 self.game.player0.click = 1 - self.game.player0.click
                             elif self.playerId == self.game.player1.id:
                                 self.game.player1.click = 1 - self.game.player1.click
                     if self.playerId != self.game.player0.id and self.game.player0.click != self.clickPlayer0:
-                        self.game.drawCorrectCountry(self.game.player0.x, self.game.player0.y, yellow, green,
+                        self.game.drawCorrectCountry(self.game.player0.x, self.game.player0.y, custom_colors.COUNTRY_MOUSE_HOVER_COLOR, custom_colors.COUNTRY_CORRECT_COLOR,
                                                      self.game.player0.id)
                         self.clickPlayer0 = self.game.player0.click
                     elif self.playerId != self.game.player1.id and self.game.player1.click != self.clickPlayer1:
-                        self.game.drawCorrectCountry(self.game.player1.x, self.game.player1.y, yellow, green,
+                        self.game.drawCorrectCountry(self.game.player1.x, self.game.player1.y, custom_colors.COUNTRY_MOUSE_HOVER_COLOR, custom_colors.COUNTRY_CORRECT_COLOR,
                                                      self.game.player1.id)
                         self.clickPlayer1 = self.game.player1.click
-                    self.game.undrawCountries(blue1)
-                    self.game.drawCountry(self.game.player0.x, self.game.player0.y, blue1, yellow, self.game.player0.id)
-                    self.game.drawCountry(self.game.player1.x, self.game.player1.y, blue1, yellow, self.game.player1.id)
+                    self.game.undrawCountries(custom_colors.COUNTRY_INIT_COLOR)
+                    self.game.drawCountry(self.game.player0.x, self.game.player0.y, custom_colors.COUNTRY_INIT_COLOR, custom_colors.COUNTRY_MOUSE_HOVER_COLOR, self.game.player0.id)
+                    self.game.drawCountry(self.game.player1.x, self.game.player1.y, custom_colors.COUNTRY_INIT_COLOR, custom_colors.COUNTRY_MOUSE_HOVER_COLOR, self.game.player1.id)
                 if self.start is False:
                     self.waitingForTheSecondPlayer()
                     if self.stopServer is True:
-                        self.killProcessByPort(5556)
+                        self.killProcessByPort(settings.SERVER_PORT)
                         return
                 self.getDataFromServer()
 
