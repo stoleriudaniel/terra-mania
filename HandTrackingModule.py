@@ -1,6 +1,5 @@
 import cv2.data
 import mediapipe as mp
-import time
 
 
 class HandDetector():
@@ -56,4 +55,4 @@ class HandDetector():
         img = self.findHands(img)
         lmList = self.findPosition(img)
         if len(lmList) != 0:
-            return lmList[9][1]*2, lmList[9][2]*2
+            return lmList[9][1] * 2, lmList[9][2] * 2

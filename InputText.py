@@ -1,5 +1,6 @@
 import pygame
 
+
 class InputText:
     def __init__(self, x, y, width, height, font=None, font_size=30, color=(255, 255, 255)):
         self.rect = pygame.Rect(x, y, width, height)

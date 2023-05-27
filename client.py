@@ -79,8 +79,8 @@ class Client:
             MENU_RECT = MENU_TEXT.get_rect(center=(640, 270))
             self.game.window.blit(MENU_TEXT, MENU_RECT)
             STOP_SERVER_BUTTON = Button(image=None, pos=(650, 532),
-                                  text_input="Stop Server", font=self.game.get_font(25), base_color="#d7fcd4",
-                                  hovering_color="Blue")
+                                        text_input="Stop Server", font=self.game.get_font(25), base_color="#d7fcd4",
+                                        hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [STOP_SERVER_BUTTON]:
                 button.changeColor(MENU_MOUSE_POS)
@@ -139,8 +139,8 @@ class Client:
             self.game.window.blit(WIN_TEXT, WIN_RECT)
 
             BACK_BUTTON = Button(image=None, pos=(640, 532),
-                                  text_input="Back", font=self.game.get_font(25), base_color="#d7fcd4",
-                                  hovering_color="Blue")
+                                 text_input="Back", font=self.game.get_font(25), base_color="#d7fcd4",
+                                 hovering_color="Blue")
             # self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [BACK_BUTTON]:
                 button.changeColor(MENU_MOUSE_POS)

@@ -10,7 +10,6 @@ import pygame
 import sys
 from player import Player
 from button import Button
-import psutil
 
 
 class Game:
@@ -23,8 +22,8 @@ class Game:
         self.SCREEN_WIDTH = 1280
         self.SCREEN_HEIGHT = 720
         self.window = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-        self.maps = ['Europe_map1.png', 'south_america112.png', 'north-america111.png', 'asia1.png', 'africa111.png',
-                     'oceania111.png']
+        self.maps = ['Europe.png', 'South_America.png', 'North-America.png', 'Asia.png', 'Africa.png',
+                     'Oceania.png']
         self.continents = ["Europe", "South-America", "North-America", "Asia", "Africa", "Oceania"]
         self.CONTINENT = self.continents[3]
         self.currentMap = self.maps[3]
@@ -107,7 +106,7 @@ class Game:
                     yCord = result[1]
                     filename = int(xCord) // 100 * 100
                     file = open(f"tree\\countries\\{self.CONTINENT}\\pixels\\{filename}.txt", "a")
-                    file.write(f"{xCord} {yCord} {country[2]}\n") 
+                    file.write(f"{xCord} {yCord} {country[2]}\n")
         print("Finish")
 
     def getAllOptionsOfTheContinent(self):
@@ -518,7 +517,8 @@ class Game:
 
             # Draw the rectangle
             pygame.draw.rect(self.window, rect_color, pygame.Rect(rect1_position, rect_size))
-            text_surface = font.render(f"Your score: {len(self.correctOptions)}/{self.getAllOptionsOfTheContinent()}", True, BLACK)
+            text_surface = font.render(f"Your score: {len(self.correctOptions)}/{self.getAllOptionsOfTheContinent()}",
+                                       True, BLACK)
             self.window.blit(text_surface, (1020, 405))
         else:
             self.drawScoreRect()
@@ -526,14 +526,18 @@ class Game:
             self.displayOption(+10, 70, self.player0.currentOption)
             self.displayArrows(+10, 70)
             pygame.draw.rect(self.window, rect_color, pygame.Rect(rect2_position, rect_size))
-            text_surface0 = font.render(f"{self.player0.nickname}: {len(self.player0.correctOptions)}/{self.getAllOptionsOfTheContinent()}", True, BLACK)
+            text_surface0 = font.render(
+                f"{self.player0.nickname}: {len(self.player0.correctOptions)}/{self.getAllOptionsOfTheContinent()}",
+                True, BLACK)
             self.window.blit(text_surface0, (1040, 305))
 
             # player1 data
             self.displayOption(+10, 310, self.player1.currentOption)
             self.displayArrows(+10, 310)
             pygame.draw.rect(self.window, rect_color, pygame.Rect(rect3_position, rect_size))
-            text_surface1 = font.render(f"{self.player1.nickname}: {len(self.player1.correctOptions)}/{self.getAllOptionsOfTheContinent()}", True, BLACK)
+            text_surface1 = font.render(
+                f"{self.player1.nickname}: {len(self.player1.correctOptions)}/{self.getAllOptionsOfTheContinent()}",
+                True, BLACK)
             self.window.blit(text_surface1, (1040, 545))
 
     def drawScoreRect(self):
@@ -682,8 +686,8 @@ class Game:
             MENU_RECT = MENU_TEXT.get_rect(center=(640, 270))
 
             RESUME_BUTTON = Button(image=None, pos=(640, 465),
-                                 text_input="Resume", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                   text_input="Resume", font=self.get_font(25), base_color="#d7fcd4",
+                                   hovering_color="Blue")
             self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [RESUME_BUTTON]:
                 button.changeColor(MENU_MOUSE_POS)
@@ -706,11 +710,11 @@ class Game:
             MENU_RECT = MENU_TEXT.get_rect(center=(640, 230))
 
             NO_BUTTON = Button(image=None, pos=(640, 390),
-                                 text_input="No", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                               text_input="No", font=self.get_font(25), base_color="#d7fcd4",
+                               hovering_color="Blue")
             YES_BUTTON = Button(image=None, pos=(640, 505),
-                                 text_input="Yes", font=self.get_font(25), base_color="#d7fcd4",
-                                 hovering_color="Blue")
+                                text_input="Yes", font=self.get_font(25), base_color="#d7fcd4",
+                                hovering_color="Blue")
             self.window.blit(MENU_TEXT, MENU_RECT)
             for button in [YES_BUTTON, NO_BUTTON]:
                 button.changeColor(MENU_MOUSE_POS)
@@ -751,8 +755,8 @@ class Game:
             self.displayCurrentGameTitle()
 
             PAUSE_BUTTON = Button(image=None, pos=(1030, 655),
-                                 text_input="Pause", font=self.get_font(30), base_color="Red",
-                                 hovering_color="Blue")
+                                  text_input="Pause", font=self.get_font(30), base_color="Red",
+                                  hovering_color="Blue")
             QUIT_BUTTON = Button(image=None, pos=(1190, 655),
                                  text_input="Quit", font=self.get_font(30), base_color="Red",
                                  hovering_color="Blue")
@@ -774,7 +778,6 @@ class Game:
                 for button in [QUIT_BUTTON, PAUSE_BUTTON]:
                     button.changeColor(MENU_MOUSE_POS)
                     button.update(self.window)
-
 
                 if self.computerVision:
                     self.load_camera()
@@ -887,7 +890,6 @@ class Game:
                     pygame.display.update()
             else:
                 self.originalMainMenu()
-
 
     def originalMainMenu(self):
         backgroundImage = pygame.image.load("assets/menu/1.jpg")
@@ -1120,8 +1122,10 @@ class Game:
                             if len(ip_text) > 0 and ip_text[-1] == "|":
                                 ip_text = ip_text[:-1]
                             ipTextFieldSelected = False
-                    if MENU_MOUSE_POS[0] >= nickname_text_x and MENU_MOUSE_POS[0] <= nickname_text_x + nickname_text_width and \
-                            MENU_MOUSE_POS[1] >= nickname_text_y and MENU_MOUSE_POS[1] <= nickname_text_y + nickname_text_heigth:
+                    if MENU_MOUSE_POS[0] >= nickname_text_x and MENU_MOUSE_POS[
+                        0] <= nickname_text_x + nickname_text_width and \
+                            MENU_MOUSE_POS[1] >= nickname_text_y and MENU_MOUSE_POS[
+                        1] <= nickname_text_y + nickname_text_heigth:
                         nicknameTextFieldSelected = True
                         if len(nickname_text) == 0:
                             nickname_text = nickname_text + "|"
@@ -1311,8 +1315,10 @@ class Game:
                             if len(ip_text) > 0 and ip_text[-1] == "|":
                                 ip_text = ip_text[:-1]
                             ipTextFieldSelected = False
-                    if MENU_MOUSE_POS[0] >= nickname_text_x and MENU_MOUSE_POS[0] <= nickname_text_x + nickname_text_width and \
-                            MENU_MOUSE_POS[1] >= nickname_text_y and MENU_MOUSE_POS[1] <= nickname_text_y + nickname_text_heigth:
+                    if MENU_MOUSE_POS[0] >= nickname_text_x and MENU_MOUSE_POS[
+                        0] <= nickname_text_x + nickname_text_width and \
+                            MENU_MOUSE_POS[1] >= nickname_text_y and MENU_MOUSE_POS[
+                        1] <= nickname_text_y + nickname_text_heigth:
                         nicknameTextFieldSelected = True
                         if nicknameTextFieldSelected == False:
                             nicknameTextFieldSelected = True
@@ -1585,11 +1591,6 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-
-                    self.maps = ['Europe_map1.png', 'south_america112.png', 'north-america111.png', 'asia1.png',
-                                 'africa111.png',
-                                 'oceania111.png']
-                    self.continents = ["Europe", "South-America", "North-America", "Asia", "Africa", "Oceania"]
                     self.CONTINENT = self.continents[3]
                     self.currentMap = self.maps[3]
 
