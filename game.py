@@ -87,28 +87,28 @@ class Game:
 
     def initTreePixels(self):
         print("In initTreePixels")
-        directories = [x[0] for x in os.walk(f"countries\\{self.CONTINENT}")]
+        directories = [x[0] for x in os.walk(f"continents\\{self.CONTINENT}")]
         countries = []
         for index in range(0, len(directories)):
             country = directories[index].split("\\")
             if len(country) > 2:
-                path = Path(f"countries\\{self.CONTINENT}\\{country[2]}\\pixels.txt")
+                path = Path(f"continents\\{self.CONTINENT}\\{country[2]}\\pixels.txt")
                 if not path.is_file():
                     continue
                 print("country: ", country[2])
-                pixelsFile = open(f"countries\\{self.CONTINENT}\\{country[2]}\\pixels.txt", "r")
+                pixelsFile = open(f"continents\\{self.CONTINENT}\\{country[2]}\\pixels.txt", "r")
                 rows = pixelsFile.readlines()
                 for row in rows:
                     result = row.split()
                     xCord = result[0]
                     yCord = result[1]
                     filename = int(xCord) // 100 * 100
-                    file = open(f"tree\\countries\\{self.CONTINENT}\\pixels\\{filename}.txt", "a")
+                    file = open(f"tree\\continents\\{self.CONTINENT}\\pixels\\{filename}.txt", "a")
                     file.write(f"{xCord} {yCord} {country[2]}\n")
         print("Finish init tree pixels")
 
     def getAllOptionsOfTheContinent(self):
-        directories = [x[0] for x in os.walk(f"countries\\{self.CONTINENT}")]
+        directories = [x[0] for x in os.walk(f"continents\\{self.CONTINENT}")]
         return len(directories) - 1
 
     def writeCountryPixelsInFile(self, countryName, mousex, mousey):
@@ -167,7 +167,7 @@ class Game:
                     self.currentHoveredCountry = country
             return
         treeFilename = mouseX // 100 * 100
-        treeFile = open(f"tree\\countries\\{self.CONTINENT}\\pixels\\{treeFilename}.txt", "r")
+        treeFile = open(f"tree\\continents\\{self.CONTINENT}\\pixels\\{treeFilename}.txt", "r")
         rows = treeFile.readlines()
         for row in rows:
             result = row.split()
@@ -200,7 +200,7 @@ class Game:
             return
         country = ""
         treeFilename = mouseX // 100 * 100
-        treeFile = open(f"tree\\countries\\{self.CONTINENT}\\pixels\\{treeFilename}.txt", "r")
+        treeFile = open(f"tree\\continents\\{self.CONTINENT}\\pixels\\{treeFilename}.txt", "r")
         rows = treeFile.readlines()
         for row in rows:
             result = row.split()
@@ -278,7 +278,7 @@ class Game:
                 self.hoverColoredCountries.remove(country)
 
     def drawCountryByCountryParam(self, country, newRGB):
-        countryPixelsFile = open(f"countries\\{self.CONTINENT}\\{country}\\pixels.txt", "r")
+        countryPixelsFile = open(f"continents\\{self.CONTINENT}\\{country}\\pixels.txt", "r")
         countryPixels = countryPixelsFile.readlines()
         for pixel in countryPixels:
             p = pixel.split()
@@ -287,14 +287,14 @@ class Game:
             self.window.set_at((x, y), newRGB)
 
     def initColors(self):
-        fileInitPixel = open("countries\\init\\initPixel.txt", "r")
+        fileInitPixel = open("continents\\init\\initPixel.txt", "r")
         initPixelLines = fileInitPixel.readlines()
         for initPixelLine in initPixelLines:
             resultInitPixel = initPixelLine.split()
             initPixelCountry = resultInitPixel[0]
             x = int(resultInitPixel[1])
             y = int(resultInitPixel[2])
-            fileInitRGB = open("countries\\init\\initRGB.txt", "r")
+            fileInitRGB = open("continents\\init\\initRGB.txt", "r")
             initRGBLines = fileInitRGB.readlines()
             for initRGBLine in initRGBLines:
                 resultInitRGB = initRGBLine.split()
@@ -337,7 +337,7 @@ class Game:
 
     def getRandomOption(self):
         options = []
-        for x in os.walk(f"countries\\{self.CONTINENT}"):
+        for x in os.walk(f"continents\\{self.CONTINENT}"):
             dataList = x[0].split("\\")
             if len(dataList) < 3:
                 continue
@@ -348,7 +348,7 @@ class Game:
 
     def getOptionByIndex(self, index):
         options = []
-        for x in os.walk(f"countries\\{self.CONTINENT}"):
+        for x in os.walk(f"continents\\{self.CONTINENT}"):
             dataList = x[0].split("\\")
             if len(dataList) < 3:
                 continue
@@ -359,7 +359,7 @@ class Game:
 
     def getNextOption(self):
         options = []
-        for x in os.walk(f"countries\\{self.CONTINENT}"):
+        for x in os.walk(f"continents\\{self.CONTINENT}"):
             dataList = x[0].split("\\")
             if len(dataList) < 3:
                 continue
@@ -412,7 +412,7 @@ class Game:
 
     def getPreviousOption(self):
         options = []
-        for x in os.walk(f"countries\\{self.CONTINENT}"):
+        for x in os.walk(f"continents\\{self.CONTINENT}"):
             dataList = x[0].split("\\")
             if len(dataList) < 3:
                 continue
@@ -566,13 +566,13 @@ class Game:
         capital = ""
         if self.isMultiplayer:
             if option != "":
-                capitalFile = open(f"countries\\{self.CONTINENT}\\{option}\\country.txt", "r")
+                capitalFile = open(f"continents\\{self.CONTINENT}\\{option}\\country.txt", "r")
             elif self.playerId == self.player0.id:
-                capitalFile = open(f"countries\\{self.CONTINENT}\\{self.player0.currentOption}\\country.txt", "r")
+                capitalFile = open(f"continents\\{self.CONTINENT}\\{self.player0.currentOption}\\country.txt", "r")
             else:
-                capitalFile = open(f"countries\\{self.CONTINENT}\\{self.player1.currentOption}\\country.txt", "r")
+                capitalFile = open(f"continents\\{self.CONTINENT}\\{self.player1.currentOption}\\country.txt", "r")
         else:
-            capitalFile = open(f"countries\\{self.CONTINENT}\\{self.currentOption}\\country.txt", "r")
+            capitalFile = open(f"continents\\{self.CONTINENT}\\{self.currentOption}\\country.txt", "r")
         rows = capitalFile.readlines()
         for row in rows:
             result = row.split()
@@ -587,13 +587,13 @@ class Game:
         country = ""
         if self.isMultiplayer:
             if option != "":
-                countryFile = open(f"countries\\{self.CONTINENT}\\{option}\\country.txt", "r")
+                countryFile = open(f"continents\\{self.CONTINENT}\\{option}\\country.txt", "r")
             elif self.playerId == self.player0.id:
-                countryFile = open(f"countries\\{self.CONTINENT}\\{self.player0.currentOption}\\country.txt", "r")
+                countryFile = open(f"continents\\{self.CONTINENT}\\{self.player0.currentOption}\\country.txt", "r")
             else:
-                countryFile = open(f"countries\\{self.CONTINENT}\\{self.player1.currentOption}\\country.txt", "r")
+                countryFile = open(f"continents\\{self.CONTINENT}\\{self.player1.currentOption}\\country.txt", "r")
         else:
-            countryFile = open(f"countries\\{self.CONTINENT}\\{self.currentOption}\\country.txt", "r")
+            countryFile = open(f"continents\\{self.CONTINENT}\\{self.currentOption}\\country.txt", "r")
         rows = countryFile.readlines()
         for row in rows:
             result = row.split()
@@ -615,13 +615,13 @@ class Game:
     def displayFlag(self, xCoord, yCoord, optionParam=""):
         if self.isMultiplayer:
             if optionParam != "":
-                option = pygame.image.load(f"countries\\{self.CONTINENT}\\{optionParam}\\flag.png")
+                option = pygame.image.load(f"continents\\{self.CONTINENT}\\{optionParam}\\flag.png")
             elif self.playerId == self.player0.id:
-                option = pygame.image.load(f"countries\\{self.CONTINENT}\\{self.player0.currentOption}\\flag.png")
+                option = pygame.image.load(f"continents\\{self.CONTINENT}\\{self.player0.currentOption}\\flag.png")
             else:
-                option = pygame.image.load(f"countries\\{self.CONTINENT}\\{self.player1.currentOption}\\flag.png")
+                option = pygame.image.load(f"continents\\{self.CONTINENT}\\{self.player1.currentOption}\\flag.png")
         else:
-            option = pygame.image.load(f"countries\\{self.CONTINENT}\\{self.currentOption}\\flag.png")
+            option = pygame.image.load(f"continents\\{self.CONTINENT}\\{self.currentOption}\\flag.png")
         option = pygame.transform.scale(option, (130, 100))  # 130, 100 for flags
         self.window.blit(option, (xCoord + 1025, yCoord + 120))  # 1020, 200 for flags
 
