@@ -566,13 +566,13 @@ class Game:
         capital = ""
         if self.isMultiplayer:
             if option != "":
-                capitalFile = open(f"continents\\{self.CONTINENT}\\{option}\\country.txt", "r")
+                capitalFile = open(f"continents\\{self.CONTINENT}\\{option}\\capital.txt", "r")
             elif self.playerId == self.player0.id:
-                capitalFile = open(f"continents\\{self.CONTINENT}\\{self.player0.currentOption}\\country.txt", "r")
+                capitalFile = open(f"continents\\{self.CONTINENT}\\{self.player0.currentOption}\\capital.txt", "r")
             else:
-                capitalFile = open(f"continents\\{self.CONTINENT}\\{self.player1.currentOption}\\country.txt", "r")
+                capitalFile = open(f"continents\\{self.CONTINENT}\\{self.player1.currentOption}\\capital.txt", "r")
         else:
-            capitalFile = open(f"continents\\{self.CONTINENT}\\{self.currentOption}\\country.txt", "r")
+            capitalFile = open(f"continents\\{self.CONTINENT}\\{self.currentOption}\\capital.txt", "r")
         rows = capitalFile.readlines()
         for row in rows:
             result = row.split()
